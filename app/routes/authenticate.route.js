@@ -31,7 +31,7 @@ router.post('/', (req, res) => {
             token: token
         });
     } else {
-        res.status(403).send("Please provide valid Username & password for login.");
+        res.status(403).send({"message":"Please provide valid Username & password for login."});
     }
 });
 

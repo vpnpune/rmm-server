@@ -5,6 +5,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import app from './server';
+import { log } from 'util';
 
 const router = express.Router();
 
@@ -12,7 +13,8 @@ router.use(function(req, res, next) {
 	console.log("middleware called");
 	// check header or url parameters or post parameters for token
 	var token = req.body.token || req.params.token || req.headers['x-access-token'];
-
+	console.log('token : ',token);
+	
 	// decode token
 	if (token) {
 
