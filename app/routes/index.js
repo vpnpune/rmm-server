@@ -6,7 +6,7 @@ import containerRoutes from './container.route';
 
 const router = express.Router();
 router.use('/authenticate', authenticationRoutes);
-router.use(interceptor);
+//router.use(interceptor);
 
 //All routers should be attached after this only
 router.use('/users', userRoutes);
