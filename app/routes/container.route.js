@@ -13,6 +13,7 @@ const schema = {
 }
 router.get('/', (req, res) => {
 	const db = MongoDB.getDB();
+	
 	db.db().collection('containerType').find({}).toArray(function (err, results) {
 		if (err)
 			res.send(err);
