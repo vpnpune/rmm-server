@@ -1,8 +1,8 @@
 import express from 'express';
 import Joi from 'joi';
 import validator from 'express-joi-validator';
-import { ContainerService } from './../services/container.service';
 import logger from '../logger';
+import { ContainerHandler } from '../handler/container.handler';
 
 
 const router = express.Router();
@@ -17,27 +17,30 @@ const schema = {
 }
 // get ALL
 router.get('/', (req, res) => {
-	let resultPromise = ContainerService.getAll();
+	let resultPromise = ContainerHandler.getAll();
 	resultPromise.then(function (result) {
-		if (result){
-			res.send(result);			
-		}
-	}).catch(err => {
-		res.send(err);
-	});
-});
-// get ONE
-router.get('/:id', (req, res) => {
-	let id = req.params.id;
-	
-	let resultPromise = ContainerService.getOne(id);
-	resultPromise.then(function (result) {
-		if (result){
-			res.status(200).send(result);			
+		if (result) {
+			res.status(200).send(result);
 		}
 	}).catch(err => {
 		log.error(err);
-		res.status(500).send({"message":"Something went wrong"});
+		res.status(500).send({ "message": "Something went wrong" });
+	});
+});
+
+
+// get ONE
+router.get('/:id', (req, res) => {
+	let id = req.params.id;
+
+	let resultPromise = ContainerHandler.getOne(id);
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({ "message": "Something went wrong" });
 	});
 });
 
@@ -45,25 +48,49 @@ router.get('/:id', (req, res) => {
 
 // save obj
 router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
-	let resultPromise = ContainerService.save(req.body);
+	let resultPromise = ContainerHandler.save(req.body);
 	resultPromise.then(function (result) {
-		if (result){
-			res.status(200).send(result);			
+		if (result) {
+			res.status(200).send(result);
 		}
 	}).catch(err => {
-		res.send(err);
+		log.error(err);
+		res.status(500).send({ "message": "Something went wrong" });
 	});
-	
+
 });
 
-const awaitHandlerFactory = (middleware) => {
-	return async (req, res, next) => {
-	  try {
-		await middleware(req, res, next)
-	  } catch (err) {
-		next(err)
-	  }
-	}
-  }
+// update ONE obj
+router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
+	console.log("Router put");
+	let resultPromise = ContainerHandler.updateOne(req.body);
+
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({ "message": "Something went wrong" });
+	});
+
+});
+
+
+// get ONE
+router.delete('/:id', (req, res) => {
+	let id = req.params.id;
+	console.log("Delete Route Called");
+	let resultPromise = ContainerHandler.deleteOne(id);
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({ "message": "Something went wrong" });
+	});
+});
+
 
 export default router;
