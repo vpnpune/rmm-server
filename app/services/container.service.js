@@ -1,4 +1,6 @@
 import mongodb from "../db/mongodb";
+import {addId} from "../db/id-generator";
+
 const collectionName="containerType";
 
 export class ContainerService {
@@ -13,22 +15,19 @@ export class ContainerService {
     // get ONE object from db
     // please correct @Pankaj
     static async getOne(id) {
-        console.log("get 1 called");
-        const objectID = mongodb.getObjectId;
-        id= objectID(id);
-        console.log(id);
-
-        let result =await db.db().collection(collectionName).findOne({"_id":objectID(id)});
-        //let result =await db.db().collection(collectionName).findOne({"containerName":"Vial"});
-
-        console.log(JSON.stringify(result));
-        return result;
+        try{
+            // const db = mongodb.getDB();
+            let result =await db.db().collection(collectionName).findOne({"_id":id});
+            return result;
+        } catch(err) {
+            throw err;
+        }
 
     }
     // save object to db
     static async save(data) {
         const db = mongodb.getDB();
-        let result =await db.db().collection(collectionName).save(data);
+        let result =await db.db().collection(collectionName).save(addId(data));
         //console.log(JSON.stringify(data));
         return result;
 

@@ -1,9 +1,13 @@
 import express from 'express';
-import MongoDB from './../db/mongodb';
 import Joi from 'joi';
 import validator from 'express-joi-validator';
 import { ContainerService } from './../services/container.service';
+import logger from '../logger';
+
+
 const router = express.Router();
+const log = logger.Logger;
+
 // please separate  out 
 const schema = {
 	body: {
@@ -25,14 +29,15 @@ router.get('/', (req, res) => {
 // get ONE
 router.get('/:id', (req, res) => {
 	let id = req.params.id;
-
-	let resultPromise = ContainerService.getOne();
+	
+	let resultPromise = ContainerService.getOne(id);
 	resultPromise.then(function (result) {
 		if (result){
-			res.send(result);			
+			res.status(200).send(result);			
 		}
 	}).catch(err => {
-		res.send(err);
+		log.error(err);
+		res.status(500).send({"message":"Something went wrong"});
 	});
 });
 
