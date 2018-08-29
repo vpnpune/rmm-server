@@ -1,8 +1,9 @@
 import { DatabaseService } from "../db/database.service";
+import * as Collection from '../db/collection-constants';
 
 
 /* SET COLLECTION NAME FIRST*/
-const collectionName = "location";
+const collectionName = Collection.LOCATION;
 
 
 export class LocationHandler {

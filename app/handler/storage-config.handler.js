@@ -1,9 +1,10 @@
 import { DatabaseService } from "../db/database.service";
 import mongodb from "../db/mongodb";
+import * as Collection from '../db/collection-constants';
 
 
 /* SET COLLECTION NAME FIRST*/
-const collectionName = "storageConfig";
+const collectionName = Collection.STORAGE_CONFIG;
 
 
 export class StorageConfigHandler {
