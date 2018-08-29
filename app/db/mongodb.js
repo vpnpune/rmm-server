@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient,ObjectID } from 'mongodb';
 import * as constants from './../constants'; // import constants
 
 const uri = `mongodb://localhost:${constants.MONGO_PORT}/${constants.DB_NAME}`;
@@ -16,7 +16,9 @@ const connectDB = async (callback) => {
 }
 
 const getDB = () => _db
+const getObjectId = ObjectID;
 
 const disconnectDB = () => _db.close()
 
-export default { connectDB, getDB, disconnectDB };
+
+export default { connectDB, getDB, disconnectDB,getObjectId };
