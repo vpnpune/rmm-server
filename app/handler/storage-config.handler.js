@@ -1,17 +1,22 @@
 import { DatabaseService } from "../db/database.service";
+import mongodb from "../db/mongodb";
 
 
 /* SET COLLECTION NAME FIRST*/
-const collectionName = "documentType";
+const collectionName = "storageConfig";
 
 
-export class DocumentTypeHandler {
+export class StorageConfigHandler {
     // get all items from collection
-    static async getAll() {
+    static async getAll(key) {
+        console.log("In Service");
         try {
-            let result = await DatabaseService.getAll(collectionName);
+            const db = mongodb.getDB();
+
+            let result = await db.db().collection(collectionName).find({"conditionType":key}).toArray();
             return result;
         } catch (err) {
+            console.log("In Service" +err);
             throw err;
         }
 
