@@ -6,7 +6,7 @@ import containerRoutes from './container.route';
 import documentType from './document-type.route';
 import storageConfig from './storage-config.route';
 import location from './location.route';
-
+import endpointNotFound from './error-route';
 
 const router = express.Router();
 router.use('/authenticate', authenticationRoutes);
@@ -18,5 +18,6 @@ router.use('/container', containerRoutes);
 router.use('/documentType', documentType);
 router.use('/storageConfig', storageConfig);
 router.use('/location', location);
+router.use('/*', endpointNotFound);
 
 export default router;
