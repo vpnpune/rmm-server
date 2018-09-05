@@ -3,9 +3,11 @@ import userRoutes from './users.route';
 import authenticationRoutes from './authenticate.route';
 import interceptor from './../authentication-interceptor';
 import containerRoutes from './container.route';
-import documentType from './document-type.route';
-import storageConfig from './storage-config.route';
-import location from './location.route';
+import documentTypeRoutes from './document-type.route';
+import storageConfigRoutes from './storage-config.route';
+import locationRoutes from './location.route';
+import clientRoutes from './client.route';
+import projectRoutes from './project.route.';
 
 
 const router = express.Router();
@@ -15,8 +17,11 @@ router.use('/authenticate', authenticationRoutes);
 //All routers should be attached after this only
 router.use('/users', userRoutes);
 router.use('/container', containerRoutes);
-router.use('/documentType', documentType);
-router.use('/storageConfig', storageConfig);
-router.use('/location', location);
+router.use('/documentType', documentTypeRoutes);
+router.use('/storageConfig', storageConfigRoutes);
+router.use('/location', locationRoutes);
+router.use('/client', clientRoutes);
+router.use('/project', projectRoutes);
+
 
 export default router;
