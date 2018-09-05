@@ -21,6 +21,8 @@ router.get('/', (req, res) => {
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
 		}
 	}).catch(err => {
 		log.error(err);
@@ -37,6 +39,8 @@ router.get('/:id', (req, res) => {
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
 		}
 	}).catch(err => {
 		log.error(err);
@@ -52,6 +56,8 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
 		}
 	}).catch(err => {
 		log.error(err);
@@ -68,6 +74,8 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
 		}
 	}).catch(err => {
 		log.error(err);
@@ -85,6 +93,8 @@ router.delete('/:id', (req, res) => {
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
 		}
 	}).catch(err => {
 		log.error(err);

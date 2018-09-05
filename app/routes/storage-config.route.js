@@ -25,6 +25,8 @@ router.get('/:key', (req, res) => {
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
 		}
 	}).catch(err => {
 		log.error(err);
@@ -41,6 +43,8 @@ router.get('/:key/:id', (req, res) => {
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
 		}
 	}).catch(err => {
 		log.error(err);
@@ -56,6 +60,8 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
 		}
 	}).catch(err => {
 		log.error(err);
@@ -72,6 +78,8 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
 		}
 	}).catch(err => {
 		log.error(err);
@@ -89,6 +97,8 @@ router.delete('/:key/:id', (req, res) => {
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
 		}
 	}).catch(err => {
 		log.error(err);

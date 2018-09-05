@@ -8,6 +8,7 @@ import storageConfigRoutes from './storage-config.route';
 import locationRoutes from './location.route';
 import clientRoutes from './client.route';
 import projectRoutes from './project.route.';
+import endpointNotFound from './error-route';
 
 
 const router = express.Router();
@@ -22,6 +23,7 @@ router.use('/storageConfig', storageConfigRoutes);
 router.use('/location', locationRoutes);
 router.use('/client', clientRoutes);
 router.use('/project', projectRoutes);
+router.use('/*', endpointNotFound);
 
 
 export default router;
