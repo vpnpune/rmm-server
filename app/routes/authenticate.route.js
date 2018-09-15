@@ -2,19 +2,57 @@ import express from 'express';
 import MongoDB from './../db/mongodb';
 import jwt from 'jsonwebtoken';
 import app from './../server';
+import customError from './../model/custom-error.model'
 
 const router = express.Router();
+
+/**
+ * @swagger
+ * definition:
+ *   users:
+ *     properties:
+ *       name:
+ *         type: string
+ *       email:
+ *         type: string
+ *       age:
+ *         type: integer
+ *       sex:
+ *         type: string
+ */
+/**
+ * @swagger
+ * /api/users:
+ *   get:
+ *     tags:
+ *       - users
+ *     description: Returns all users
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: An array of users
+ *         schema:
+ *           $ref: '#/definitions/users'
+ *       403:
+ *          description: Please provide valid Username.
+ *          schema: '#/'
+ */
 
 router.post('/', (req, res) => {
     let userName = req.body.uname;
     let password = req.body.password;
-    console.log(userName);
-    console.log(password);
+
+    customError = new customError()
 
     if(!userName) {
-        res.status(403).send("Please provide valid Username.");
+        customError.status = 403;
+        customError.message = "Please provide valid Username.";
+        res.status(403).send(customError);
     } else if(!password) {
-        res.status(403).send("Please provide valid Password.");
+        customError.status = 403;
+        customError.message = "Please provide valid Password.";
+        res.status(403).send(customError);
     } else if(userName === "Pankaj" && password === "123456") {
         let payload = {
             loginId : "pankajsaboo",
@@ -31,7 +69,9 @@ router.post('/', (req, res) => {
             token: token
         });
     } else {
-        res.status(403).send({"message":"Please provide valid Username & password for login."});
+        customError.status = 403;
+        customError.message = "Please provide valid Username & password for login.";
+        res.status(403).send(customError);
     }
 });
 

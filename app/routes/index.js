@@ -10,7 +10,6 @@ import clientRoutes from './client.route';
 import projectRoutes from './project.route.';
 import endpointNotFound from './error-route';
 
-
 const router = express.Router();
 router.use('/authenticate', authenticationRoutes);
 //router.use(interceptor);

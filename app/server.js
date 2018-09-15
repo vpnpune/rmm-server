@@ -5,11 +5,34 @@ import * as constants from './constants'; // import constants
 import routes from './routes';
 import MongoDB from './db/mongodb';
 import morgan from 'morgan';
-import redis from 'redis';
 import cors from 'cors';
+import swaggerJSDoc from 'swagger-jsdoc';
+import path from 'path';
 
 const app = express(); // new server
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());//Enable All CORS Requests
+
+// swagger definition
+var swaggerDefinition = {
+    info: {
+      title: 'Node Swagger API',
+      version: '1.0.0',
+      description: 'Demonstrating how to describe a RESTful API with Swagger',
+    },
+    host: 'localhost:3000',
+    basePath: '/',
+  };
+
+  // options for the swagger docs
+  var options = {
+    // import swaggerDefinitions
+    swaggerDefinition: swaggerDefinition,
+    // path to the API docs
+    apis: ['./**/routes/*.js','routes.js'],// pass all in array 
+    };
+  // initialize swagger-jsdoc
+  var swaggerSpec = swaggerJSDoc(options);
 
 //JWT Token configuration
 app.set('secret', `${constants.SECRET}`);//Secret Variable
@@ -23,6 +46,13 @@ app.use(morgan('dev'));
 
 //API Endpoints
 app.use('/api', routes);
+
+// serve swagger
+app.get('/swagger.json', function(req, res) {   
+    res.setHeader('Content-Type', 'application/json');   
+    res.send(swaggerSpec); 
+});
+
 
 // start app on PORT
 app.listen(constants.PORT, () => console.log(`Started server on ${constants.PORT}`));
@@ -40,7 +70,5 @@ app.use(function (err, req, res, next) {
         return res.status(500).json("Internal server error");
     }
 });
-
-// const client = redis.createClient(`${constants.REDIS_PORT}`);
 
 export default app;
