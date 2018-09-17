@@ -2,7 +2,6 @@ import express from 'express';
 import MongoDB from './../db/mongodb';
 import jwt from 'jsonwebtoken';
 import app from './../server';
-import customError from './../model/custom-error.model'
 
 const router = express.Router();
 
@@ -43,16 +42,11 @@ router.post('/', (req, res) => {
     let userName = req.body.uname;
     let password = req.body.password;
 
-    customError = new customError()
 
     if(!userName) {
-        customError.status = 403;
-        customError.message = "Please provide valid Username.";
-        res.status(403).send(customError);
+        res.status(403).send({"message":"Please provide valid Username."});
     } else if(!password) {
-        customError.status = 403;
-        customError.message = "Please provide valid Password.";
-        res.status(403).send(customError);
+        res.status(403).send({"message":"Please provide valid Password."});
     } else if(userName === "Pankaj" && password === "123456") {
         let payload = {
             loginId : "pankajsaboo",
@@ -69,9 +63,7 @@ router.post('/', (req, res) => {
             token: token
         });
     } else {
-        customError.status = 403;
-        customError.message = "Please provide valid Username & password for login.";
-        res.status(403).send(customError);
+        res.status(403).send({"message":"Please provide valid Username & Password."});
     }
 });
 
