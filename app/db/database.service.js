@@ -1,5 +1,6 @@
 import mongodb from "./mongodb";
 import { addId } from "./id-generator";
+import { buildInsertObject, buildUpdateObject } from "./user-audit";
 
 
 export class DatabaseService {
@@ -31,7 +32,7 @@ export class DatabaseService {
     static async save(collectionName,data) {
         try {
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).save(addId(data));
+            let result = await db.db().collection(collectionName).save(buildInsertObject(data));
             //console.log(JSON.stringify(data));
             return result;
         } catch (err) {
@@ -43,7 +44,7 @@ export class DatabaseService {
         try {
             console.log("Update call "+JSON.stringify(data));
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).update({"_id":data._id},data,{upsert:false});
+            let result = await db.db().collection(collectionName).update({"_id":data._id},buildUpdateObject(data),{upsert:false});
             //console.log(JSON.stringify(data));
             return result;
         } catch (err) {
