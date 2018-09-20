@@ -55,6 +55,15 @@ export class ClientHandler {
             throw err;
         }
     }
+    static async getPagedData(pagination) {
+        try {
+            pagination = await DatabaseService.getPageData(collectionName,pagination);
+            return pagination;
+        } catch (err) {
+            throw err;
+        }
+
+    }
 }
 
 

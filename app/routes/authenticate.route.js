@@ -5,16 +5,48 @@ import app from './../server';
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * definition:
+ *   users:
+ *     properties:
+ *       name:
+ *         type: string
+ *       email:
+ *         type: string
+ *       age:
+ *         type: integer
+ *       sex:
+ *         type: string
+ */
+/**
+ * @swagger
+ * /api/users:
+ *   get:
+ *     tags:
+ *       - users
+ *     description: Returns all users
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: An array of users
+ *         schema:
+ *           $ref: '#/definitions/users'
+ *       403:
+ *          description: Please provide valid Username.
+ *          schema: '#/'
+ */
+
 router.post('/', (req, res) => {
     let userName = req.body.uname;
     let password = req.body.password;
-    console.log(userName);
-    console.log(password);
+
 
     if(!userName) {
-        res.status(403).send("Please provide valid Username.");
+        res.status(403).send({"message":"Please provide valid Username."});
     } else if(!password) {
-        res.status(403).send("Please provide valid Password.");
+        res.status(403).send({"message":"Please provide valid Password."});
     } else if(userName === "Pankaj" && password === "123456") {
         let payload = {
             loginId : "pankajsaboo",
@@ -31,7 +63,7 @@ router.post('/', (req, res) => {
             token: token
         });
     } else {
-        res.status(403).send({"message":"Please provide valid Username & password for login."});
+        res.status(403).send({"message":"Please provide valid Username & Password."});
     }
 });
 
