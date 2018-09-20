@@ -1,7 +1,7 @@
 import app from './../server'
 import uniqid from "uniqid";
 
-export function buildInsertObject(object) {
+export function buildInsertObject(object, req) {
     object._id = uniqid();
     object.createdBy = app.get('user');
     object.createdOn = new Date();
