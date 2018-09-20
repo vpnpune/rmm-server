@@ -2,7 +2,8 @@ import express from 'express';
 import Joi from 'joi';
 import validator from 'express-joi-validator';
 import { DocumentTypeHandler } from '../handler/document-type.handler';
-
+import logger from '../logger';
+ const log = logger.Logger;
 const router = express.Router();
 // please separate  out 
 const schema = {
