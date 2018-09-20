@@ -44,7 +44,8 @@ export class DatabaseService {
         try {
             console.log("Update call " + JSON.stringify(data));
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).update({"_id":data._id},buildUpdateObject(data),{upsert:false});
+            //let result = await db.db().collection(collectionName).update({"_id":data._id},buildUpdateObject(data),{upsert:false});
+            let result = await db.db().collection(collectionName).updateOne({ "_id": data._id }, { $set: data }, { upsert: false });
             //console.log(JSON.stringify(data));
             return result;
         } catch (err) {
