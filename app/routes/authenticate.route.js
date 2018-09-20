@@ -7,7 +7,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * definition:
+ * definitions:
  *   users:
  *     properties:
  *       name:
