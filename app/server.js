@@ -21,10 +21,11 @@ var swaggerDefinition = {
       description: 'Demonstrating how to describe a RESTful API with Swagger',
     },
     
-    host:'https://labmanus.herokuapp.com',
+    host: 'localhost:3000',
     basePath: '/',
   };
-//host: 'localhost:3000',
+//host: 'localhost:3000'
+//host :'https://labmanus.herokuapp.com',
   // options for the swagger docs
   var options = {
     // import swaggerDefinitions
