@@ -21,7 +21,7 @@ var swaggerDefinition = {
       description: 'Demonstrating how to describe a RESTful API with Swagger',
     },
     
-    host: 'localhost:3000',
+    host: 'https://rmm-server.herokuapp.com/',
     basePath: '/',
   };
 //host: 'localhost:3000'
