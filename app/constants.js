@@ -1,4 +1,4 @@
-const PORT = 3000; // port to start server on
+const PORT = process.env.PORT || 3000; // port to start server on
 const MONGO_PORT = 27017; // mongo port
 const DB_NAME = 'LAB_MANUS'; // sample db name
 const SECRET = "APISECRET";
