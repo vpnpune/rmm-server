@@ -47,9 +47,9 @@ router.post('/', (req, res) => {
         res.status(403).send({"message":"Please provide valid Username."});
     } else if(!password) {
         res.status(403).send({"message":"Please provide valid Password."});
-    } else if(userName === "Pankaj" && password === "123456") {
+    } else if(userName === "rmmadmin" && password === "labmanus") {
         let payload = {
-            loginId : "pankajsaboo",
+            loginId : "admin",
             admin : true
         };
         console.log('app : ',app);
