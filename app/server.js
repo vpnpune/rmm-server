@@ -18,15 +18,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());//Enable All CORS Requests
 
 //Send email Test data
-var subject = fs.readFileSync(path.join(__dirname, 'template/testmailTemplate/subject.html'),{encoding:'utf-8'});
-var body = fs.readFileSync(path.join(__dirname, 'template/testmailTemplate/body.html'),{encoding:'utf-8'});
+// var subject = fs.readFileSync(path.join(__dirname, 'template/testmailTemplate/subject.html'),{encoding:'utf-8'});
+// var body = fs.readFileSync(path.join(__dirname, 'template/testmailTemplate/body.html'),{encoding:'utf-8'});
 
-var email = require('./emailSend');
-var user = {firstName : 'test', lastName: 'Saboo'};
+// var email = require('./emailSend');
+// var user = {firstName : 'test', lastName: 'Saboo'};
 
-var sub = ejs.render(subject, user);
-var text = ejs.render(body, user);
-email.sendMail(sub, text);
+// var sub = ejs.render(subject, user);
+// var text = ejs.render(body, user);
+// email.sendMail(sub, text);
 
 // end this here
 

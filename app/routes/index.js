@@ -9,10 +9,11 @@ import locationRoutes from './location.route';
 import clientRoutes from './client.route';
 import projectRoutes from './project.route.';
 import endpointNotFound from './error-route';
+import fileUpload from './file-upload';
 
 const router = express.Router();
 router.use('/authenticate', authenticationRoutes);
-router.use(interceptor);
+// router.use(interceptor);
 
 //All routers should be attached after this only
 router.use('/users', userRoutes);
@@ -22,6 +23,8 @@ router.use('/storageConfig', storageConfigRoutes);
 router.use('/location', locationRoutes);
 router.use('/client', clientRoutes);
 router.use('/project', projectRoutes);
+router.use('/upload',fileUpload)
+
 router.use('/*', endpointNotFound);
 
 
