@@ -18,11 +18,9 @@
     "url": "https://github.com/manojsinghnegiwd/node-es6-boilerplate/issues"
   },
   "homepage": "https://github.com/manojsinghnegiwd/node-es6-boilerplate#readme",
-  "devDependencies": {
-   
-  },
+  "devDependencies": {},
   "dependencies": {
-     "babel-preset-env": "^1.7.0",
+    "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
     "morgan": "^1.9.0",
     "nodemon": "^1.18.4",
