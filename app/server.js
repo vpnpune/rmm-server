@@ -10,6 +10,8 @@ import swaggerJSDoc from 'swagger-jsdoc';
 import path from 'path';
 import ejs from 'ejs';
 import fs from 'fs';
+import ApplicationError from './model/application-error';
+import {INTERNAL_SERVER_ERROR} from './constants';
 
 const app = express(); // new server
 app.use(express.static(path.join(__dirname, 'public')));
@@ -83,9 +85,9 @@ MongoDB.connectDB(async (err) => {
 app.use(function (err, req, res, next) {
     console.log("error handler called", err);
     if (err.isBoom) {
-        return res.status(err.output.statusCode).json(err.data);
+        return res.status(err.output.statusCode).send(new ApplicationError(err.data, err.output.statusCode));
     } else {
-        return res.status(500).json("Internal server error");
+        return res.status(500).send(new ApplicationError(INTERNAL_SERVER_ERROR, 500));
     }
 });
 

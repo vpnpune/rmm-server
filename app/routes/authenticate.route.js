@@ -2,7 +2,8 @@ import express from 'express';
 import MongoDB from './../db/mongodb';
 import jwt from 'jsonwebtoken';
 import app from './../server';
-
+import ApplicationError from './../model/application-error';
+import USER_DETAILS_VERI_FAILED from '../constants';
 const router = express.Router();
 
 /**
@@ -43,27 +44,24 @@ router.post('/', (req, res) => {
     let password = req.body.password;
 
 
-    if(!userName) {
-        res.status(403).send({"message":"Please provide valid Username."});
-    } else if(!password) {
-        res.status(403).send({"message":"Please provide valid Password."});
+    if(!userName || !password) {
+        res.status(403).send(new ApplicationError(USER_DETAILS_VERI_FAILED,403));
     } else if(userName === "rmmadmin" && password === "labmanus") {
         let payload = {
             loginId : "admin",
             admin : true
         };
-        console.log('app : ',app);
         let token = jwt.sign(payload, app.get('secret'), {
             expiresIn: 86400 // expires in 24 hours
         });
 
         res.json({
-            success: true,
-            message: 'Enjoy your token!',
+            status: 200,
+            message: 'Token generated successfully.',
             token: token
         });
     } else {
-        res.status(403).send({"message":"Please provide valid Username & Password."});
+        res.status(403).send(new ApplicationError(USER_DETAILS_VERI_FAILED,403));
     }
 });
 
