@@ -51,6 +51,7 @@ router.get('/', (req, res) => {
 		}
 	}).catch(err => {
 		log.error(err);
+
 		res.status(500).send({ "message": "Something went wrong" });
 	});
 });

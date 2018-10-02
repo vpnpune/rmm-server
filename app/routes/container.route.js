@@ -11,8 +11,8 @@ const log = logger.Logger;
 // please separate  out 
 const schema = {
 	body: {
-		containerName: Joi.string().min(3).required(),
-		containerDescription: Joi.string().optional()
+		containerName: Joi.string().min(3).max(20).required(),
+		prefix: Joi.string().max(4).required()
 	}
 }
 // get ALL

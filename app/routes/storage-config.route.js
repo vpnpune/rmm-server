@@ -10,10 +10,11 @@ const log = logger.Logger;
 // please separate  out 
 const schema = {
 	body: {
+		 
 		conditionType: Joi.string().min(3).required(),
-		median: Joi.number().required(),
-		lowerLimit: Joi.number().required(),
-		upperLimit: Joi.number().required()
+		median: Joi.number().required().min(Joi.ref('lowerLimit')).max(Joi.ref('upperLimit')),
+		lowerLimit: Joi.number().required().max(Joi.ref('median')),
+		upperLimit: Joi.number().required().min(Joi.ref('median'))
 	}
 }
 //request params as a string on condition key
