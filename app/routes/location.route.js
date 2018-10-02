@@ -66,7 +66,7 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 
 // update ONE obj
 router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
-	console.log("Router put");
+	
 	let resultPromise = LocationHandler.updateOne(req.body);
 
 	resultPromise.then(function (result) {
@@ -86,7 +86,7 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 // get ONE
 router.delete('/:id', (req, res) => {
 	let id = req.params.id;
-	console.log("Delete Route Called");
+	
 	let resultPromise = LocationHandler.deleteOne(id);
 	resultPromise.then(function (result) {
 		if (result) {

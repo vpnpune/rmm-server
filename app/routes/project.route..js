@@ -30,7 +30,7 @@ router.get('/:id', (req, res) => {
 	let id = req.params.id;
 
 	let resultPromise = ProjectHandler.getOne(id);
-	console.log("client id "+id)
+	
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
@@ -59,7 +59,7 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 
 // update ONE obj
 router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
-	console.log("Router put");
+	
 	let resultPromise = ProjectHandler.updateOne(req.body);
 
 	resultPromise.then(function (result) {
@@ -77,7 +77,7 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 // get ONE
 router.delete('/:id', (req, res) => {
 	let id = req.params.id;
-	console.log("Delete Route Called");
+	
 	let resultPromise = ProjectHandler.deleteOne(id);
 	resultPromise.then(function (result) {
 		if (result) {

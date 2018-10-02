@@ -26,7 +26,7 @@ var user = {firstName : 'test', lastName: 'Saboo'};
 
 var sub = ejs.render(subject, user);
 var text = ejs.render(body, user);
-email.sendMail(sub, text);
+//email.sendMail(sub, text);
 
 // end this here
 
@@ -82,7 +82,6 @@ MongoDB.connectDB(async (err) => {
 })
 
 app.use(function (err, req, res, next) {
-    console.log("error handler called", err);
     if (err.isBoom) {
         return res.status(err.output.statusCode).send(new ApplicationError(err.data, err.output.statusCode));
     } else {
