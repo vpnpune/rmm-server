@@ -7,7 +7,7 @@ const REDIS_PORT = 3030;
 //Error Message
 const TOKEN_VERIFICATION_FAILED = "Token verification failed. Please try again.";
 const USER_DETAILS_VERI_FAILED = "Username/password not matched. Please try again.";
-const INTERNAL_SERVER_ERROR = "Ohh crap!!! We are facing some issues. Please get back to use again after some time.";
+const INTERNAL_SERVER_ERROR = "Ohh crap!!! We are facing some issues. Please get back to us again after some time.";
 
 export {
 	PORT,
