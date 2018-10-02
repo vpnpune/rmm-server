@@ -6,42 +6,33 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import app from './server';
 import { log } from 'util';
-
+import ApplicationError from './model/application-error'
+import {TOKEN_VERIFICATION_FAILED} from './constants';
 const router = express.Router();
 
 router.use(function(req, res, next) {
-	console.log("middleware called");
 	// check header or url parameters or post parameters for token
 	var token = req.body.token || req.params.token || req.headers['x-access-token'];
-	console.log('token : ',token);
 	
 	// decode token
 	if (token) {
-
+		console.log(token);
 		// verifies secret and checks exp
-		jwt.verify(token, app.get('secret'), function(err, decoded) {			
+		jwt.verify(token, app.get('secret'), function(err, decoded) {
+			console.log(TOKEN_VERIFICATION_FAILED);
 			if (err) {
-				return res.json({ success: false, message: 'Failed to authenticate token.' });		
+				return res.status(403).send(new ApplicationError(TOKEN_VERIFICATION_FAILED,403));		
 			} else {
-				// if everything is good, save to request for use in other routes
+				// if everything is good, send to request for use in other routes
 				req.decoded = decoded;	
 				app.set('user',decoded.loginId);
-				console.log(decoded.loginId)
 				next();
 			}
 		});
-
 	} else {
-
-		// if there is no token
-		// return an error
-		return res.status(403).send({ 
-			success: false, 
-			message: 'No token provided.'
-		});
-		
+		// if there is no token return an error
+		return res.status(403).send(new ApplicationError(TOKEN_VERIFICATION_FAILED,403));
 	}
-	
 });
 
 export default router;
