@@ -31,7 +31,7 @@ export class DatabaseService {
     static async save(collectionName, data) {
         try {
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).save(buildInsertObject(data));
+            let result = await db.db().collection(collectionName).insertOne(buildInsertObject(data));
             return result;
         } catch (err) {
             throw err;
