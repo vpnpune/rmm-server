@@ -44,14 +44,13 @@ export class DatabaseService {
         try {
             console.log("Update call " + JSON.stringify(data));
             const db = mongodb.getDB();
-            //let result = await db.db().collection(collectionName).update({"_id":data._id},buildUpdateObject(data),{upsert:false});
             let result = await db.db().collection(collectionName).replaceOne({ "_id": data._id }, { $set: buildUpdateObject(data) }, { upsert: false });
-            //console.log(JSON.stringify(data));
             return result;
         } catch (err) {
             throw err;
         }
     }
+
     // Delete One collection
     static async deleteOne(collectionName, id) {
         try {
@@ -87,7 +86,31 @@ export class DatabaseService {
             throw err;
         }
     }
+    // ObjectId;
 
+    // save document to collection
+    static async saveWithObjectId(collectionName, data) {
+        try {
+            const db = mongodb.getDB();
+            let result = await db.db().collection(collectionName).save(addCreationDetails(data));
+            //console.log(JSON.stringify(data));
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+     // update one collection
+     static async updateOneWithObjectId(collectionName, data) {
+        try {
+            console.log("Update call " + JSON.stringify(data));
+            const db = mongodb.getDB();
+            let result = await db.db().collection(collectionName).replaceOne({ "_id": data._id }, { $set: buildUpdateObject(data) }, { upsert: false });
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    }
 
 }
 

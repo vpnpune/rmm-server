@@ -10,3 +10,10 @@
 2018-09-08T16:44:08.144Z : client.route.js:39 : Error: vmfkvmv
 2018-09-20T15:39:24.417Z : document-type.route.js:85 : MongoError: the update operation document must contain atomic operators.
 2018-09-20T15:39:33.084Z : document-type.route.js:85 : MongoError: the update operation document must contain atomic operators.
+2018-09-30T07:19:35.908Z : location-type.route.js:71 : ReferenceError: ObjectId is not defined
+2018-09-30T07:23:41.560Z : location-type.route.js:71 : ReferenceError: ObjectId is not defined
+2018-09-30T07:25:01.423Z : location-type.route.js:71 : ReferenceError: ObjectId is not defined
+2018-09-30T07:27:07.397Z : location-type.route.js:71 : TypeError: ObjectId is not a function
+2018-09-30T07:27:58.738Z : location-type.route.js:71 : TypeError: ObjectId is not a function
+2018-09-30T07:28:14.230Z : location-type.route.js:71 : TypeError: Cannot read property 'db' of undefined
+2018-09-30T08:27:58.709Z : location-type.route.js:88 : ReferenceError: addCreationDetails is not defined
