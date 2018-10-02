@@ -20,7 +20,7 @@ const schema = {
 //i.e /api/storageConfig/temperature
 router.get('/:key', (req, res) => {
 	let key = req.params.key;
-	console.log("In Route");
+	
 	let resultPromise = StorageConfigHandler.getAll(key);
 	resultPromise.then(function (result) {
 		if (result) {
@@ -72,7 +72,7 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 
 // update ONE obj
 router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
-	console.log("Router put");
+	
 	let resultPromise = StorageConfigHandler.updateOne(req.body);
 
 	resultPromise.then(function (result) {
@@ -92,7 +92,7 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 // get ONE
 router.delete('/:key/:id', (req, res) => {
 	let id = req.params.id;
-	console.log("Delete Route Called");
+	
 	let resultPromise = StorageConfigHandler.deleteOne(id);
 	resultPromise.then(function (result) {
 		if (result) {

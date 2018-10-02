@@ -16,10 +16,10 @@ router.use(function(req, res, next) {
 	
 	// decode token
 	if (token) {
-		console.log(token);
+		
 		// verifies secret and checks exp
 		jwt.verify(token, app.get('secret'), function(err, decoded) {
-			console.log(TOKEN_VERIFICATION_FAILED);
+			
 			if (err) {
 				return res.status(403).send(new ApplicationError(TOKEN_VERIFICATION_FAILED,403));		
 			} else {

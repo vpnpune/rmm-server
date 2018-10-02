@@ -10,14 +10,14 @@ const collectionName = Collection.STORAGE_CONFIG;
 export class StorageConfigHandler {
     // get all items from collection
     static async getAll(key) {
-        console.log("In Service");
+        
         try {
             const db = mongodb.getDB();
 
             let result = await db.db().collection(collectionName).find({"conditionType":key}).toArray();
             return result;
         } catch (err) {
-            console.log("In Service" +err);
+            
             throw err;
         }
 

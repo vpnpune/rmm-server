@@ -9,7 +9,6 @@ export class DatabaseService {
         try {
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).find({}).toArray();
-            //console.log(JSON.stringify(data));
             return result;
         } catch (err) {
             throw err;
@@ -33,7 +32,6 @@ export class DatabaseService {
         try {
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).save(buildInsertObject(data));
-            //console.log(JSON.stringify(data));
             return result;
         } catch (err) {
             throw err;
@@ -42,7 +40,6 @@ export class DatabaseService {
     // update one collection
     static async updateOne(collectionName, data) {
         try {
-            console.log("Update call " + JSON.stringify(data));
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).replaceOne({ "_id": data._id }, { $set: buildUpdateObject(data) }, { upsert: false });
             return result;
@@ -54,10 +51,9 @@ export class DatabaseService {
     // Delete One collection
     static async deleteOne(collectionName, id) {
         try {
-            console.log("delete call");
+            
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).deleteOne({ "_id": id });
-            //console.log(JSON.stringify(data));
             return result;
         } catch (err) {
             throw err;
@@ -70,15 +66,14 @@ export class DatabaseService {
         try {
             const db = mongodb.getDB();
             if (pagination.searchText != undefined) {
-                console.log("searchText " + pagination.searchText);
+                
             }
             pagination.resultSet = await db.db().collection(collectionName).find({}).limit(parseInt(pagination.end)).skip(parseInt(pagination.start)).toArray();
             //@Todo : Working code need to revert if component if else works on client side
             //if(parseInt(pagination.start)===0){
-            // console.log("IF");
             pagination.totalSize = await db.db().collection(collectionName).find({}).count();
             //}else{
-            //  console.log("Else");
+            //  
             //}
 
             return pagination;
@@ -93,7 +88,7 @@ export class DatabaseService {
         try {
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).save(addCreationDetails(data));
-            //console.log(JSON.stringify(data));
+            //
             return result;
         } catch (err) {
             throw err;
@@ -103,7 +98,6 @@ export class DatabaseService {
      // update one collection
      static async updateOneWithObjectId(collectionName, data) {
         try {
-            console.log("Update call " + JSON.stringify(data));
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).replaceOne({ "_id": data._id }, { $set: buildUpdateObject(data) }, { upsert: false });
             return result;
