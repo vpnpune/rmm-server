@@ -7,9 +7,9 @@ const router = express.Router();
 // please separate  out 
 const schema = {
 	body: {
-		name: Joi.string().min(3).required(),
-		description: Joi.string().optional(),
-		initials:Joi.string().min(3).required()
+		locationName: Joi.string().min(1).max(4).required(),
+		type: Joi.object().exist(),
+		type:Joi.object({_id:Joi.string().required()})
 	}
 }
 

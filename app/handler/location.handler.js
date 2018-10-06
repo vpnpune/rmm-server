@@ -3,7 +3,7 @@ import * as Collection from '../db/collection-constants';
 
 
 /* SET COLLECTION NAME FIRST*/
-const collectionName = Collection.LOCATION;
+const collectionName = Collection.LOCATION_NODES;
 
 
 export class LocationHandler {

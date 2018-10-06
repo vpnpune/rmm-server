@@ -14,14 +14,14 @@ import endpointNotFound from './error-route';
 
 const router = express.Router();
 router.use('/authenticate', authenticationRoutes);
-router.use(interceptor);
+//router.use(interceptor);
 
 //All routers should be attached after this only
 router.use('/users', userRoutes);
 router.use('/container', containerRoutes);
 router.use('/documentType', documentTypeRoutes);
 router.use('/storageConfig', storageConfigRoutes);
-router.use('/location', locationRoutes);
+router.use('/locationNodes', locationRoutes);///reusing location route as location is discarded
 router.use('/client', clientRoutes);
 router.use('/project', projectRoutes);
 
