@@ -1,6 +1,6 @@
 import mongodb from "./mongodb";
 import { addId } from "./id-generator";
-import { buildInsertObject, buildUpdateObject } from "./user-audit";
+import { buildInsertObject, buildUpdateObject,addCreationDetails } from "./user-audit";
 
 
 export class DatabaseService {
