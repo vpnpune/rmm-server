@@ -2,8 +2,11 @@ import express from 'express';
 import Joi from 'joi';
 import validator from 'express-joi-validator';
 import { LocationHandler } from '../handler/location.handler';
+import logger from '../logger';
 
 const router = express.Router();
+
+const log = logger.Logger;
 // please separate  out 
 const schema = {
 	body: {
@@ -86,8 +89,25 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 // get ONE
 router.delete('/:id', (req, res) => {
 	let id = req.params.id;
-	
 	let resultPromise = LocationHandler.deleteOne(id);
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send(err);
+	});
+});
+
+//ie5q0jmxfuubg
+// get ONE
+router.get('/getParent/:parentId', (req, res) => {
+	let parentId = req.params.parentId;
+	console.log(parentId);
+	let resultPromise = LocationHandler.getExceptParentLocationTypeList(parentId);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
@@ -99,6 +119,21 @@ router.delete('/:id', (req, res) => {
 		res.status(500).send({ "message": "Something went wrong" });
 	});
 });
-
+router.get('/canBeDeleted/:parentId', (req, res) => {
+	let parentId = req.params.parentId;
+	console.log(parentId);
+	let resultPromise = LocationHandler.checkIsParentOfAnyItem(parentId);
+	resultPromise.then(function (result) {
+		console.log(result);
+		if (result) {
+			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({ "message": "Something went wrong" });
+	});
+});
 
 export default router;

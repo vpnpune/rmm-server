@@ -7,12 +7,13 @@ const REDIS_PORT = 3030;
 //Error Message
 const TOKEN_VERIFICATION_FAILED = "Token verification failed. Please try again.";
 const USER_DETAILS_VERI_FAILED = "Username/password not matched. Please try again.";
-const INTERNAL_SERVER_ERROR = "Ohh crap!!! We are facing some issues. Please get back to use again after some time.";
+const SUBLEVEL_EXITS="Location cannot be deleted as it has sublevels defined";
+const INTERNAL_SERVER_ERROR = "Ohh crap!!! We are facing some issues. Please get back to us again after some time.";
 const LOCAL_HOST="localhost"
 const LOCAL_PORT="3000";
 const TEST_BASE_URL="https://rmm-server.herokuapp.com/";
 const TEST_DB_URL="mongodb://m001-student:gC5hQRkRdMGSn8J9@cluster0-shard-00-00-aknqy.mongodb.net:27017,cluster0-shard-00-01-aknqy.mongodb.net:27017,cluster0-shard-00-02-aknqy.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true";
-const DEV_ENV = false;
+const DEV_ENV = true;
 
 
 export {
@@ -23,6 +24,7 @@ export {
 	REDIS_PORT,
 	TOKEN_VERIFICATION_FAILED,
 	USER_DETAILS_VERI_FAILED,
+	SUBLEVEL_EXITS,
 	INTERNAL_SERVER_ERROR,
 	LOCAL_HOST,
 	LOCAL_PORT,
