@@ -11,7 +11,7 @@ const schema = {
 		typeName: Joi.string().min(8).required(),
 		description: Joi.string().optional(),
 		maxSize:Joi.number().max(200).min(100),
-		acceptableFormats:Joi.array()
+		acceptableFormats:Joi.array().required().min(1)
 	}
 }
 
