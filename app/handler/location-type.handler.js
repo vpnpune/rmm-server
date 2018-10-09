@@ -22,7 +22,7 @@ export class LocationTypeHandler {
     // get ONE object from db
     static async getOne(id) {
         try {
-            let result = await DatabaseService.getOne(collectionName, ObjectId(id));
+            let result = await DatabaseService.getOne(collectionName, id);
             return result;
         } catch (err) {
             throw err;
@@ -33,7 +33,7 @@ export class LocationTypeHandler {
     static async save(data) {
         try {
 
-            let result = await DatabaseService.saveWithObjectId(collectionName, data);
+            let result = await DatabaseService.save(collectionName, data);
             return result;
         } catch (err) {
             throw err;
@@ -42,8 +42,7 @@ export class LocationTypeHandler {
     // update container
     static async updateOne(data) {
         try {
-            data._id = ObjectId(data._id);
-            let result = await DatabaseService.updateOneWithObjectId(collectionName, data);
+            let result = await DatabaseService.updateOne(collectionName, data);
             return result;
         } catch (err) {
             throw err;
@@ -59,18 +58,13 @@ export class LocationTypeHandler {
             throw err;
         }
     }
-    static async getNotInList(notInList) {
+    static async getNotInList(dataList) {
         try {
 
             const db = mongodb.getDB();
-            let dataList = [];
-            notInList.forEach(id => {
-                dataList.push(ObjectId(id));
-            });
+
             console.log(this.dataList);
             let result = await db.db().collection(collectionName).find({ "_id": { $nin: dataList } }).toArray();
-
-
 
             return result;
         } catch (err) {

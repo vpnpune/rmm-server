@@ -7,36 +7,12 @@ import logger from '../logger';
 
 const log = logger.Logger;
 
-var data = [
-	{
-		"level": 1,
-		"name": "Facility"
-	},
-	{
-		"level": 2,
-		"name": "Site"
-	},
-	{
-		"level": 3,
-		"name": "Warehouse"
-	},
-	{
-		"level": 4,
-		"name": "Room"
-	},
-	{
-		"level": 5,
-		"name": "Section"
-	}
-];
-
 const router = express.Router();
 // please separate  out 
 const schema = {
 	body: {
-		name: Joi.string().min(3).required(),
-		alias: Joi.string().min(1).required(),
-		level: Joi.number().required()
+		name: Joi.string().min(3).max(15).required(),
+		alias: Joi.string().min(1).max(3).required()
 	}
 }
 
