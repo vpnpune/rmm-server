@@ -3,6 +3,9 @@ import Joi from 'joi';
 import validator from 'express-joi-validator';
 import { ProjectHandler } from '../handler/project.handler';
 
+import logger from '../logger';
+const log = logger.Logger;
+
 const router = express.Router();
 // please separate  out 
 const schema = {
@@ -12,10 +15,13 @@ const schema = {
 	}
 }
 // get ALL
-router.get('/', (req, res) => {
-	let resultPromise = ProjectHandler.getAll();
+router.get('/:clientId', (req, res) => {
+	let clientId = req.params.clientId;
+
+	let resultPromise = ProjectHandler.getAll(clientId);
 	resultPromise.then(function (result) {
 		if (result) {
+
 			res.status(200).send(result);
 		}
 	}).catch(err => {
@@ -26,10 +32,10 @@ router.get('/', (req, res) => {
 
 
 // get ONE
-router.get('/:id', (req, res) => {
-	let id = req.params.id;
-
-	let resultPromise = ProjectHandler.getOne(id);
+router.get('/:clientId/:projectId', (req, res) => {
+	let projectId = req.params.projectId;
+	let clientId = req.params.clientId;
+	let resultPromise = ProjectHandler.getOne(clientId,projectId);
 	
 	resultPromise.then(function (result) {
 		if (result) {
@@ -75,10 +81,10 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 
 
 // get ONE
-router.delete('/:id', (req, res) => {
-	let id = req.params.id;
-	
-	let resultPromise = ProjectHandler.deleteOne(id);
+router.delete('/:clientId/:projectId', (req, res) => {
+	let projectId = req.params.projectId;
+	let clientId = req.params.clientId;
+	let resultPromise = ProjectHandler.deleteOne(clientId,projectId);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
