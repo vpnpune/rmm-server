@@ -35,12 +35,12 @@ export class ProjectHandler {
         try {
             // let result = await DatabaseService.getOne(collectionName, projectId);
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).find(
+            let result = await db.db().collection(collectionName).findOne(
                 {
                     _id: clientId,
                     "projects": { "_id": projectId }
                 }
-            ).toArray();
+            );
 
 
             return result;
@@ -85,7 +85,14 @@ export class ProjectHandler {
     // Delete One container
     static async deleteOne(id) {
         try {
-            let result = await DatabaseService.deleteOne(collectionName, id);
+            //  let result = await DatabaseService.deleteOne(collectionName, id);
+            const db = mongodb.getDB();
+            let result = await db.db().collection(collectionName).findOne(
+                {
+                    _id: clientId,
+                    "projects": { "_id": projectId }
+                }
+            );
             return result;
         } catch (err) {
             throw err;
