@@ -10,7 +10,7 @@ const log = logger.Logger;
 // please separate  out 
 const schema = {
 	body: {
-		locationName: Joi.string().min(1).max(4).required(),
+		locationName: Joi.string().min(1).max(255).required(),
 		type: Joi.object().exist(),
 		type:Joi.object({_id:Joi.string().required()})
 	}
