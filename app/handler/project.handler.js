@@ -31,18 +31,21 @@ export class ProjectHandler {
         try {
             // let result = await DatabaseService.getOne(collectionName, projectId);
             const db = mongodb.getDB();
-            const cursor = db.db().collection(collectionName).find({
-                projects: { _id: "1kcvs63vsjnbbm9jd" }
-              });
-        
-            // let result = await db.db().collection(collectionName).find(
-            //     {"projects":
-            //         {"_id":projectId}
-            //     }
-            // ).toArray();
-            console.log("Result: ", await cursor.count());
+            console.log("collectionName: ",collectionName);
+            // const cursor = db.db().collection(collectionName).find({
+            //     _id: '1bz7bt1jnbjwpif'
+            // });
+            // const cursor = await db.db().collection('inventory').findOne(
+            //     {"item": "journal"},
+            //     {projection: {'instock':{$elemMatch: {'warehouse': 'Y'}}}
+            //   });
+            let cursor = await db.db().collection(collectionName).findOne(
+                { '_id': clientId },
+                { projection: {'projects':{$elemMatch: {'_id': projectId}}}
+            });
+            // console.log("Result: ", await cursor.count());
 
-            return [];
+            return cursor;
         } catch (err) {
             throw err;
         }
