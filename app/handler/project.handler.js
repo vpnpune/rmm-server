@@ -19,12 +19,8 @@ export class ProjectHandler {
         try {
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).find(
-                { _id: clientId }, {
-                    $project: {
-                        "projects": 1, "clientAddress": 0, "_id": 1
-                    }
-                }
-            ).toArray();
+                { _id: clientId }).project({projects:1})
+            .toArray();
             return result;
         } catch (err) {
             throw err;
@@ -35,15 +31,18 @@ export class ProjectHandler {
         try {
             // let result = await DatabaseService.getOne(collectionName, projectId);
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).findOne(
-                {
-                    _id: clientId,
-                    "projects": { "_id": projectId }
-                }
-            );
+            const cursor = db.db().collection(collectionName).find({
+                projects: { _id: "1kcvs63vsjnbbm9jd" }
+              });
+        
+            // let result = await db.db().collection(collectionName).find(
+            //     {"projects":
+            //         {"_id":projectId}
+            //     }
+            // ).toArray();
+            console.log("Result: ", await cursor.count());
 
-
-            return result;
+            return [];
         } catch (err) {
             throw err;
         }
