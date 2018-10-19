@@ -11,7 +11,6 @@ const router = express.Router();
 const schema = {
 	body: {
 		name: Joi.string().min(3).required()
-		
 	}
 }
 // get ALL

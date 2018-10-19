@@ -20,3 +20,6 @@
 2018-10-02T06:11:20.583Z : location-type.route.js:88 : ReferenceError: addCreationDetails is not defined
 2018-10-02T11:02:25.173Z : location-type.route.js:89 : ReferenceError: addCreationDetails is not defined
 2018-10-02T11:02:45.304Z : location-type.route.js:89 : ReferenceError: addCreationDetails is not defined
+2018-10-16T12:54:09.158Z : project.route..js:45 : TypeError: cursor.count is not a function
+2018-10-16T13:00:05.799Z : project.route..js:45 : TypeError: Converting circular structure to JSON
+2018-10-16T13:26:09.588Z : project.route..js:45 : TypeError: Converting circular structure to JSON

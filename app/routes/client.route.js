@@ -119,4 +119,17 @@ router.delete('/:id', (req, res) => {
 });
 
 
+router.get('/test', (req, res) => {
+	let id = req.params.id;
+	
+	let resultPromise = ClientHandler.getAll();
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({ "message": "Something went wrong" });
+	});
+});
 export default router;
