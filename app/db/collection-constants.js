@@ -5,4 +5,5 @@ export const LOCATION_NODES = "locationNodes";
 export const DOCUMENT_TYPE = "documentType";
 export const CLIENT = "client"; 
 export const PROJECT = "project";
-export const LOCATION_TYPE = "locationType"; 
+export const LOCATION_TYPE = "locationType";
+export const DYNAMIC_FORM = "dynamicForm";

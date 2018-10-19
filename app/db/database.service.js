@@ -95,8 +95,8 @@ export class DatabaseService {
         }
     }
 
-     // update one collection
-     static async updateOneWithObjectId(collectionName, data) {
+    // update one collection
+    static async updateOneWithObjectId(collectionName, data) {
         try {
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).replaceOne({ "_id": data._id }, { $set: buildUpdateObject(data) }, { upsert: false });
@@ -104,6 +104,12 @@ export class DatabaseService {
         } catch (err) {
             throw err;
         }
+    }
+
+    static async findByCriteria(collectionName, criteria) {
+        const db = mongodb.getDB();
+        let result = await db.db().collection(collectionName).find(criteria).toArray();
+        return result;
     }
 
 }

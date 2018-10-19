@@ -9,6 +9,7 @@ import locationRoutes from './location.route';
 import clientRoutes from './client.route';
 import projectRoutes from './project.route.';
 import locationTypeRoutes from './location-type.route';
+import dynamicFormRoutes from './dynamic-form.route';
 
 import endpointNotFound from './error-route';
 
@@ -24,9 +25,8 @@ router.use('/storageConfig', storageConfigRoutes);
 router.use('/locationNodes', locationRoutes);///reusing location route as location is discarded
 router.use('/client', clientRoutes);
 router.use('/project', projectRoutes);
-
 router.use('/locationType', locationTypeRoutes);
-
+router.use('/dynamic-form', dynamicFormRoutes);
 router.use('/*', endpointNotFound);
 
 
