@@ -36,7 +36,7 @@ export class ClientHandler {
                         aliases: 1, clientContact: 1, name: 1, clientAddress: 1, deleted: 1,
                         contactPersons: 1, shipmentAddress: 1,
                         numberOfProjects:
-                            { $size: "$projects" }
+                        { $size: { "$ifNull": ["$projects", []] } }
                     }
                 )
                 .toArray();
@@ -106,7 +106,7 @@ export class ClientHandler {
             ).project(
                 {
                     aliases: 1, clientContact: 1, name: 1, clientAddress: 1, deleted: 1, numberOfProjects:
-                        { $size: "$projects" }
+                        { $size: { "$ifNull": ["$projects", []] } }
                 }
             ).limit(parseInt(pagination.end)).skip(parseInt(pagination.start)).toArray();
 
