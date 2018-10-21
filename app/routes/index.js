@@ -9,6 +9,7 @@ import locationRoutes from './location.route';
 import clientRoutes from './client.route';
 import projectRoutes from './project.route.';
 import locationTypeRoutes from './location-type.route';
+import masterRoutes from './master.route';
 
 import endpointNotFound from './error-route';
 
@@ -17,6 +18,7 @@ router.use('/authenticate', authenticationRoutes);
 //router.use(interceptor);
 
 //All routers should be attached after this only
+router.use('/masters', masterRoutes);
 router.use('/users', userRoutes);
 router.use('/container', containerRoutes);
 router.use('/documentType', documentTypeRoutes);

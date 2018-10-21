@@ -9,11 +9,12 @@ const collectionName = Collection.CLIENT;
 
 export class ClientHandler {
     // get all items from collection
+    //@ts-nocheck
     static async getAll() {
         try {
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).find(
-                {}).project({ aliases: 1, clientContact: 1, name: 1, clientAddress: 1, projects: 0 })
+                { deleted: false }).project({ aliases: 1, clientContact: 1, name: 1, clientAddress: 1, projects: 0 })
                 .toArray();
 
             //   let result = await DatabaseService.getAll(collectionName);
@@ -26,9 +27,25 @@ export class ClientHandler {
     // get ONE object from db
     static async getOne(id) {
         try {
+            const db = mongodb.getDB();
+            console.log(id)
+            let result = await db.db().collection(collectionName).aggregate(
+                [{ $match: { "_id": id } }]).
+                project(
+                    {
+                        aliases: 1, clientContact: 1, name: 1, clientAddress: 1, deleted: 1,
+                        contactPersons: 1, shipmentAddress: 1,
+                        numberOfProjects:
+                            { $size: "$projects" }
+                    }
+                )
+                .toArray();
 
-            let result = await DatabaseService.getOne(collectionName, id);
-            return result;
+
+            if (result !== undefined && result.length > 0)
+                return result[0];
+            else
+                return {};
         } catch (err) {
             throw err;
         }
@@ -46,7 +63,20 @@ export class ClientHandler {
     // update container
     static async updateOne(data) {
         try {
-            let result = await DatabaseService.updateOne(collectionName, data);
+            const db = mongodb.getDB();
+
+            let result = await db.db().collection(collectionName).updateOne({ "_id": id }, {
+                $set: {
+                    "clientContact": data.clientContact,
+                    "name": data.name,
+                    "clientAddress": data.clientAddress,
+                    "aliases": data.aliases,
+                    "contactPersons": data.contactPersons,
+                    "modifiedBy": data.modifiedBy,
+                    "modifiedOn": new Date()
+
+                }
+            });
             return result;
         } catch (err) {
             throw err;
@@ -55,7 +85,7 @@ export class ClientHandler {
     // Delete One container
     static async deleteOne(id) {
         try {
-            let result = await DatabaseService.deleteOne(collectionName, id);
+            let result = await DatabaseService.softDeleteOne(collectionName, id);
             return result;
         } catch (err) {
             throw err;
@@ -70,7 +100,15 @@ export class ClientHandler {
 
             }
             pagination.resultSet = await db.db().collection(collectionName).aggregate(
-                {}).project({ aliases: 1, clientContact: 1, name: 1, clientAddress: 1, numberOfProjects: { $size: "$projects" } }).limit(parseInt(pagination.end)).skip(parseInt(pagination.start)).toArray();
+
+                [{ $match: { $or: [{ "deleted": { $exists: true, $eq: false } }, { "deleted": { $exists: false } }] } }]
+
+            ).project(
+                {
+                    aliases: 1, clientContact: 1, name: 1, clientAddress: 1, deleted: 1, numberOfProjects:
+                        { $size: "$projects" }
+                }
+            ).limit(parseInt(pagination.end)).skip(parseInt(pagination.start)).toArray();
 
 
             //@Todo : Working code need to revert if component if else works on client side

@@ -1,14 +1,33 @@
 import mongodb from "./mongodb";
 import { addId } from "./id-generator";
-import { buildInsertObject, buildUpdateObject,addCreationDetails } from "./user-audit";
+import { buildInsertObject, buildUpdateObject, addCreationDetails } from "./user-audit";
 
 
 export class DatabaseService {
     // get all items from collection
+    // static excludeSoftDeleted =
+    //     {
+    //         $or: [{ "deleted": { $exists: true, $eq: false } }, { "deleted": { $exists: false } }]
+    //     };
+
     static async getAll(collectionName) {
         try {
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).find({}).toArray();
+            return result;
+        } catch (err) {
+            throw err;
+        }
+
+    }
+    static async getAllExceptSoftDeleted(collectionName) {
+        try {
+            const db = mongodb.getDB();
+            let result = await db.db().collection(collectionName).find(
+                {
+                    $or: [{ "deleted": { $exists: true, $eq: false } }, { "deleted": { $exists: false } }]
+                }
+            ).toArray();
             return result;
         } catch (err) {
             throw err;
@@ -51,7 +70,7 @@ export class DatabaseService {
     // Delete One collection
     static async deleteOne(collectionName, id) {
         try {
-            
+
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).deleteOne({ "_id": id });
             return result;
@@ -66,9 +85,11 @@ export class DatabaseService {
         try {
             const db = mongodb.getDB();
             if (pagination.searchText != undefined) {
-                
+
             }
-            pagination.resultSet = await db.db().collection(collectionName).find({}).limit(parseInt(pagination.end)).skip(parseInt(pagination.start)).toArray();
+            pagination.resultSet = await db.db().collection(collectionName).find( {
+                $or: [{ "deleted": { $exists: true, $eq: false } }, { "deleted": { $exists: false } }]
+            }).limit(parseInt(pagination.end)).skip(parseInt(pagination.start)).toArray();
             //@Todo : Working code need to revert if component if else works on client side
             //if(parseInt(pagination.start)===0){
             pagination.totalSize = await db.db().collection(collectionName).find({}).count();
@@ -95,8 +116,8 @@ export class DatabaseService {
         }
     }
 
-     // update one collection
-     static async updateOneWithObjectId(collectionName, data) {
+    // update one collection
+    static async updateOneWithObjectId(collectionName, data) {
         try {
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).replaceOne({ "_id": data._id }, { $set: buildUpdateObject(data) }, { upsert: false });
@@ -104,6 +125,20 @@ export class DatabaseService {
         } catch (err) {
             throw err;
         }
+    }
+
+    // Delete One collection
+    static async softDeleteOne(collectionName, id) {
+        try {
+
+            const db = mongodb.getDB();
+
+            let result = await db.db().collection(collectionName).updateOne({ "_id": id }, { $set: { "deleted": true } });
+            return result;
+        } catch (err) {
+            throw err;
+        }
+
     }
 
 }

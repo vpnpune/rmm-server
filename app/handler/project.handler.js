@@ -31,14 +31,7 @@ export class ProjectHandler {
         try {
             // let result = await DatabaseService.getOne(collectionName, projectId);
             const db = mongodb.getDB();
-            console.log("collectionName: ",collectionName);
-            // const cursor = db.db().collection(collectionName).find({
-            //     _id: '1bz7bt1jnbjwpif'
-            // });
-            // const cursor = await db.db().collection('inventory').findOne(
-            //     {"item": "journal"},
-            //     {projection: {'instock':{$elemMatch: {'warehouse': 'Y'}}}
-            //   });
+         
             let cursor = await db.db().collection(collectionName).findOne(
                 { '_id': clientId },
                 { projection: {'projects':{$elemMatch: {'_id': projectId}}}

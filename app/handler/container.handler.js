@@ -48,7 +48,7 @@ export class ContainerHandler {
     // Delete One container
     static async deleteOne(id) {
         try {
-            let result = await DatabaseService.deleteOne(collectionName,id);
+            let result = await DatabaseService.softDeleteOne(collectionName,id);
             return result;
         } catch (err) {
             throw err;
