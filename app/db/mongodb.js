@@ -3,7 +3,7 @@ import * as constants from './../constants'; // import constants
 
 let uri;
 if (constants.DEV_ENV) {
-    uri = `mongodb://${constants.LOCAL_HOST}:${constants.MONGO_PORT}/${constants.DB_NAME}`;
+    uri = `mongodb://${constants.DB_USERNAME}:${constants.DB_PASSWORD}@${constants.DB_URL}:${constants.MONGO_PORT}/${constants.DB_NAME}`;
 } else {
     uri = `${constants.TEST_DB_URL}`;
 }
