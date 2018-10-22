@@ -13,6 +13,7 @@ let _db
 
 const connectDB = async (callback) => {
     try {
+        console.log("DB URL: ",uri);
         MongoClient.connect(uri, { useNewUrlParser: true }, (err, db) => {
             _db = db
             return callback(err)
