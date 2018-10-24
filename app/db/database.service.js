@@ -138,7 +138,11 @@ export class DatabaseService {
         } catch (err) {
             throw err;
         }
-
+    }
+    static async findByCriteria(collectionName, criteria) {
+        const db = mongodb.getDB();
+        let result = await db.db().collection(collectionName).find(criteria).toArray();
+        return result;
     }
 
 }

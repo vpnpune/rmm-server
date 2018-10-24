@@ -8,3 +8,4 @@ export const PROJECT = "project";
 export const LOCATION_TYPE = "locationType"; 
 export const COUNTRIES = "countries";
 export const WORLD_STATES = "world_states"; 
+export const DYNAMIC_FORM = "dynamicForm";
