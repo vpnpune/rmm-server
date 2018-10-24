@@ -19,8 +19,8 @@ export class DocumentHandler {
     // get ONE object from db
     static async getOne(id) {
         try {
-     
             let result = await  DatabaseService.getOne(collectionName,id);
+            console.log('result1: ',result);
             return result;
         } catch (err) {
             throw err;

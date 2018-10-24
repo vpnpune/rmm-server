@@ -1,11 +1,11 @@
 export default class Document {
     constructor() {}
 
-    set _id(id) {
+    set id(id) {
         this._id = id;
     }
 
-    get _id() {
+    get id() {
         return this._id;
     }
 

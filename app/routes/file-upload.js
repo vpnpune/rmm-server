@@ -16,7 +16,8 @@ router.post('/profile', upload.any(), function (req, res, next) {
     document.userId = app.get('user');
     document.fileName = req.files[0].originalname;
     document.mimeType = req.files[0].mimetype;
-    document.data = req.files[0].buffer;
+    document.data = req.files[0].buffer.toString();
+    console.log(req.files[0]);
     
     let resultPromise = DocumentHandler.save(document);
 	  resultPromise.then(function (result) {
@@ -33,6 +34,24 @@ router.post('/profile', upload.any(), function (req, res, next) {
     return res.status(400).send("Bad Request");
   }
   
+});
+
+router.get('/download/:id', function(req, res, next) {
+  let id = req.params.id;
+  console.log("client id " + id)
+	let resultPromise = DocumentHandler.getOne(id);
+	
+	resultPromise.then(function (result) {
+    console.log("Router result: ",result._fileName);
+		if (result) {
+      console.log(Buffer.from(result._data));
+      res.type(result._mimeType).send(Buffer.from(result._data,"base64"));
+		}
+	}).catch(err => {
+    console.log(err);
+		log.error(err);
+		res.status(500).send({ "message": "Something went wrong" });
+	});
 });
 
 export default router;

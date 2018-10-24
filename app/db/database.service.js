@@ -36,6 +36,7 @@ export class DatabaseService {
             //console.log(JSON.stringify(data));
             return result;
         } catch (err) {
+            console.log('error : ',err);
             throw err;
         }
     }
