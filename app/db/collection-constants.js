@@ -9,3 +9,5 @@ export const LOCATION_TYPE = "locationType";
 export const COUNTRIES = "countries";
 export const WORLD_STATES = "world_states"; 
 export const DYNAMIC_FORM = "dynamicForm";
+export const UNIT_GROUP="unitGroup";
+export const UNIT_DEFINITION = "unitDefinition"

@@ -39,7 +39,9 @@ export class DatabaseService {
     static async getOne(collectionName, id) {
         try {
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).findOne({ "_id": id });
+            let result = await db.db().collection(collectionName).findOne({ "_id": id,
+            $or: [{ "deleted": { $exists: true, $eq: false } }, { "deleted": { $exists: false } }]
+        });
             return result;
         } catch (err) {
             throw err;

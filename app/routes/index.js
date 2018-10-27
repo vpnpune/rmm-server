@@ -11,7 +11,8 @@ import projectRoutes from './project.route.';
 import locationTypeRoutes from './location-type.route';
 import masterRoutes from './master.route';
 import dynamicFormRoutes from './dynamic-form.route';
-
+import unitGroupRoutes from './unit-group.route'
+import unitDefinitionRoutes from './unit-definition.route'
 import endpointNotFound from './error-route';
 
 const router = express.Router();
@@ -29,6 +30,9 @@ router.use('/client', clientRoutes);
 router.use('/project', projectRoutes);
 router.use('/locationType', locationTypeRoutes);
 router.use('/dynamic-form', dynamicFormRoutes);
+router.use('/unitGroup',unitGroupRoutes)
+router.use('/unitDefinition',unitDefinitionRoutes)
+
 router.use('/*', endpointNotFound);
 
 
