@@ -23,7 +23,7 @@ router.use('/storageConfig', storageConfigRoutes);
 router.use('/location', locationRoutes);
 router.use('/client', clientRoutes);
 router.use('/project', projectRoutes);
-router.use('/upload',fileUpload)
+router.use('/file',fileUpload)
 
 router.use('/*', endpointNotFound);
 

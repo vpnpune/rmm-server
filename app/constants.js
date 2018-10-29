@@ -8,6 +8,7 @@ const REDIS_PORT = 3030;
 const TOKEN_VERIFICATION_FAILED = "Token verification failed. Please try again.";
 const USER_DETAILS_VERI_FAILED = "Username/password not matched. Please try again.";
 const INTERNAL_SERVER_ERROR = "Ohh crap!!! We are facing some issues. Please get back to us again after some time.";
+const MAPPING_NOT_FOUND_ERROR = "Requested resource not available.";
 
 export {
 	PORT,
@@ -17,5 +18,6 @@ export {
 	REDIS_PORT,
 	TOKEN_VERIFICATION_FAILED,
 	USER_DETAILS_VERI_FAILED,
-	INTERNAL_SERVER_ERROR
+	INTERNAL_SERVER_ERROR,
+	MAPPING_NOT_FOUND_ERROR
 }
