@@ -11,48 +11,54 @@ import path from 'path';
 import ejs from 'ejs';
 import fs from 'fs';
 import ApplicationError from './model/application-error';
-import {INTERNAL_SERVER_ERROR} from './constants';
+import { INTERNAL_SERVER_ERROR } from './constants';
 
 const app = express(); // new server
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());//Enable All CORS Requests
 
-//Send email Test data
-// var subject = fs.readFileSync(path.join(__dirname, 'template/testmailTemplate/subject.html'),{encoding:'utf-8'});
-// var body = fs.readFileSync(path.join(__dirname, 'template/testmailTemplate/body.html'),{encoding:'utf-8'});
+var subject = fs.readFileSync(path.join(__dirname, 'template/testmailTemplate/subject.html'), { encoding: 'utf-8' });
+var body = fs.readFileSync(path.join(__dirname, 'template/testmailTemplate/body.html'), { encoding: 'utf-8' });
 
-// var email = require('./emailSend');
-// var user = {firstName : 'test', lastName: 'Saboo'};
+var email = require('./emailSend');
+var user = { firstName: 'test', lastName: 'Saboo' };
 
-// var sub = ejs.render(subject, user);
-// var text = ejs.render(body, user);
-// email.sendMail(sub, text);
+var sub = ejs.render(subject, user);
+var text = ejs.render(body, user);
+//email.sendMail(sub, text);
+
 
 // end this here
 
 
 // swagger definition
+let HOST_URL;
+if (constants.DEV_ENV) {
+    HOST_URL = `${constants.LOCAL_HOST}:${constants.LOCAL_PORT}/`;
+
+} else {
+     HOST_URL = `${constants.TEST_BASE_URL}`;
+}
 var swaggerDefinition = {
     info: {
-      title: 'Node Swagger API',
-      version: '1.0.0',
-      description: 'Demonstrating how to describe a RESTful API with Swagger',
+        title: 'Node Swagger API',
+        version: '1.0.0',
+        description: 'Demonstrating how to describe a RESTful API with Swagger',
     },
-    
-    host: 'https://rmm-server.herokuapp.com/',
+
+    host: HOST_URL,
     basePath: '/',
-  };
+};
 //host: 'localhost:3000'
-//host :'https://labmanus.herokuapp.com',
-  // options for the swagger docs
-  var options = {
+// options for the swagger docs
+var options = {
     // import swaggerDefinitions
     swaggerDefinition: swaggerDefinition,
     // path to the API docs
-    apis: ['./**/routes/*.js','routes.js'],// pass all in array 
-    };
-  // initialize swagger-jsdoc
-  var swaggerSpec = swaggerJSDoc(options);
+    apis: ['./**/routes/*.js', 'routes.js'],// pass all in array 
+};
+// initialize swagger-jsdoc
+var swaggerSpec = swaggerJSDoc(options);
 
 //JWT Token configuration
 app.set('secret', `${constants.SECRET}`);//Secret Variable
@@ -68,9 +74,9 @@ app.use(morgan('dev'));
 app.use('/api', routes);
 
 // serve swagger
-app.get('/swagger.json', function(req, res) {   
-    res.setHeader('Content-Type', 'application/json');   
-    res.send(swaggerSpec); 
+app.get('/swagger.json', function (req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(swaggerSpec);
 });
 
 
@@ -83,7 +89,6 @@ MongoDB.connectDB(async (err) => {
 })
 
 app.use(function (err, req, res, next) {
-    console.log("error handler called", err);
     if (err.isBoom) {
         return res.status(err.output.statusCode).send(new ApplicationError(err.data, err.output.statusCode));
     } else {

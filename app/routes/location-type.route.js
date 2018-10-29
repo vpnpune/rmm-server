@@ -1,7 +1,7 @@
 import express from 'express';
 import Joi from 'joi';
 import validator from 'express-joi-validator';
-import { ClientHandler } from '../handler/client.handler';
+import { LocationTypeHandler } from '../handler/location-type.handler';
 import logger from '../logger';
 
 
@@ -11,46 +11,25 @@ const router = express.Router();
 // please separate  out 
 const schema = {
 	body: {
-		name: Joi.string().min(3).required()
-
+		name: Joi.string().min(3).max(15).required(),
+		alias: Joi.string().min(1).max(3).required()
 	}
 }
+
 // get ALL
 router.get('/', (req, res) => {
-	let start = req.query.start;
-	let end = req.query.end;
-	let searchText = req.query.searchText;
-	
-	// for pagination flow 
-	if (start !== undefined && end !== undefined) {
-		let pagination ={}
-		pagination.start = start;
-		pagination.end = end;
-		pagination.searchText = searchText;
-		let resultPromise = ClientHandler.getPagedData(pagination);
-		resultPromise.then(function (result) {
-			if (result) {
-				res.status(200).send(result);
-			}
-		}).catch(err => {
-			//
-			log.error(err);
-			res.status(500).send({ "message": "Something went wrong" });
-		});
-	} else {
-		let resultPromise = ClientHandler.getAll();
-		resultPromise.then(function (result) {
-			if (result) {
-				res.status(200).send(result);
-			}
-		}).catch(err => {
-			log.error(err);
-			res.status(500).send({ "message": "Something went wrong" });
-		});
-	}
+	let resultPromise = LocationTypeHandler.getAll();
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
+		}
+	}).catch(err => {
+		log.error(err);
 
-
-
+		res.status(500).send({ "message": "Something went wrong" });
+	});
 });
 
 
@@ -58,11 +37,12 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
 	let id = req.params.id;
 
-	let resultPromise = ClientHandler.getOne(id);
-	
+	let resultPromise = LocationTypeHandler.getOne(id);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
 		}
 	}).catch(err => {
 		log.error(err);
@@ -74,10 +54,12 @@ router.get('/:id', (req, res) => {
 
 // save obj
 router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
-	let resultPromise = ClientHandler.save(req.body);
+	let resultPromise = LocationTypeHandler.save(req.body);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
 		}
 	}).catch(err => {
 		log.error(err);
@@ -89,11 +71,13 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 // update ONE obj
 router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
 	
-	let resultPromise = ClientHandler.updateOne(req.body);
+	let resultPromise = LocationTypeHandler.updateOne(req.body);
 
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
 		}
 	}).catch(err => {
 		log.error(err);
@@ -107,10 +91,12 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 router.delete('/:id', (req, res) => {
 	let id = req.params.id;
 	
-	let resultPromise = ClientHandler.deleteOne(id);
+	let resultPromise = LocationTypeHandler.deleteOne(id);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
 		}
 	}).catch(err => {
 		log.error(err);
@@ -119,17 +105,4 @@ router.delete('/:id', (req, res) => {
 });
 
 
-router.get('/test', (req, res) => {
-	let id = req.params.id;
-	
-	let resultPromise = ClientHandler.getAll();
-	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
-		}
-	}).catch(err => {
-		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
-	});
-});
 export default router;

@@ -1,23 +1,18 @@
 import { DatabaseService } from "../db/database.service";
-import mongodb from "../db/mongodb";
 import * as Collection from '../db/collection-constants';
-
+import app from './../server';
 
 /* SET COLLECTION NAME FIRST*/
-const collectionName = Collection.STORAGE_CONFIG;
+const collectionName = Collection.DYNAMIC_FORM;
 
 
-export class StorageConfigHandler {
+export class DynamicFormHandler {
     // get all items from collection
-    static async getAll(key) {
-        
+    static async getAll() {
         try {
-            const db = mongodb.getDB();
-
-            let result = await db.db().collection(collectionName).find({"conditionType":key}).toArray();
+            let result = await DatabaseService.getAll(collectionName);
             return result;
         } catch (err) {
-            
             throw err;
         }
 
@@ -25,9 +20,9 @@ export class StorageConfigHandler {
     // get ONE object from db
     static async getOne(id) {
         try {
-     
-            let result = await  DatabaseService.getOne(collectionName,id);
-            return result;
+            let criteria = {"id": id, "createdBy": app.get('user')}
+            let result = await  DatabaseService.findByCriteria(collectionName,criteria);
+            return result.get();
         } catch (err) {
             throw err;
         }

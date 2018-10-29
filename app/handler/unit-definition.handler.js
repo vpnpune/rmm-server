@@ -1,23 +1,19 @@
 import { DatabaseService } from "../db/database.service";
-import mongodb from "../db/mongodb";
 import * as Collection from '../db/collection-constants';
+import mongodb from "../db/mongodb";
 
 
 /* SET COLLECTION NAME FIRST*/
-const collectionName = Collection.STORAGE_CONFIG;
+const collectionName = Collection.UNIT_DEFINITION;
 
 
-export class StorageConfigHandler {
+export class UnitDefinitionHandler {
     // get all items from collection
-    static async getAll(key) {
-        
+    static async getAll() {
         try {
-            const db = mongodb.getDB();
-
-            let result = await db.db().collection(collectionName).find({"conditionType":key}).toArray();
+            let result = await DatabaseService.getAllExceptSoftDeleted(collectionName);
             return result;
         } catch (err) {
-            
             throw err;
         }
 
@@ -25,8 +21,8 @@ export class StorageConfigHandler {
     // get ONE object from db
     static async getOne(id) {
         try {
-     
-            let result = await  DatabaseService.getOne(collectionName,id);
+
+            let result = await DatabaseService.getOne(collectionName, id);
             return result;
         } catch (err) {
             throw err;
@@ -36,7 +32,7 @@ export class StorageConfigHandler {
     // save object to db
     static async save(data) {
         try {
-            let result = await  DatabaseService.save(collectionName,data);
+            let result = await DatabaseService.save(collectionName, data);
             return result;
         } catch (err) {
             throw err;
@@ -45,7 +41,7 @@ export class StorageConfigHandler {
     // update container
     static async updateOne(data) {
         try {
-            let result =  await DatabaseService.updateOne(collectionName,data);
+            let result = await DatabaseService.updateOne(collectionName, data);
             return result;
         } catch (err) {
             throw err;
@@ -54,12 +50,15 @@ export class StorageConfigHandler {
     // Delete One container
     static async deleteOne(id) {
         try {
-            let result = await DatabaseService.deleteOne(collectionName,id);
+            let result = await DatabaseService.softDeleteOne(collectionName, id);
             return result;
         } catch (err) {
+            console.log("Catch error: ",err);
             throw err;
         }
     }
+
+
 }
 
 

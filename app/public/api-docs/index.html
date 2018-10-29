@@ -35,13 +35,14 @@
 
     <script src="./swagger-ui-bundle.js"> </script>
     <script src="./swagger-ui-standalone-preset.js"> </script>
+    <script src="./../../constants.js"></script>
     <script>
     window.onload = function() {
-
+      
       // Build a system
       const ui = SwaggerUIBundle({
-        url: "https://rmm-server.herokuapp.com/swagger.json",
-        //url:"http://localhost:3000/swagger.json",
+        //  url:"https://rmm-server.herokuapp.com/swagger.json",  
+        url:"https://localhost:3000/swagger.json",
         dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [

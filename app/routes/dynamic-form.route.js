@@ -1,28 +1,14 @@
 import express from 'express';
-import Joi from 'joi';
-import validator from 'express-joi-validator';
-import { StorageConfigHandler } from '../handler/storage-config.handler';
 import logger from '../logger';
+import { DynamicFormHandler } from '../handler/dynamic-form.handler';
+
 
 const router = express.Router();
 const log = logger.Logger;
 
-// please separate  out 
-const schema = {
-	body: {
-		 
-		conditionType: Joi.string().min(3).required(),
-		median: Joi.number().required().min(Joi.ref('lowerLimit')).max(Joi.ref('upperLimit')),
-		lowerLimit: Joi.number().required().max(Joi.ref('median')),
-		upperLimit: Joi.number().required().min(Joi.ref('median'))
-	}
-}
-//request params as a string on condition key
-//i.e /api/storageConfig/temperature
-router.get('/:key', (req, res) => {
-	let key = req.params.key;
-	
-	let resultPromise = StorageConfigHandler.getAll(key);
+// get ALL
+router.get('/', (req, res) => {
+	let resultPromise = DynamicFormHandler.getAll();
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
@@ -35,12 +21,12 @@ router.get('/:key', (req, res) => {
 	});
 });
 
-// get ONE
-router.get('/:key/:id', (req, res) => {
-	let id = req.params.id;
-	let key = req.params.key; // ignore key as it is unique
 
-	let resultPromise = StorageConfigHandler.getOne(id);
+// get ONE
+router.get('/:id', (req, res) => {
+	let id = req.params.id;
+
+	let resultPromise = DynamicFormHandler.getOne(id);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
@@ -56,8 +42,8 @@ router.get('/:key/:id', (req, res) => {
 
 
 // save obj
-router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
-	let resultPromise = StorageConfigHandler.save(req.body);
+router.post('/', (req, res) => {
+	let resultPromise = DynamicFormHandler.save(req.body);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
@@ -72,9 +58,9 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 });
 
 // update ONE obj
-router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
+router.put('/', (req, res) => {
 	
-	let resultPromise = StorageConfigHandler.updateOne(req.body);
+	let resultPromise = DynamicFormHandler.updateOne(req.body);
 
 	resultPromise.then(function (result) {
 		if (result) {
@@ -91,10 +77,10 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 
 
 // get ONE
-router.delete('/:key/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
 	let id = req.params.id;
 	
-	let resultPromise = StorageConfigHandler.deleteOne(id);
+	let resultPromise = DynamicFormHandler.deleteOne(id);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);

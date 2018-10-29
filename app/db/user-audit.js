@@ -13,3 +13,9 @@ export function buildUpdateObject(object) {
     object.modifiedOn = new Date();
     return object;
 }
+
+export function addCreationDetails(object, req) {
+    object.createdBy = app.get('user');
+    object.createdOn = new Date();
+    return object;
+}

@@ -1,8 +1,9 @@
 import express from 'express';
 import Joi from 'joi';
 import validator from 'express-joi-validator';
-import { LocationHandler } from '../handler/location.handler';
 import logger from '../logger';
+import { UnitGroupHandler } from '../handler/unit-group.handler';
+import { UnitDefinitionHandler } from '../handler/unit-definition.handler';
 
 const router = express.Router();
 
@@ -10,15 +11,15 @@ const log = logger.Logger;
 // please separate  out 
 const schema = {
 	body: {
-		locationName: Joi.string().min(1).max(255).required(),
-		type: Joi.object().exist(),
-		type:Joi.object({_id:Joi.string().required()})
+		name: Joi.string().min(1).max(255).required(),
+		shortForm:Joi.string().min(1).max(255).required(),
+		
 	}
 }
 
 // get ALL
 router.get('/', (req, res) => {
-	let resultPromise = LocationHandler.getAll();
+	let resultPromise = UnitDefinitionHandler.getAll();
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
@@ -36,7 +37,7 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
 	let id = req.params.id;
 
-	let resultPromise = LocationHandler.getOne(id);
+	let resultPromise = UnitDefinitionHandler.getOne(id);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
@@ -53,7 +54,7 @@ router.get('/:id', (req, res) => {
 
 // save obj
 router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
-	let resultPromise = LocationHandler.save(req.body);
+	let resultPromise = UnitDefinitionHandler.save(req.body);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
@@ -70,7 +71,7 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 // update ONE obj
 router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
 	
-	let resultPromise = LocationHandler.updateOne(req.body);
+	let resultPromise = UnitDefinitionHandler.updateOne(req.body);
 
 	resultPromise.then(function (result) {
 		if (result) {
@@ -89,7 +90,7 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 // get ONE
 router.delete('/:id', (req, res) => {
 	let id = req.params.id;
-	let resultPromise = LocationHandler.deleteOne(id);
+	let resultPromise = UnitDefinitionHandler.deleteOne(id);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
@@ -102,38 +103,5 @@ router.delete('/:id', (req, res) => {
 	});
 });
 
-//ie5q0jmxfuubg
-// get ONE
-router.get('/getParent/:parentId', (req, res) => {
-	let parentId = req.params.parentId;
-	console.log(parentId);
-	let resultPromise = LocationHandler.getExceptParentLocationTypeList(parentId);
-	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
-		} else {
-			res.status(200).send([]);
-		}
-	}).catch(err => {
-		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
-	});
-});
-router.get('/canBeDeleted/:parentId', (req, res) => {
-	let parentId = req.params.parentId;
-	console.log(parentId);
-	let resultPromise = LocationHandler.checkIsParentOfAnyItem(parentId);
-	resultPromise.then(function (result) {
-		console.log(result);
-		if (result) {
-			res.status(200).send(result);
-		} else {
-			res.status(200).send([]);
-		}
-	}).catch(err => {
-		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
-	});
-});
 
 export default router;

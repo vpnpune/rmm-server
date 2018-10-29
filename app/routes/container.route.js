@@ -11,8 +11,8 @@ const log = logger.Logger;
 // please separate  out 
 const schema = {
 	body: {
-		containerName: Joi.string().min(3).required(),
-		containerDescription: Joi.string().optional()
+		containerName: Joi.string().min(3).max(20).required(),
+		prefix: Joi.string().max(4).required()
 	}
 }
 // get ALL
@@ -68,7 +68,7 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 
 // update ONE obj
 router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
-	console.log("Router put");
+	
 	let resultPromise = ContainerHandler.updateOne(req.body);
 
 	resultPromise.then(function (result) {
@@ -88,7 +88,7 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 // get ONE
 router.delete('/:id', (req, res) => {
 	let id = req.params.id;
-	console.log("Delete Route Called");
+	
 	let resultPromise = ContainerHandler.deleteOne(id);
 	resultPromise.then(function (result) {
 		if (result) {
