@@ -55,6 +55,7 @@ export class DatabaseService {
             let result = await db.db().collection(collectionName).insertOne(buildInsertObject(data));
             return result;
         } catch (err) {
+            console.log('error : ',err);
             throw err;
         }
     }

@@ -5,6 +5,7 @@ export const LOCATION_NODES = "locationNodes";
 export const DOCUMENT_TYPE = "documentType";
 export const CLIENT = "client"; 
 export const PROJECT = "project";
+export const DOCUMENT_UPLOAD = "documentUpload";
 export const LOCATION_TYPE = "locationType"; 
 export const COUNTRIES = "countries";
 export const WORLD_STATES = "world_states"; 
