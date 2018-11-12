@@ -1,14 +1,11 @@
 import { DatabaseService } from "../db/database.service";
 import * as Collection from '../db/collection-constants';
-import mongodb from "../db/mongodb";
-
 
 /* SET COLLECTION NAME FIRST*/
-const collectionName = Collection.LOCATION_TYPE;
+const collectionName = Collection.ROLES;
 
-const ObjectId = require('mongodb').ObjectID;
 
-export class LocationTypeHandler {
+export class RolesHandler {
     // get all items from collection
     static async getAll() {
         try {
@@ -22,7 +19,8 @@ export class LocationTypeHandler {
     // get ONE object from db
     static async getOne(id) {
         try {
-            let result = await DatabaseService.getOne(collectionName, id);
+            let result = await  DatabaseService.getOne(collectionName,id);
+            console.log('result1: ',result);
             return result;
         } catch (err) {
             throw err;
@@ -32,8 +30,8 @@ export class LocationTypeHandler {
     // save object to db
     static async save(data) {
         try {
-
-            let result = await DatabaseService.save(collectionName, data);
+            let result = await DatabaseService.save(collectionName,data);
+            console.log('result : ',result);
             return result.ops[0];
         } catch (err) {
             throw err;
@@ -42,7 +40,7 @@ export class LocationTypeHandler {
     // update container
     static async updateOne(data) {
         try {
-            let result = await DatabaseService.updateOne(collectionName, data);
+            let result =  await DatabaseService.updateOne(collectionName,data);
             return result;
         } catch (err) {
             throw err;
@@ -51,28 +49,12 @@ export class LocationTypeHandler {
     // Delete One container
     static async deleteOne(id) {
         try {
-            // send objectId version
-            let result = await DatabaseService.deleteOne(collectionName, id);
+            let result = await DatabaseService.deleteOne(collectionName,id);
             return result;
         } catch (err) {
             throw err;
         }
     }
-    static async getNotInList(dataList) {
-        try {
-
-            const db = mongodb.getDB();
-
-            console.log(this.dataList);
-            let result = await db.db().collection(collectionName).find({ "_id": { $nin: dataList } }).toArray();
-
-            return result;
-        } catch (err) {
-            throw err;
-        }
-
-    }
-
 }
 
 

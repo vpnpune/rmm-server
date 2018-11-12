@@ -55,7 +55,7 @@ export class ClientHandler {
     static async save(data) {
         try {
             let result = await DatabaseService.save(collectionName, data);
-            return result;
+            return result.ops[0];
         } catch (err) {
             throw err;
         }

@@ -1,10 +1,10 @@
-import app from './../server'
+import app from '../server'
 import express from 'express';
 import multer from 'multer';
 import logger from '../logger';
 import { DocumentHandler } from '../handler/document.handler';
-import ApplicationError from './../model/application-error';
-import {INTERNAL_SERVER_ERROR} from './../constants';
+import ApplicationError from '../model/application-error';
+import {INTERNAL_SERVER_ERROR} from '../constants';
 import aws from 'aws-sdk';
 import multerS3 from 'multer-s3';
 
