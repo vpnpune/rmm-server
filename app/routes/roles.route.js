@@ -10,8 +10,8 @@ const log = logger.Logger;
 // please separate  out 
 const schema = {
 	body: {
-		name: Joi.string().min(1).max(255).required(),
-		permissions: Joi.array().items(Joi.object())
+		roleName: Joi.string().min(1).max(255).required(),
+		permissions: Joi.array().items(Joi.string().min(1).max(255).required())
 	}
 }
 

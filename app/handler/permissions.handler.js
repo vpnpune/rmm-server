@@ -30,9 +30,10 @@ export class PermissionsHandler {
     // save object to db
     static async save(data) {
         try {
-            let result = await DatabaseService.save(collectionName,data);
+            console.log(data);
+            let result = await DatabaseService.bulkSave(collectionName,data);
             console.log('result : ',result);
-            return result.ops[0];
+            return result.result;
         } catch (err) {
             throw err;
         }

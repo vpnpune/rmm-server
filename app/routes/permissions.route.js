@@ -3,17 +3,19 @@ import Joi from 'joi';
 import validator from 'express-joi-validator';
 import { PermissionsHandler } from '../handler/permissions.handler';
 import logger from '../logger';
+import ApplicationError from './../model/application-error';
+import {INTERNAL_SERVER_ERROR} from './../constants';
 
 const router = express.Router();
 
 const log = logger.Logger;
 // please separate  out 
-const schema = {
-	body: {
-		name: Joi.string().min(1).max(255).required(),
-		url: Joi.string().required()
-	}
-}
+let body= Joi.object().keys ({
+	permissionName: Joi.string().min(1).max(255).required(),
+	url: Joi.string().required(),
+	operation: Joi.string().min(1).max(255).required()
+});
+const schema = Joi.array().items(body);
 
 // get ALL
 router.get('/', (req, res) => {
@@ -51,7 +53,7 @@ router.get('/:id', (req, res) => {
 
 
 // save obj
-router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
+router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }),(req, res, next) => {
 	let resultPromise = PermissionsHandler.save(req.body);
 	resultPromise.then(function (result) {
 		if (result) {

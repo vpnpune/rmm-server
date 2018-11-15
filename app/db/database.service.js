@@ -148,6 +148,24 @@ export class DatabaseService {
         return result;
     }
 
+    static async bulkSave(collectionName, data) {
+        try {
+
+            const db = mongodb.getDB();
+            var bulk = await db.db().collection(collectionName).initializeUnorderedBulkOp();
+
+            for(let row of data) {
+                bulk.insert(buildInsertObject(row));
+            }
+
+            return bulk.execute();
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+        
+    }
+
 }
 
 
