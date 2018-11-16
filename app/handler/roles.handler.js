@@ -55,6 +55,19 @@ export class RolesHandler {
             throw err;
         }
     }
+
+    static async getPermissionsByRoleName(roleName) {
+         // get ONE object from db
+        try {
+            let criteria = {"roleName": roleName}
+            let result = await  DatabaseService.findByCriteria(collectionName,criteria);
+            console.log(result);
+            return result;
+        } catch (err) {
+            throw err;
+        }
+
+    }
 }
 
 

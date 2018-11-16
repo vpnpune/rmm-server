@@ -21,6 +21,7 @@ import rolesRoutes from './roles.route';
 const router = express.Router();
 router.use('/authenticate', authenticationRoutes);
 
+router.use(interceptor);
 //All routers should be attached after this only
 router.use('/masters', masterRoutes);
 router.use('/users', userRoutes);

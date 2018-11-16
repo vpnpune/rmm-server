@@ -14,3 +14,4 @@ export const UNIT_GROUP="unitGroup";
 export const UNIT_DEFINITION = "unitDefinition";
 export const PERMISSION = "permission";
 export const ROLES = "roles";
+export const USER = "user";

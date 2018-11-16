@@ -43,7 +43,6 @@ router.post('/', (req, res) => {
     let userName = req.body.uname;
     let password = req.body.password;
 
-
     if(!userName || !password) {
         res.status(403).send(new ApplicationError(USER_DETAILS_VERI_FAILED,403));
     } else if(userName === "rmmadmin" && password === "labmanus") {

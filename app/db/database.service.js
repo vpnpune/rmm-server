@@ -63,9 +63,11 @@ export class DatabaseService {
     static async updateOne(collectionName, data) {
         try {
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).replaceOne({ "_id": data._id }, { $set: buildUpdateObject(data) }, { upsert: false });
+            console.log(data);
+            let result = await db.db().collection(collectionName).updateOne({ "_id": data._id }, { $set: buildUpdateObject(data) }, { upsert: false });
             return result;
         } catch (err) {
+            console.log(err);
             throw err;
         }
     }

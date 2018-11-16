@@ -1,9 +1,12 @@
 import express from 'express';
-import MongoDB from './../db/mongodb';
 import Joi from 'joi';
 import validator from 'express-joi-validator';
+import logger from '../logger';
+import { UserHandler } from '../handler/user.handler';
 
 const router = express.Router();
+const log = logger.Logger;
+
 
 const schema = {
 	body: {
@@ -11,25 +14,95 @@ const schema = {
 		lastName: Joi.string().required(),
 		emailId: Joi.string().email().required(),
 		mobileNumber: Joi.string().required(),
-		roles: Joi.array().required()
-
+		roles: Joi.array().required(Joi.string().required())
 	}
 }
 
+// get ALL
 router.get('/', (req, res) => {
-	const db = MongoDB.getDB();
-	db.db().collection('users').find({}).toArray(function (err, results) {
-		if (err)
-			res.send(err);
-		res.send(results);
+	let resultPromise = UserHandler.getAll();
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({ "message": "Something went wrong" });
 	});
 });
 
-router.post('/', validator(schema,{allowUnknown: true, abortEarly: false}), (req, res, next) => {
-	const db = MongoDB.getDB();
-	let data = db.db().collection('users').save(req.body);
 
-	res.send("OK");
+// get ONE
+router.get('/:id', (req, res) => {
+	let id = req.params.id;
+
+	let resultPromise = UserHandler.getOne(id);
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({ "message": "Something went wrong" });
+	});
+});
+
+
+
+// save obj
+router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
+	let resultPromise = UserHandler.save(req.body);
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({ "message": "Something went wrong" });
+	});
+
+});
+
+// update ONE obj
+router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
+	
+	let resultPromise = UserHandler.updateOne(req.body);
+
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({ "message": "Something went wrong" });
+	});
+
+});
+
+
+// get ONE
+router.delete('/:id', (req, res) => {
+	let id = req.params.id;
+	
+	let resultPromise = UserHandler.deleteOne(id);
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({ "message": "Something went wrong" });
+	});
 });
 
 export default router;

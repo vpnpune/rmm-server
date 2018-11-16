@@ -10,12 +10,14 @@ const router = express.Router();
 
 const log = logger.Logger;
 // please separate  out 
-let body= Joi.object().keys ({
+let body= Joi.object().required();
+/*keys ({
 	permissionName: Joi.string().min(1).max(255).required(),
 	url: Joi.string().required(),
 	operation: Joi.string().min(1).max(255).required()
-});
+});*/
 const schema = Joi.array().items(body);
+console.log(schema);
 
 // get ALL
 router.get('/', (req, res) => {
@@ -53,7 +55,7 @@ router.get('/:id', (req, res) => {
 
 
 // save obj
-router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }),(req, res, next) => {
+router.post('/', validator(body, { allowUnknown: true, abortEarly: false }),(req, res, next) => {
 	let resultPromise = PermissionsHandler.save(req.body);
 	resultPromise.then(function (result) {
 		if (result) {
