@@ -17,7 +17,7 @@ const LOCAL_HOST="localhost"
 const LOCAL_PORT="3000";
 const TEST_BASE_URL="https://rmm-server.herokuapp.com/";
 const TEST_DB_URL=`mongodb://m001-student:gC5hQRkRdMGSn8J9@cluster0-shard-00-00-aknqy.mongodb.net:27017,cluster0-shard-00-01-aknqy.mongodb.net:27017,cluster0-shard-00-02-aknqy.mongodb.net:27017/${DB_NAME}?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true`;
-const DEV_ENV = true;
+const DEV_ENV = false;
 
 export {
 	PORT,
@@ -27,7 +27,7 @@ export {
 	REDIS_PORT,
 	TOKEN_VERIFICATION_FAILED,
 	USER_DETAILS_VERI_FAILED,
-	MAPPING_NOT_FOUND_ERROR
+	MAPPING_NOT_FOUND_ERROR,
 	SUBLEVEL_EXITS,
 	INTERNAL_SERVER_ERROR,
 	LOCAL_HOST,

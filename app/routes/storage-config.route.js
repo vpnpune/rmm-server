@@ -60,7 +60,8 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 	let resultPromise = StorageConfigHandler.save(req.body);
 	resultPromise.then(function (result) {
 		if (result) {
-			res.status(200).send(result);
+			//console.log(result.insertedId)
+			res.status(200).send({"_id":result.insertedId});
 		} else {
 			res.status(200).send([]);
 		}
