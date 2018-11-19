@@ -1,0 +1,14 @@
+2018-11-08T03:33:57.069Z : file-upload.js:82 : ReferenceError: fileKey is not defined
+2018-11-08T03:34:05.007Z : file-upload.js:82 : ReferenceError: fileKey is not defined
+2018-11-08T06:43:03.076Z : file-upload.js:27 : [object Object]
+2018-11-08T08:42:44.868Z : file-upload.js:62 : TypeError: Cannot read property '0' of undefined
+2018-11-08T08:47:41.928Z : file-upload.js:64 : TypeError: Cannot read property '0' of undefined
+2018-11-08T08:49:40.075Z : file-upload.js:64 : TypeError: Cannot read property '0' of undefined
+2018-11-08T09:27:29.417Z : client.route.js:69 : MongoError: collection name must be a String
+2018-11-08T09:28:31.795Z : client.route.js:69 : ReferenceError: clientObj is not defined
+2018-11-08T10:22:03.225Z : file-upload.js:96 : ReferenceError: err is not defined
+2018-11-08T11:28:56.491Z : file-upload.js:135 : ReferenceError: err is not defined
+2018-11-08T11:29:16.497Z : file-upload.js:135 : ReferenceError: err is not defined
+2018-11-08T11:40:09.338Z : file-upload.js:135 : ReferenceError: err is not defined
+2018-11-08T11:42:10.735Z : file-upload.js:135 : ReferenceError: err is not defined
+2018-11-08T11:42:35.701Z : file-upload.js:135 : ReferenceError: err is not defined
