@@ -1,5 +1,4 @@
 import mongodb from "./mongodb";
-import { addId } from "./id-generator";
 import { buildInsertObject, buildUpdateObject, addCreationDetails } from "./user-audit";
 
 
@@ -110,10 +109,10 @@ export class DatabaseService {
     // ObjectId;
 
     // save document to collection
-    static async saveWithObjectId(collectionName, data) {
+    static async saveWithoutAutoId(collectionName, data) {
         try {
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).save(addCreationDetails(data));
+            let result = await db.db().collection(collectionName).insertOne(addCreationDetails(data));
             //
             return result;
         } catch (err) {
@@ -145,9 +144,14 @@ export class DatabaseService {
         }
     }
     static async findByCriteria(collectionName, criteria) {
-        const db = mongodb.getDB();
-        let result = await db.db().collection(collectionName).find(criteria).toArray();
-        return result;
+        try {
+            const db = mongodb.getDB();
+            let result = await db.db().collection(collectionName).find(criteria).toArray();
+            return result;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
     }
 
     static async bulkSave(collectionName, data) {

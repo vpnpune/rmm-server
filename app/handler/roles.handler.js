@@ -1,5 +1,6 @@
 import { DatabaseService } from "../db/database.service";
 import * as Collection from '../db/collection-constants';
+import { PermissionsHandler } from "./permissions.handler";
 
 /* SET COLLECTION NAME FIRST*/
 const collectionName = Collection.ROLES;
@@ -30,7 +31,15 @@ export class RolesHandler {
     // save object to db
     static async save(data) {
         try {
-            let result = await DatabaseService.save(collectionName,data);
+            data._id = data.roleName;
+            let permissions = data.permissions;
+            let permissionArr = [];
+            for(let permission of permissions) {
+                let  permissionObj = await PermissionsHandler.getOne(permission);
+                permissionArr.push(permissionObj._id);
+            }
+            data.permissions = permissionArr;
+            let result = await DatabaseService.saveWithoutAutoId(collectionName,data);
             console.log('result : ',result);
             return result.ops[0];
         } catch (err) {
@@ -40,6 +49,13 @@ export class RolesHandler {
     // update container
     static async updateOne(data) {
         try {
+            let permissions = data.permissions;
+            let permissionArr = [];
+            for(let permission of permissions) {
+                let  permissionObj = await PermissionsHandler.getOne(permission);
+                permissionArr.push(permissionObj._id);
+            }
+            data.permissions = permissionArr;
             let result =  await DatabaseService.updateOne(collectionName,data);
             return result;
         } catch (err) {

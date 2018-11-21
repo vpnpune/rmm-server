@@ -17,7 +17,6 @@ let body= Joi.object().required();
 	operation: Joi.string().min(1).max(255).required()
 });*/
 const schema = Joi.array().items(body);
-console.log(schema);
 
 // get ALL
 router.get('/', (req, res) => {

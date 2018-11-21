@@ -1,5 +1,7 @@
 import { DatabaseService } from "../db/database.service";
 import * as Collection from '../db/collection-constants';
+import mongodb from "./../db/mongodb";
+import { addCreationDetails } from "./../db/user-audit";
 
 /* SET COLLECTION NAME FIRST*/
 const collectionName = Collection.PERMISSION;
@@ -31,7 +33,7 @@ export class PermissionsHandler {
     static async save(data) {
         try {
             console.log(data);
-            let result = await DatabaseService.bulkSave(collectionName,data);
+            let result = await PermissionsHandler.savePermissions(collectionName,data);
             console.log('result : ',result);
             return result.result;
         } catch (err) {
@@ -56,6 +58,36 @@ export class PermissionsHandler {
             throw err;
         }
     }
+
+    static async getByPermissionName(permissionName) {
+        try {
+            let criteria = {"permissionName": permissionName};
+            let result = await  DatabaseService.findByCriteria(collectionName,criteria);
+            console.log("Data: ",result);
+            return result[0];
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    }
+
+    static async savePermissions(collectionName, data) {
+        try {
+            const db = mongodb.getDB();
+            var bulk = await db.db().collection(collectionName).initializeUnorderedBulkOp();
+
+            for(let row of data) {
+                row._id = row.permissionName;
+                bulk.insert(addCreationDetails(row));
+            }
+            return bulk.execute();
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+        
+    }
+
 }
 
 
