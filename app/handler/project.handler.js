@@ -19,8 +19,8 @@ export class ProjectHandler {
         try {
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).find(
-                { _id: clientId }).project({projects:1})
-            .toArray();
+                { _id: clientId }).project({ projects: 1 })
+                .toArray();
             return result;
         } catch (err) {
             throw err;
@@ -31,11 +31,12 @@ export class ProjectHandler {
         try {
             // let result = await DatabaseService.getOne(collectionName, projectId);
             const db = mongodb.getDB();
-         
+
             let cursor = await db.db().collection(collectionName).findOne(
                 { '_id': clientId },
-                { projection: {'projects':{$elemMatch: {'_id': projectId}}}
-            });
+                {
+                    projection: { 'projects': { $elemMatch: { '_id': projectId } } }
+                });
             // console.log("Result: ", await cursor.count());
 
             return cursor;
@@ -48,13 +49,12 @@ export class ProjectHandler {
     static async save(data) {
         const db = mongodb.getDB();
         try {
-            console.log("project", data);
             let result = await db.db().collection(collectionName).updateOne({ _id: data.clientId },
                 {
                     $push: { projects: buildInsertObject(data) }
 
                 });
-
+                result.insertedId=data._id;
             //let result = await DatabaseService.save(collectionName, data);
             return result;
         } catch (err) {
@@ -88,6 +88,18 @@ export class ProjectHandler {
                     "projects": { "_id": projectId }
                 }
             );
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    }
+    // need to be implemented
+    static async getPagedData(clientId,pagination) {
+        try {
+            const db = mongodb.getDB();
+            let result = await db.db().collection(collectionName).find(
+                { _id: clientId }).project({ projects: 1 })
+                .toArray();
             return result;
         } catch (err) {
             throw err;

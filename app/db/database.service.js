@@ -1,6 +1,7 @@
 import mongodb from "./mongodb";
 import { addId } from "./id-generator";
 import { buildInsertObject, buildUpdateObject, addCreationDetails } from "./user-audit";
+import { SOFT_DELETE_FIND_QUERY } from "../model/generic-queries";
 
 
 export class DatabaseService {
@@ -13,7 +14,7 @@ export class DatabaseService {
     static async getAll(collectionName) {
         try {
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).find({}).toArray();
+            let result = await db.db().collection(collectionName).find().toArray();
             return result;
         } catch (err) {
             throw err;
@@ -184,7 +185,6 @@ export class DatabaseService {
 
             ).project(projection
             ).limit(parseInt(pagination.end)).skip(parseInt(pagination.start)).toArray();
-            console.log(pagination.resultSet)
 
             //@Todo : Working code need to revert if component if else works on client side
             //if(parseInt(pagination.start)===0){
@@ -236,6 +236,17 @@ export class DatabaseService {
             throw err;
         }
     }
+ // use for all fields with pagination without projection
+ static async getAll(collectionName,projection) {
+    try {
+        const db = mongodb.getDB();
+        let resultSet = await db.db().collection(collectionName).find(SOFT_DELETE_FIND_QUERY).project(projection).toArray();
+        
+        return resultSet;
+    } catch (err) {
+        throw err;
+    }
+}
 
 
 }

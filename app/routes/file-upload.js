@@ -12,8 +12,8 @@ const router = express.Router();
 const log = logger.Logger;
 
 aws.config.update({
-  accessKeyId: "AKIAJVGNRQPL7KIPYENA", // process.env.accessKeyId,
-  secretAccessKey: "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",//process.env.secretAccessKey,
+  accessKeyId: "AKIAJGWMTVDZVKGYH45A", // process.env.accessKeyId,
+  secretAccessKey: "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",//process.env.secretAccessKey,
   region: 'us-east-2'//process.env.region
 });
 
@@ -65,6 +65,8 @@ router.post('/upload', upload.any(), function (req, res, next) {
       throw new ApplicationError("Failed to Save", 500);
     });
   } else {
+    log.error(err);
+
     throw new ApplicationError(INTERNAL_SERVER_ERROR, 500);
   }
 

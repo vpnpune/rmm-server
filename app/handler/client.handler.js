@@ -13,13 +13,13 @@ export class ClientHandler {
     // get all items from collection
     //@ts-nocheck
     static async getAll() {
+        let projection = {
+            aliases: 1, contactPersons: 1, name: 1, "clientAddress.state.name": 1,
+            "clientAddress.country.name": 1 
+        }
         try {
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).find(
-                { deleted: false }).project({ aliases: 1, clientContact: 1, name: 1, clientAddress: 1 })
-                .toArray();
-
-            //   let result = await DatabaseService.getAll(collectionName);
+           let result = await DatabaseService.getAll(collectionName,projection);
             return result;
         } catch (err) {
             throw err;
@@ -34,7 +34,7 @@ export class ClientHandler {
             numberOfProjects:
                 { $size: { "$ifNull": ["$projects", []] } }
         }
-        let criteria = SOFT_DELETE_FIND_QUERY;
+        let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
         criteria._id = id;
         let filesProjection = {
             _id: 1,
