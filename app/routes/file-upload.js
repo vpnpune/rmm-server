@@ -12,9 +12,9 @@ const router = express.Router();
 const log = logger.Logger;
 
 aws.config.update({
-  accessKeyId: "AKIAJGWMTVDZVKGYH45A", // process.env.accessKeyId,
-  secretAccessKey: "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",//process.env.secretAccessKey,
-  region: 'us-east-2'//process.env.region
+  accessKeyId:  process.env.accessKeyId,
+  secretAccessKey: process.env.secretAccessKey,
+  region: process.env.region
 });
 
 var s3 = new aws.S3();
