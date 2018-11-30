@@ -5,6 +5,9 @@ import mongodb from "../db/mongodb";
 
 import logger from '../logger';
 const log = logger.Logger;
+import app from './../server'
+import { SOFT_DELETE_FIND_QUERY } from "../model/generic-queries";
+
 
 /* SET COLLECTION NAME FIRST*/
 const collectionName = Collection.CLIENT;
@@ -13,13 +16,27 @@ const collectionName = Collection.CLIENT;
 //     $project: { "fields": { "projects": 1, "clientAddress": 0, "_id": 0 } }
 
 // }
+
+// need to test
 export class ProjectHandler {
     // get all items from collection
     static async getAll(clientId) {
         try {
             const db = mongodb.getDB();
+            //     let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
+            // criteria._id = clientId;
+            // criteria.projects.deleted= SOFT_DELETE_FIND_QUERY;
+            let query = {
+                _id: clientId,
+                "projects": {
+                    $elemMatch: {
+                        "deleted": { $exists: false }
+                    }
+
+                }
+            }
             let result = await db.db().collection(collectionName).find(
-                { _id: clientId }).project({ projects: 1 })
+                query).project({ projects: 1 })
                 .toArray();
             return result;
         } catch (err) {
@@ -28,18 +45,37 @@ export class ProjectHandler {
     }
     // get ONE object from db
     static async getOne(clientId, projectId) {
-        try {
-            // let result = await DatabaseService.getOne(collectionName, projectId);
-            const db = mongodb.getDB();
+        let criteria = { '_id': clientId }
+        let projectionDoc =
+            { 'projects': { $elemMatch: { '_id': projectId } } }
 
-            let cursor = await db.db().collection(collectionName).findOne(
-                { '_id': clientId },
-                {
-                    projection: { 'projects': { $elemMatch: { '_id': projectId } } }
-                });
+        let filesProjection = {
+            _id: 1,
+            originalname: 1,
+            createdOn: 1
+        }
+        let filesCriteria = {
+            foreignRef: projectId,
+            moduleCode: "PROJECT"
+        }
+
+        try {
+            let result = await DatabaseService.getOneFind(collectionName, criteria, projectionDoc)
+            let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD, filesCriteria, filesProjection)
+
+            if (result != undefined && result.projects.length > 0) {
+
+                let project = result.projects[0]
+                project.documents = fileResult
+
+                return project;
+            }
+            else {
+                return {}
+            }
+
             // console.log("Result: ", await cursor.count());
 
-            return cursor;
         } catch (err) {
             throw err;
         }
@@ -54,7 +90,7 @@ export class ProjectHandler {
                     $push: { projects: buildInsertObject(data) }
 
                 });
-                result.insertedId=data._id;
+            result.insertedId = data._id;
             //let result = await DatabaseService.save(collectionName, data);
             return result;
         } catch (err) {
@@ -78,23 +114,33 @@ export class ProjectHandler {
         }
     }
     // Delete One container
-    static async deleteOne(id) {
+    static async deleteOne(clientId, id) {
         try {
             //  let result = await DatabaseService.deleteOne(collectionName, id);
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).findOne(
-                {
-                    _id: clientId,
-                    "projects": { "_id": projectId }
+            // let result = await db.db().collection(collectionName).findOne(
+            //     {
+            //         _id: clientId,
+            //         "projects": { "_id": projectId }
+            //     }
+            // );
+
+
+
+            let result = await db.db().collection(collectionName).updateOne({ "_id": clientId, "projects._id": id }, {
+                $set: {
+                    "projects.$.deleted": true,
+                    "projects.$.modifiedOn": new Date(),
+                    "projects.$.modifiedBy": app.get('user')
                 }
-            );
+            });
             return result;
         } catch (err) {
             throw err;
         }
     }
     // need to be implemented
-    static async getPagedData(clientId,pagination) {
+    static async getPagedData(clientId, pagination) {
         try {
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).find(
