@@ -15,3 +15,5 @@ export const UNIT_DEFINITION = "unitDefinition";
 export const PERMISSION = "permission";
 export const ROLES = "roles";
 export const USER = "user";
+export const MENU = "menu";
+export const SUBMENU = "submenu";

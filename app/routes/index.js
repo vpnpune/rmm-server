@@ -17,14 +17,17 @@ import endpointNotFound from './error-route';
 import documentRoutes from './document.route';
 import permissionsRoutes from './permissions.route';
 import rolesRoutes from './roles.route';
+import menuRoutes from './menu.route';
+import parentmenuRoutes from './parentmenu.route';
+import submenuRoutes from './submenu.route';
 
 const router = express.Router();
 router.use('/authenticate', authenticationRoutes);
 
-router.use(interceptor);
+// router.use(interceptor);
 //All routers should be attached after this only
 router.use('/masters', masterRoutes);
-router.use('/users', userRoutes);
+router.use('/user', userRoutes);
 router.use('/container', containerRoutes);
 router.use('/documentType', documentTypeRoutes);
 router.use('/storageConfig', storageConfigRoutes);
@@ -34,10 +37,13 @@ router.use('/project', projectRoutes);
 router.use('/document',documentRoutes)
 router.use('/locationType', locationTypeRoutes);
 router.use('/dynamic-form', dynamicFormRoutes);
-router.use('/unitGroup',unitGroupRoutes)
-router.use('/unitDefinition',unitDefinitionRoutes)
-router.use('/permissions',permissionsRoutes)
-router.use('/roles',rolesRoutes)
+router.use('/unitGroup',unitGroupRoutes);
+router.use('/unitDefinition',unitDefinitionRoutes);
+router.use('/permissions',permissionsRoutes);
+router.use('/roles',rolesRoutes);
+router.use('/mainMenu',menuRoutes);
+router.use('/parentMenu',parentmenuRoutes);
+router.use('/subMenu',submenuRoutes);
 
 router.use('/*', endpointNotFound);
 

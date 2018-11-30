@@ -123,6 +123,16 @@ export class UserHandler {
                         {"from":"permission","localField":"roleObj.permissions","foreignField":"_id","as":"permissionObj"}
                     },
                     {"$unwind":"$permissionObj"},
+		            {"$unwind":"$menus"},
+		            {"$lookup":
+                        {"from":"menu","localField":"menus","foreignField":"_id","as":"menuObj"}
+                    },
+                    {"$unwind":"$menuObj"},
+		            {"$unwind":"$submenu"},
+		            {"$lookup":
+                        {"from":"submenu","localField":"submenu","foreignField":"_id","as":"submenuObj"}
+                    },
+                    {"$unwind":"$submenuObj"},
                     {"$group":
                         {
                             "_id":"$_id",
@@ -134,12 +144,29 @@ export class UserHandler {
                             "createdOn":{"$first":"$createdOn"},
                             "userName":{"$first":"$userName"},
                             "roles":{"$addToSet":"$roles"},
-                            "permissions":{"$addToSet":"$permissionObj"}
+                            "permissions":{"$addToSet":"$permissionObj"},
+			                "menus":{"$addToSet":"$menuObj"},
+                            "submenus":{"$addToSet":"$submenuObj"}
                         }
                     }  
                 ]).toArray();
             if(data) {
-                return data[0];
+                let result = data[0];
+                let menus = result.menus;
+                let submenus = result.submenus;
+
+                for(let menu of menus) {
+                    let subMenuArr = [];
+                    for(let submenu of submenus) {
+                        if(menu._id === submenu.parent) {
+                            subMenuArr.push(submenu);
+                        }
+                    }
+                    menu.children = subMenuArr;
+                }
+                result.menus = menus;
+                console.log('data: ',result);
+                return result;
             } else {
                 return [];
             }
