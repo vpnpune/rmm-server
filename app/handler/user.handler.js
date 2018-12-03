@@ -168,7 +168,7 @@ export class UserHandler {
                 console.log('data: ',result);
                 return result;
             } else {
-                return [];
+                return null;
             }
         } catch(err) {
             console.log(err);
