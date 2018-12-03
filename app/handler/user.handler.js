@@ -150,7 +150,7 @@ export class UserHandler {
                         }
                     }  
                 ]).toArray();
-            if(data) {
+            if(data && data.length > 0) {
                 let result = data[0];
                 let menus = result.menus;
                 let submenus = result.submenus;
