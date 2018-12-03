@@ -1,5 +1,4 @@
 import mongodb from "./mongodb";
-import { addId } from "./id-generator";
 import { buildInsertObject, buildUpdateObject, addCreationDetails } from "./user-audit";
 import { SOFT_DELETE_FIND_QUERY } from "../model/generic-queries";
 
@@ -67,9 +66,11 @@ export class DatabaseService {
     static async updateOne(collectionName, data) {
         try {
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).replaceOne({ "_id": data._id }, { $set: buildUpdateObject(data) }, { upsert: false });
+            console.log(data);
+            let result = await db.db().collection(collectionName).updateOne({ "_id": data._id }, { $set: buildUpdateObject(data) }, { upsert: false });
             return result;
         } catch (err) {
+            console.log(err);
             throw err;
         }
     }
@@ -112,10 +113,10 @@ export class DatabaseService {
     // ObjectId;
     // NEW Template Queries
     // save document to collection
-    static async saveWithObjectId(collectionName, data) {
+    static async saveWithoutAutoId(collectionName, data) {
         try {
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).save(addCreationDetails(data));
+            let result = await db.db().collection(collectionName).insertOne(addCreationDetails(data));
             //
             return result;
         } catch (err) {
@@ -146,14 +147,39 @@ export class DatabaseService {
             throw err;
         }
     }
-    static async findByCriteria(collectionName, criteria,projection) {
+    static async findByCriteria(collectionName, criteria) {
+        try {
+            const db = mongodb.getDB();
+            let result = await db.db().collection(collectionName).find(criteria).toArray();
+            return result;
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    }
+
+    static async bulkSave(collectionName, data) {
+        try {
+
+            const db = mongodb.getDB();
+            var bulk = await db.db().collection(collectionName).initializeUnorderedBulkOp();
+
+            for (let row of data) {
+                bulk.insert(buildInsertObject(row));
+            }
+
+            return bulk.execute();
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
+    }
+
+    static async findByCriteria(collectionName, criteria, projection) {
         const db = mongodb.getDB();
         let result = await db.db().collection(collectionName).find(criteria).project(projection).toArray();
         return result;
     }
-
-
-
 
     // use for all fields with pagination without projection
     static async getPageDataFindProjection(collectionName, pagination, criteria, projection) {
@@ -236,19 +262,17 @@ export class DatabaseService {
             throw err;
         }
     }
- // use for all fields with pagination without projection
- static async getAll(collectionName,projection) {
-    try {
-        const db = mongodb.getDB();
-        let resultSet = await db.db().collection(collectionName).find(SOFT_DELETE_FIND_QUERY).project(projection).toArray();
-        
-        return resultSet;
-    } catch (err) {
-        throw err;
+    // use for all fields with pagination without projection
+    static async getAll(collectionName, projection) {
+        try {
+            const db = mongodb.getDB();
+            let resultSet = await db.db().collection(collectionName).find(SOFT_DELETE_FIND_QUERY).project(projection).toArray();
+
+            return resultSet;
+        } catch (err) {
+            throw err;
+        }
     }
-}
-
-
 }
 
 

@@ -14,25 +14,36 @@ import dynamicFormRoutes from './dynamic-form.route';
 import unitGroupRoutes from './unit-group.route'
 import unitDefinitionRoutes from './unit-definition.route'
 import endpointNotFound from './error-route';
-import fileUpload from './file-upload';
+import documentRoutes from './document.route';
+import permissionsRoutes from './permissions.route';
+import rolesRoutes from './roles.route';
+import menuRoutes from './menu.route';
+import parentmenuRoutes from './parentmenu.route';
+import submenuRoutes from './submenu.route';
 
 const router = express.Router();
 router.use('/authenticate', authenticationRoutes);
 
+// router.use(interceptor);
 //All routers should be attached after this only
 router.use('/masters', masterRoutes);
-router.use('/users', userRoutes);
+router.use('/user', userRoutes);
 router.use('/container', containerRoutes);
 router.use('/documentType', documentTypeRoutes);
 router.use('/storageConfig', storageConfigRoutes);
 router.use('/locationNodes', locationRoutes);///reusing location route as location is discarded
 router.use('/client', clientRoutes);
 router.use('/project', projectRoutes);
-router.use('/file',fileUpload)
+router.use('/document',documentRoutes)
 router.use('/locationType', locationTypeRoutes);
 router.use('/dynamic-form', dynamicFormRoutes);
-router.use('/unitGroup',unitGroupRoutes)
-router.use('/unitDefinition',unitDefinitionRoutes)
+router.use('/unitGroup',unitGroupRoutes);
+router.use('/unitDefinition',unitDefinitionRoutes);
+router.use('/permissions',permissionsRoutes);
+router.use('/roles',rolesRoutes);
+router.use('/mainMenu',menuRoutes);
+router.use('/parentMenu',parentmenuRoutes);
+router.use('/subMenu',submenuRoutes);
 
 router.use('/*', endpointNotFound);
 

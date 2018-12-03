@@ -1,26 +1,23 @@
 import express from 'express';
 import Joi from 'joi';
 import validator from 'express-joi-validator';
+import { RolesHandler } from '../handler/roles.handler';
 import logger from '../logger';
-import { UserHandler } from '../handler/user.handler';
 
 const router = express.Router();
+
 const log = logger.Logger;
-
-
+// please separate  out 
 const schema = {
 	body: {
-		firstName: Joi.string().alphanum().min(6).max(14).required(),
-		lastName: Joi.string().required(),
-		emailId: Joi.string().email().required(),
-		mobileNumber: Joi.string().required()
-		// roles: Joi.array().required(Joi.string().required())
+		roleName: Joi.string().min(1).max(255).required(),
+		permissions: Joi.array().items(Joi.string().min(1).max(255).required())
 	}
 }
 
 // get ALL
 router.get('/', (req, res) => {
-	let resultPromise = UserHandler.getAll();
+	let resultPromise = RolesHandler.getAll();
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
@@ -29,7 +26,7 @@ router.get('/', (req, res) => {
 		}
 	}).catch(err => {
 		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
+		throw new ApplicationError(INTERNAL_SERVER_ERROR, 500);
 	});
 });
 
@@ -38,7 +35,7 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
 	let id = req.params.id;
 
-	let resultPromise = UserHandler.getOne(id);
+	let resultPromise = RolesHandler.getOne(id);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
@@ -47,7 +44,7 @@ router.get('/:id', (req, res) => {
 		}
 	}).catch(err => {
 		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
+		throw new ApplicationError(INTERNAL_SERVER_ERROR, 500);
 	});
 });
 
@@ -55,7 +52,7 @@ router.get('/:id', (req, res) => {
 
 // save obj
 router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
-	let resultPromise = UserHandler.save(req.body);
+	let resultPromise = RolesHandler.save(req.body);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
@@ -64,7 +61,7 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 		}
 	}).catch(err => {
 		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
+		throw new ApplicationError(INTERNAL_SERVER_ERROR, 500);
 	});
 
 });
@@ -72,7 +69,7 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 // update ONE obj
 router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
 	
-	let resultPromise = UserHandler.updateOne(req.body);
+	let resultPromise = RolesHandler.updateOne(req.body);
 
 	resultPromise.then(function (result) {
 		if (result) {
@@ -82,7 +79,7 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 		}
 	}).catch(err => {
 		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
+		throw new ApplicationError(INTERNAL_SERVER_ERROR, 500);
 	});
 
 });
@@ -91,8 +88,7 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 // get ONE
 router.delete('/:id', (req, res) => {
 	let id = req.params.id;
-	
-	let resultPromise = UserHandler.deleteOne(id);
+	let resultPromise = RolesHandler.deleteOne(id);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
@@ -101,7 +97,7 @@ router.delete('/:id', (req, res) => {
 		}
 	}).catch(err => {
 		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
+		throw new ApplicationError(INTERNAL_SERVER_ERROR, 500);
 	});
 });
 

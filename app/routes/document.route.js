@@ -1,4 +1,4 @@
-import app from './../server'
+import app from '../server'
 import express from 'express';
 import multer from 'multer';
 import logger from '../logger';

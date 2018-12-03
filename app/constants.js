@@ -13,6 +13,7 @@ const USER_DETAILS_VERI_FAILED = "Username/password not matched. Please try agai
 const MAPPING_NOT_FOUND_ERROR = "Requested resource not available.";
 const SUBLEVEL_EXITS="Location cannot be deleted as it has sublevels defined";
 const INTERNAL_SERVER_ERROR = "Ohh crap!!! We are facing some issues. Please get back to us again after some time.";
+const UNAUTHORIZED_ACCESS = "You do not have access of this resource.";
 const LOCAL_HOST="localhost"
 const LOCAL_PORT="3000";
 const TEST_BASE_URL="https://rmm-server.herokuapp.com/";
@@ -37,5 +38,6 @@ export {
 	DEV_ENV,
 	DB_URL,
 	DB_USERNAME,
-	DB_PASSWORD
+	DB_PASSWORD,
+	UNAUTHORIZED_ACCESS
 }

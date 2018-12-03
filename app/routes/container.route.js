@@ -3,7 +3,9 @@ import Joi from 'joi';
 import validator from 'express-joi-validator';
 import logger from '../logger';
 import { ContainerHandler } from '../handler/container.handler';
-
+import { UserHandler } from '../handler/user.handler';
+import { RolesHandler } from '../handler/roles.handler';
+import app from './../server';
 
 const router = express.Router();
 const log = logger.Logger;
@@ -102,5 +104,29 @@ router.delete('/:id', (req, res) => {
 	});
 });
 
+function checkForPermissions(permissionName) {
+	console.log("middleware called");
+	// let loginId = app.get('user');
+	// let resultPromise = UserHandler.getOne(loginId);
+	// resultPromise.then(function (result) {
+	// 	if (result) {
+	// 		let user = result;
+	// 		console.log("User: ",user);
+			// let permissions = user.permissions;
+			// console.log("check permission: Permissions: ",permissions);
+			// if(permissions.includes(permissionName)){
+			// 	return true;
+			// } else {
+			// 	return false;
+			// }
+	// 	} else {
+	// 		log.error("user exist error: ",resut);
+	// 		return false;
+	// 	}
+	// }).catch(err => {
+	// 	log.error(err);
+	// 	return false;
+	// });
+}
 
 export default router;

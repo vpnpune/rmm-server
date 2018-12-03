@@ -1,14 +1,11 @@
 import { DatabaseService } from "../db/database.service";
 import * as Collection from '../db/collection-constants';
-import mongodb from "../db/mongodb";
-
 
 /* SET COLLECTION NAME FIRST*/
-const collectionName = Collection.LOCATION_TYPE;
+const collectionName = Collection.MENU;
 
-const ObjectId = require('mongodb').ObjectID;
 
-export class LocationTypeHandler {
+export class MenuHandler {
     // get all items from collection
     static async getAll() {
         try {
@@ -22,7 +19,8 @@ export class LocationTypeHandler {
     // get ONE object from db
     static async getOne(id) {
         try {
-            let result = await DatabaseService.getOne(collectionName, id);
+            let result = await  DatabaseService.getOne(collectionName,id);
+            console.log('result1: ',result);
             return result;
         } catch (err) {
             throw err;
@@ -32,9 +30,11 @@ export class LocationTypeHandler {
     // save object to db
     static async save(data) {
         try {
-
-            let result = await DatabaseService.save(collectionName, data);
-            return result.ops[0];
+            console.log(data);
+            data._id = data.name;
+            let result = await DatabaseService.saveWithoutAutoId(collectionName,data);
+            console.log('result : ',result);
+            return result.result;
         } catch (err) {
             throw err;
         }
@@ -42,7 +42,7 @@ export class LocationTypeHandler {
     // update container
     static async updateOne(data) {
         try {
-            let result = await DatabaseService.updateOne(collectionName, data);
+            let result =  await DatabaseService.updateOne(collectionName,data);
             return result;
         } catch (err) {
             throw err;
@@ -51,29 +51,24 @@ export class LocationTypeHandler {
     // Delete One container
     static async deleteOne(id) {
         try {
-            // send objectId version
-            let result = await DatabaseService.deleteOne(collectionName, id);
+            let result = await DatabaseService.deleteOne(collectionName,id);
             return result;
         } catch (err) {
             throw err;
         }
     }
-    static async getNotInList(dataList) {
+
+    // get all parent items from collection
+    static async getAllParentMenu() {
         try {
-
-            const db = mongodb.getDB();
-
-            console.log(this.dataList);
-            let result = await db.db().collection(collectionName).find({ "_id": { $nin: dataList } }).toArray();
-
+            let criteria = {"type":"sub"};
+            let result = await DatabaseService.findByCriteria(collectionName,criteria);
+            console.log('result: ',result);
             return result;
         } catch (err) {
             throw err;
         }
-
     }
 
+    
 }
-
-
-
