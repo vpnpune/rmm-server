@@ -2,22 +2,24 @@ import { DatabaseService } from "../db/database.service";
 import * as Collection from '../db/collection-constants';
 
 import mongodb from "../db/mongodb";
-
+import { SOFT_DELETE_FIND_QUERY } from "../model/generic-queries"
+import { DocumentHandler } from "./document.handler";
 /* SET COLLECTION NAME FIRST*/
 const collectionName = Collection.CLIENT;
+
 
 
 export class ClientHandler {
     // get all items from collection
     //@ts-nocheck
     static async getAll() {
+        let projection = {
+            aliases: 1, contactPersons: 1, name: 1, "clientAddress.state.name": 1,
+            "clientAddress.country.name": 1 
+        }
         try {
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).find(
-                { deleted: false }).project({ aliases: 1, clientContact: 1, name: 1, clientAddress: 1, projects: 0 })
-                .toArray();
-
-            //   let result = await DatabaseService.getAll(collectionName);
+           let result = await DatabaseService.getAll(collectionName,projection);
             return result;
         } catch (err) {
             throw err;
@@ -26,26 +28,40 @@ export class ClientHandler {
     }
     // get ONE object from db
     static async getOne(id) {
+        let projection = {
+            aliases: 1, clientContact: 1, name: 1, clientAddress: 1, deleted: 1,
+            contactPersons: 1, shipmentAddress: 1,
+            numberOfProjects:
+                { $size: { "$ifNull": ["$projects", []] } }
+        }
+        let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
+        criteria._id = id;
+        let filesProjection = {
+            _id: 1,
+            originalname: 1,
+            createdOn:1
+        }
+        let filesCriteria = {
+            foreignRef: id,
+            moduleCode: "CLIENT"
+        }
+
         try {
-            const db = mongodb.getDB();
-            console.log(id)
-            let result = await db.db().collection(collectionName).aggregate(
-                [{ $match: { "_id": id } }]).
-                project(
-                    {
-                        aliases: 1, clientContact: 1, name: 1, clientAddress: 1, deleted: 1,
-                        contactPersons: 1, shipmentAddress: 1,
-                        numberOfProjects:
-                        { $size: { "$ifNull": ["$projects", []] } }
-                    }
-                )
-                .toArray();
 
+            let result = await DatabaseService.getOneAggregation(collectionName, criteria,
 
-            if (result !== undefined && result.length > 0)
-                return result[0];
-            else
-                return {};
+                projection)
+            let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD,filesCriteria, filesProjection)
+            if (result !== undefined && result.length > 0) {
+
+                let clientObj = result[0]
+                clientObj.documents=fileResult
+                return clientObj
+            }
+            else {
+                return {}
+            }
+
         } catch (err) {
             throw err;
         }
@@ -64,19 +80,18 @@ export class ClientHandler {
     static async updateOne(data) {
         try {
             const db = mongodb.getDB();
+            let criteria = { "_id": data._id }
+            let modifiedFields = {
+                "clientContact": data.clientContact,
+                "name": data.name,
+                "clientAddress": data.clientAddress,
+                "aliases": data.aliases,
+                "contactPersons": data.contactPersons
 
-            let result = await db.db().collection(collectionName).updateOne({ "_id": id }, {
-                $set: {
-                    "clientContact": data.clientContact,
-                    "name": data.name,
-                    "clientAddress": data.clientAddress,
-                    "aliases": data.aliases,
-                    "contactPersons": data.contactPersons,
-                    "modifiedBy": data.modifiedBy,
-                    "modifiedOn": new Date()
+            }
+            let result = await DatabaseService.updateByCriteria(collectionName, criteria, modifiedFields);
 
-                }
-            });
+
             return result;
         } catch (err) {
             throw err;
@@ -92,29 +107,21 @@ export class ClientHandler {
         }
     }
     static async getPagedData(pagination) {
-        try {
-            //pagination = await DatabaseService.getPageData(collectionName, pagination);
 
-            const db = mongodb.getDB();
+        let projection = {
+            aliases: 1, clientContact: 1, name: 1, clientAddress: 1, deleted: 1, numberOfProjects:
+                { $size: { "$ifNull": ["$projects", []] } }
+        }
+        try {
             if (pagination.searchText != undefined) {
 
             }
-            pagination.resultSet = await db.db().collection(collectionName).aggregate(
-
-                [{ $match: { $or: [{ "deleted": { $exists: true, $eq: false } }, { "deleted": { $exists: false } }] } }]
-
-            ).project(
-                {
-                    aliases: 1, clientContact: 1, name: 1, clientAddress: 1, deleted: 1, numberOfProjects:
-                        { $size: { "$ifNull": ["$projects", []] } }
-                }
-            ).limit(parseInt(pagination.end)).skip(parseInt(pagination.start)).toArray();
+            pagination = await DatabaseService.getPagedDataWithAggregationAndProjection(collectionName, pagination, SOFT_DELETE_FIND_QUERY, projection);
 
 
             //@Todo : Working code need to revert if component if else works on client side
             //if(parseInt(pagination.start)===0){
             //pagination.totalSize = await db.db().collection(collectionName).find({}).count();
-
             return pagination;
         } catch (err) {
             throw err;

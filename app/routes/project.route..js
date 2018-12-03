@@ -13,6 +13,48 @@ const schema = {
 		name: Joi.string().min(3).required()
 	}
 }
+
+
+// get ALL
+router.get('/:clientId', (req, res) => {
+	let start = req.query.start;
+	let end = req.query.end;
+	let searchText = req.query.searchText;
+	let clientId = req.params.clientId;
+	// for pagination flow 
+	if (start !== undefined && end !== undefined) {
+		let pagination ={}
+		pagination.start = start;
+		pagination.end = end;
+		pagination.searchText = searchText;
+		let resultPromise = ProjectHandler.getAll(clientId);
+		
+		resultPromise.then(function (result) {
+			if (result) {
+				res.status(200).send(result);
+			}
+		}).catch(err => {
+			//
+			log.error(err);
+			res.status(500).send({ "message": "Something went wrong" });
+		});
+	} else {
+		let resultPromise = ProjectHandler.getAll(clientId);
+		resultPromise.then(function (result) {
+			if (result) {
+				res.status(200).send(result);
+			}
+		}).catch(err => {
+			log.error(err);
+			res.status(500).send({ "message": "Something went wrong" });
+		});
+	}
+
+
+
+});
+
+
 // get ALL
 router.get('/:clientId', (req, res) => {
 	let clientId = req.params.clientId;
@@ -53,7 +95,7 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 	let resultPromise = ProjectHandler.save(req.body);
 	resultPromise.then(function (result) {
 		if (result) {
-			res.status(200).send(result);
+			res.status(200).send({"_id":result.insertedId});
 		}
 	}).catch(err => {
 		log.error(err);

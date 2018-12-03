@@ -28,6 +28,7 @@ router.get('/', (req, res) => {
 		pagination.end = end;
 		pagination.searchText = searchText;
 		let resultPromise = ClientHandler.getPagedData(pagination);
+		
 		resultPromise.then(function (result) {
 			if (result) {
 				res.status(200).send(result);
@@ -57,7 +58,7 @@ router.get('/', (req, res) => {
 // get ONE
 router.get('/:id', (req, res) => {
 	let id = req.params.id;
-
+	console.log("id",id)
 	let resultPromise = ClientHandler.getOne(id);
 	
 	resultPromise.then(function (result) {
@@ -77,7 +78,7 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 	let resultPromise = ClientHandler.save(req.body);
 	resultPromise.then(function (result) {
 		if (result) {
-			res.status(200).send(result);
+			res.status(200).send({"_id":result.insertedId});
 		}
 	}).catch(err => {
 		log.error(err);
