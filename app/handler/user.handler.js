@@ -100,6 +100,7 @@ export class UserHandler {
 
     static async getUserPermissions(userName,password) {
         try{
+            console.log("1: ",userName);
             const db = mongodb.getDB();
             let data = await db.db().collection(collectionName).aggregate(
                 [ 
@@ -151,6 +152,7 @@ export class UserHandler {
                     }  
                 ]).toArray();
             if(data && data.length > 0) {
+                console.log(data);
                 let result = data[0];
                 let menus = result.menus;
                 let submenus = result.submenus;

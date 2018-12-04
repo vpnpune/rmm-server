@@ -50,21 +50,36 @@ router.post('/', (req, res) => {
     if(!userName || !password) {
         res.status(403).send(new ApplicationError(USER_DETAILS_VERI_FAILED,403));
     } else { 
-        let resultPromise = UserHandler.getUserPermissions(userName, password);
+        console.log(userName);
+        let resultPromise = UserHandler.getUserByCredentials(userName, password);
         resultPromise.then(function (result) {
             if (result) {
-                console.log("user: ",result.menus[0].submenu);
+                console.log("user: ",result);
                 CacheService.set(result._id,result);
                 let token = jwt.sign(result, app.get('secret'), {
                     expiresIn: 86400 // expires in 24 hours
                 });
                 
-                res.status(200).json({
-                    status: 200,
-                    message: 'Token generated successfully.',
-                    token: token,
-                    user: result,
-                    menus: result.menus
+                let userPermission = UserHandler.getUserPermissions(userName, password);
+                userPermission.then(function (data) {
+                    if (data) {
+                        CacheService.set(result._id,data);
+                        res.status(200).json({
+                            status: 200,
+                            message: 'Token generated successfully.',
+                            token: token,
+                            user: data,
+                            menus: data.menus
+                        });
+                    } else {
+                        res.status(200).json({
+                            status: 200,
+                            message: 'Token generated successfully.',
+                            token: token,
+                            user: result,
+                            menus: []
+                        });
+                    }
                 });
             } else {
                 res.status(403).send(new ApplicationError(USER_DETAILS_VERI_FAILED,403));
