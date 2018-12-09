@@ -116,7 +116,7 @@ export class ClientHandler {
             if (pagination.searchText != undefined) {
 
             }
-            pagination = await DatabaseService.getPagedDataWithAggregationAndProjection(collectionName, pagination, SOFT_DELETE_FIND_QUERY, projection);
+            pagination = await DatabaseService.getPageAggregate(collectionName, pagination, SOFT_DELETE_FIND_QUERY, projection);
 
 
             //@Todo : Working code need to revert if component if else works on client side

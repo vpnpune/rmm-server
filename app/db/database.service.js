@@ -278,9 +278,6 @@ export class DatabaseService {
         try {
 
             const db = mongodb.getDB();
-            if (pagination.searchText != undefined) {
-
-            }
             console.log(criteria)
             console.log(pagination)
             let result = await db.db().collection(collectionName).aggregate([
@@ -298,16 +295,9 @@ export class DatabaseService {
                         ]
                     }
                 }
-            ]).toArray()
-
-
+            ]).toArray();
             pagination.resultSet = result[0].totalData
-            console.log('re', result)
             pagination.totalSize = result[0].totalCount[0].count;
-
-
-
-
             return pagination;
         } catch (err) {
             throw err;

@@ -62,7 +62,9 @@ router.post('/', (req, res) => {
                 
                 let userPermission = UserHandler.getUserPermissions(userName, password);
                 userPermission.then(function (data) {
+                    console.log('data: ',data);
                     if (data) {
+                        console.log('if called');
                         CacheService.set(result._id,data);
                         res.status(200).json({
                             status: 200,
@@ -72,6 +74,7 @@ router.post('/', (req, res) => {
                             menus: data.menus
                         });
                     } else {
+                        console.log('else called');
                         res.status(200).json({
                             status: 200,
                             message: 'Token generated successfully.',

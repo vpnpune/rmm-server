@@ -24,10 +24,10 @@ import shipmentRoutes from './shipment.route';
 
 const router = express.Router();
 router.use('/authenticate', authenticationRoutes);
-
-// router.use(interceptor);
-//All routers should be attached after this only
 router.use('/masters', masterRoutes);
+
+router.use(interceptor);
+//All routers should be attached after this only
 router.use('/user', userRoutes);
 router.use('/container', containerRoutes);
 router.use('/documentType', documentTypeRoutes);
@@ -37,11 +37,11 @@ router.use('/client', clientRoutes);
 router.use('/project', projectRoutes);
 router.use('/document',documentRoutes)
 router.use('/locationType', locationTypeRoutes);
-router.use('/dynamic-form', dynamicFormRoutes);
+router.use('/dynamicForm', dynamicFormRoutes);
 router.use('/unitGroup',unitGroupRoutes);
 router.use('/unitDefinition',unitDefinitionRoutes);
-router.use('/permissions',permissionsRoutes);
-router.use('/roles',rolesRoutes);
+router.use('/permission',permissionsRoutes);
+router.use('/role',rolesRoutes);
 router.use('/mainMenu',menuRoutes);
 router.use('/parentMenu',parentmenuRoutes);
 router.use('/subMenu',submenuRoutes);
