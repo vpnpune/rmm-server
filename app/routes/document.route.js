@@ -12,8 +12,8 @@ const router = express.Router();
 const log = logger.Logger;
 
 aws.config.update({
-  accessKeyId: 'AKIAI4QPTJI5XAH3MC4Q',// process.env.accessKeyId,
-  secretAccessKey: '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', // process.env.secretAccessKey,
+  accessKeyId:  process.env.accessKeyId,
+  secretAccessKey:  process.env.secretAccessKey,
   region: 'us-east-2'// process.env.region
 });
 
