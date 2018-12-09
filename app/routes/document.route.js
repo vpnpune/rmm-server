@@ -13,8 +13,8 @@ const log = logger.Logger;
 
 aws.config.update({
   accessKeyId:  process.env.accessKeyId,
-  secretAccessKey: process.env.secretAccessKey,
-  region: process.env.region
+  secretAccessKey:  process.env.secretAccessKey,
+  region: 'us-east-2'// process.env.region
 });
 
 var s3 = new aws.S3();
@@ -66,7 +66,7 @@ router.post('/upload', upload.any(), function (req, res, next) {
     });
   } else {
     log.error(err);
-
+    console.log(err)
     throw new ApplicationError(INTERNAL_SERVER_ERROR, 500);
   }
 
@@ -126,11 +126,11 @@ router.delete('/delete/:id', function (req, res, next) {
         s3.deleteObject(options, function (err, data) {
           if (data.DeleteMarker) {
             resultPromise = DocumentHandler.deleteOne(id);
-            resultPromise.then(function(result){
-              return res.status(200).send({"deleted":true});
+            resultPromise.then(function (result) {
+              return res.status(200).send({ "deleted": true });
             });
 
-            }
+          }
         });
       } else {
         log.error(err);

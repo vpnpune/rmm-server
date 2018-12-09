@@ -7,7 +7,7 @@ import documentTypeRoutes from './document-type.route';
 import storageConfigRoutes from './storage-config.route';
 import locationRoutes from './location.route';
 import clientRoutes from './client.route';
-import projectRoutes from './project.route.';
+import projectRoutes from './project.route';
 import locationTypeRoutes from './location-type.route';
 import masterRoutes from './master.route';
 import dynamicFormRoutes from './dynamic-form.route';
@@ -20,6 +20,7 @@ import rolesRoutes from './roles.route';
 import menuRoutes from './menu.route';
 import parentmenuRoutes from './parentmenu.route';
 import submenuRoutes from './submenu.route';
+import shipmentRoutes from './shipment.route';
 
 const router = express.Router();
 router.use('/authenticate', authenticationRoutes);
@@ -44,6 +45,8 @@ router.use('/role',rolesRoutes);
 router.use('/mainMenu',menuRoutes);
 router.use('/parentMenu',parentmenuRoutes);
 router.use('/subMenu',submenuRoutes);
+router.use('/shipment',shipmentRoutes);
+
 
 router.use('/*', endpointNotFound);
 

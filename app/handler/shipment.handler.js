@@ -5,21 +5,19 @@ import mongodb from "../db/mongodb";
 import { SOFT_DELETE_FIND_QUERY } from "../model/generic-queries"
 import { DocumentHandler } from "./document.handler";
 /* SET COLLECTION NAME FIRST*/
-const collectionName = Collection.CLIENT;
+const collectionName = Collection.SHIPMENT;
 
 
 
-export class ClientHandler {
+export class ShipmentHandler {
     // get all items from collection
     //@ts-nocheck
-    static async getAll() {
+    static async getAll(clientId) {
         let projection = {
-            aliases: 1, contactPersons: 1, name: 1, "clientAddress.state.name": 1,
-            "clientAddress.country.name": 1 
+            shipmentStatus: 1, referenceNo: 1, courier: 1, "receivedBy": 1, nosOfSamples: 1
         }
         try {
-            const db = mongodb.getDB();
-           let result = await DatabaseService.getAll(collectionName,projection);
+            let result = await DatabaseService.getAll(collectionName, projection);
             return result;
         } catch (err) {
             throw err;
@@ -29,21 +27,18 @@ export class ClientHandler {
     // get ONE object from db
     static async getOne(id) {
         let projection = {
-            aliases: 1, clientContact: 1, name: 1, clientAddress: 1, deleted: 1,
-            contactPersons: 1, shipmentAddress: 1,
-            numberOfProjects:
-                { $size: { "$ifNull": ["$projects", []] } }
+            shipmentStatus: 1, referenceNo: 1, courier: 1, "receivedBy": 1, nosOfSamples: 1,
         }
         let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
         criteria._id = id;
         let filesProjection = {
             _id: 1,
             originalname: 1,
-            createdOn:1
+            createdOn: 1
         }
         let filesCriteria = {
             foreignRef: id,
-            moduleCode: "CLIENT"
+            moduleCode: "SHIPMENT"
         }
 
         try {
@@ -51,12 +46,12 @@ export class ClientHandler {
             let result = await DatabaseService.getOneAggregation(collectionName, criteria,
 
                 projection)
-            let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD,filesCriteria, filesProjection)
+            let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD, filesCriteria, filesProjection)
             if (result !== undefined && result.length > 0) {
 
-                let clientObj = result[0]
-                clientObj.documents=fileResult
-                return clientObj
+                let shipmentObj = result[0]
+                shipmentObj.documents = fileResult
+                return shipmentObj
             }
             else {
                 return {}
@@ -71,12 +66,13 @@ export class ClientHandler {
     static async save(data) {
         try {
             let result = await DatabaseService.save(collectionName, data);
+            //  console.log(result)
             return result.ops[0];
         } catch (err) {
             throw err;
         }
     }
-    // update container
+    // update shipment to do
     static async updateOne(data) {
         try {
             const db = mongodb.getDB();
@@ -97,7 +93,7 @@ export class ClientHandler {
             throw err;
         }
     }
-    // Delete One container
+    // Delete One shipment
     static async deleteOne(id) {
         try {
             let result = await DatabaseService.softDeleteOne(collectionName, id);
@@ -106,23 +102,28 @@ export class ClientHandler {
             throw err;
         }
     }
-    static async getPagedData(pagination) {
-
+    static async getPagedData(clientId, pagination) {
         let projection = {
-            aliases: 1, clientContact: 1, name: 1, clientAddress: 1, deleted: 1, numberOfProjects:
-                { $size: { "$ifNull": ["$projects", []] } }
+            shipmentStatus: 1, referenceNo: 1, courier: 1, "receivedBy": 1, nosOfSamples: 1,
+            clientId: 1
         }
+        let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
+        criteria.clientId = clientId;
         try {
-            if (pagination.searchText != undefined) {
-
+            if (pagination.searchText !== undefined) {
+                //criteria.referenceNo = new RegExp(/^BD/)
+                // {
+                //     $regex:
+                //         /^BD/
+                // }
             }
-            pagination = await DatabaseService.getPageAggregate(collectionName, pagination, SOFT_DELETE_FIND_QUERY, projection);
 
-
+            let result = await DatabaseService.getPageAggregate(collectionName, pagination, criteria, projection);
             //@Todo : Working code need to revert if component if else works on client side
             //if(parseInt(pagination.start)===0){
             //pagination.totalSize = await db.db().collection(collectionName).find({}).count();
-            return pagination;
+           
+            return result;
         } catch (err) {
             throw err;
         }

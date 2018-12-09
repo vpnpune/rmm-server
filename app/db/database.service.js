@@ -185,10 +185,10 @@ export class DatabaseService {
     static async getPageDataFindProjection(collectionName, pagination, criteria, projection) {
         try {
             const db = mongodb.getDB();
-            pagination.resultSet = await db.db().collection(collectionName).find(criteria).project(projection).limit(parseInt(pagination.end)).skip(parseInt(pagination.start)).toArray();
+            pagination.resultSet = await db.db().collection(collectionName).find(criteria).project(projection).limit(pagination.end).skip(pagination.start).toArray();
             //@Todo : Working code need to revert if component if else works on client side
             //if(parseInt(pagination.start)===0){
-            pagination.totalSize = await db.db().collection(collectionName).find({}).count();
+            pagination.totalSize = await db.db().collection(collectionName).find({ "referenceNo": new RegExp(/^'BD'/) }).count();
             //}else{
             //  
             //}
@@ -273,6 +273,38 @@ export class DatabaseService {
             throw err;
         }
     }
+
+    static async getPageAggregate(collectionName, pagination, criteria, projection) {
+        try {
+
+            const db = mongodb.getDB();
+            console.log(criteria)
+            console.log(pagination)
+            let result = await db.db().collection(collectionName).aggregate([
+                {
+                    "$facet": {
+                        "totalData": [
+                            { "$match": criteria },
+                            { "$project": projection },
+                            { "$skip": parseInt(pagination.start) },
+                            { "$limit": parseInt(pagination.end) }
+                        ],
+                        "totalCount": [
+                            { "$match": criteria },
+                            { "$count": "count" }
+                        ]
+                    }
+                }
+            ]).toArray();
+            pagination.resultSet = result[0].totalData
+            pagination.totalSize = result[0].totalCount[0].count;
+            return pagination;
+        } catch (err) {
+            throw err;
+        }
+
+    }
+
 }
 
 
