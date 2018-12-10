@@ -27,6 +27,7 @@ router.get('/', (req, res) => {
 		pagination.start = start;
 		pagination.end = end;
 		pagination.searchText = searchText;
+		console.log(pagination)
 		let resultPromise = ClientHandler.getPagedData(pagination);
 		
 		resultPromise.then(function (result) {

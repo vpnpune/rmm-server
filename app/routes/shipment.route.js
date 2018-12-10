@@ -107,7 +107,7 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 
 
 // get ONE
-router.delete('/:id', (req, res) => {
+router.delete('/:clientId/:id', (req, res) => {
 	let id = req.params.id;
 
 	let resultPromise = ShipmentHandler.deleteOne(id);
