@@ -27,7 +27,6 @@ export class ShipmentHandler {
     // get ONE object from db
     static async getOne(id) {
         let projection = {
-            shipmentStatus: 1, referenceNo: 1, courier: 1, "receivedBy": 1, nosOfSamples: 1,
         }
         let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
         criteria._id = id;
@@ -42,14 +41,13 @@ export class ShipmentHandler {
         }
 
         try {
-
-            let result = await DatabaseService.getOneAggregation(collectionName, criteria,
+            let result = await DatabaseService.getOneFind(collectionName, criteria,
 
                 projection)
             let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD, filesCriteria, filesProjection)
-            if (result !== undefined && result.length > 0) {
-
-                let shipmentObj = result[0]
+            
+            if (result !== undefined) {
+                let shipmentObj = result
                 shipmentObj.documents = fileResult
                 return shipmentObj
             }
