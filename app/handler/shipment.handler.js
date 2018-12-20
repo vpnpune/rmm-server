@@ -45,7 +45,7 @@ export class ShipmentHandler {
 
                 projection)
             let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD, filesCriteria, filesProjection)
-            
+
             if (result !== undefined) {
                 let shipmentObj = result
                 shipmentObj.documents = fileResult
@@ -76,11 +76,14 @@ export class ShipmentHandler {
             const db = mongodb.getDB();
             let criteria = { "_id": data._id }
             let modifiedFields = {
-                "clientContact": data.clientContact,
-                "name": data.name,
-                "clientAddress": data.clientAddress,
-                "aliases": data.aliases,
-                "contactPersons": data.contactPersons
+                "courier": data.courier,
+                "projectIds": data.projectIds,
+                "referenceNo": data.referenceNo,
+                "receivedBy": data.receivedBy,
+                "deliveredBy": data.deliveredBy,
+                "shipmentStatus": data.shipmentStatus,
+                "nosOfSamples": data.nosOfSamples
+
 
             }
             let result = await DatabaseService.updateByCriteria(collectionName, criteria, modifiedFields);
@@ -120,7 +123,7 @@ export class ShipmentHandler {
             //@Todo : Working code need to revert if component if else works on client side
             //if(parseInt(pagination.start)===0){
             //pagination.totalSize = await db.db().collection(collectionName).find({}).count();
-           
+
             return result;
         } catch (err) {
             throw err;
