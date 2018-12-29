@@ -31,8 +31,7 @@ export class ClientHandler {
         let projection = {
             aliases: 1, clientContact: 1, name: 1, clientAddress: 1, deleted: 1,
             contactPersons: 1, shipmentAddress: 1,
-            numberOfProjects:
-                { $size: { "$ifNull": ["$projects", []] } }
+           
         }
         let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
         criteria._id = id;
@@ -48,13 +47,14 @@ export class ClientHandler {
 
         try {
 
-            let result = await DatabaseService.getOneAggregation(collectionName, criteria,
+            let result = await DatabaseService.getOneFind(collectionName, criteria,
 
                 projection)
             let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD,filesCriteria, filesProjection)
-            if (result !== undefined && result.length > 0) {
+            console.log(result);
+            if (result) {
 
-                let clientObj = result[0]
+                let clientObj = result;
                 clientObj.documents=fileResult
                 return clientObj
             }
@@ -79,7 +79,6 @@ export class ClientHandler {
     // update container
     static async updateOne(data) {
         try {
-            const db = mongodb.getDB();
             let criteria = { "_id": data._id }
             let modifiedFields = {
                 "clientContact": data.clientContact,

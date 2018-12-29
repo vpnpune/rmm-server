@@ -55,8 +55,6 @@ router.get('/', (req, res) => {
 
 
 });
-
-
 // get ONE
 router.get('/:id', (req, res) => {
 	let id = req.params.id;
@@ -80,7 +78,7 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 	let resultPromise = ClientHandler.save(req.body);
 	resultPromise.then(function (result) {
 		if (result) {
-			res.status(200).send({"_id":result.insertedId});
+			res.status(200).send(result.ops[0]);
 		}
 	}).catch(err => {
 		log.error(err);
@@ -122,17 +120,5 @@ router.delete('/:id', (req, res) => {
 });
 
 
-router.get('/test', (req, res) => {
-	let id = req.params.id;
-	
-	let resultPromise = ClientHandler.getAll();
-	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
-		}
-	}).catch(err => {
-		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
-	});
-});
+
 export default router;
