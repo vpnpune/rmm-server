@@ -22,6 +22,8 @@ import parentmenuRoutes from './parentmenu.route';
 import submenuRoutes from './submenu.route';
 import shipmentRoutes from './shipment.route';
 import clientProjectPermissionRoutes from './client-project-permission.route';
+import equipmentRoutes from './equipment.route';
+
 
 const router = express.Router();
 router.use('/authenticate', authenticationRoutes);
@@ -48,6 +50,8 @@ router.use('/parentMenu',parentmenuRoutes);
 router.use('/subMenu',submenuRoutes);
 router.use('/shipment',shipmentRoutes);
 router.use('/clientProjectPermission',clientProjectPermissionRoutes);
+router.use('/equipment',equipmentRoutes);
+
 
 router.use('/*', endpointNotFound);
 

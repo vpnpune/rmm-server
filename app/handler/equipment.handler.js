@@ -5,16 +5,18 @@ import mongodb from "../db/mongodb";
 import { SOFT_DELETE_FIND_QUERY } from "../model/generic-queries"
 import { DocumentHandler } from "./document.handler";
 /* SET COLLECTION NAME FIRST*/
-const collectionName = Collection.SHIPMENT;
+const collectionName = Collection.EQUIPMENT;
 
 
 
-export class ShipmentHandler {
+export class EquipmentHandler {
     // get all items from collection
     //@ts-nocheck
     static async getAll() {
         let projection = {
-            shipmentStatus: 1, referenceNo: 1, courier: 1, "receivedBy": 1, nosOfSamples: 1
+            "name": 1,
+            "location": 1,
+            "status": 1
         }
         try {
             let result = await DatabaseService.getAll(collectionName, projection);
@@ -37,7 +39,7 @@ export class ShipmentHandler {
         }
         let filesCriteria = {
             foreignRef: id,
-            moduleCode: "SHIPMENT"
+            moduleCode: "EQUIPMENT"
         }
 
         try {
@@ -47,9 +49,9 @@ export class ShipmentHandler {
             let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD, filesCriteria, filesProjection)
 
             if (result !== undefined) {
-                let shipmentObj = result
-                shipmentObj.documents = fileResult
-                return shipmentObj
+                let dataObj = result
+                dataObj.documents = fileResult
+                return dataObj
             }
             else {
                 return {}
@@ -73,16 +75,15 @@ export class ShipmentHandler {
     // update shipment to do
     static async updateOne(data) {
         try {
-            const db = mongodb.getDB();
             let criteria = { "_id": data._id }
             let modifiedFields = {
-                "courier": data.courier,
-                "projectIds": data.projectIds,
-                "referenceNo": data.referenceNo,
-                "receivedBy": data.receivedBy,
-                "deliveredBy": data.deliveredBy,
-                "shipmentStatus": data.shipmentStatus,
-                "nosOfSamples": data.nosOfSamples
+                "name": data.name,
+                "location": data.location,
+                "status": data.status,
+                "temperature": data.temperature,
+                "co2": data.co2,
+                "humidity": data.humidity
+
             }
             let result = await DatabaseService.updateByCriteria(collectionName, criteria, modifiedFields);
 
@@ -101,13 +102,13 @@ export class ShipmentHandler {
             throw err;
         }
     }
-    static async getPagedData(clientId, pagination) {
+    static async getPagedData(pagination) {
         let projection = {
-            shipmentStatus: 1, referenceNo: 1, courier: 1, "receivedBy": 1, nosOfSamples: 1,
-            clientId: 1
+            "name": 1,
+            "location": 1,
+            "status": 1
         }
         let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
-        criteria.clientId = clientId;
         try {
             if (pagination.searchText !== undefined) {
                 //criteria.referenceNo = new RegExp(/^BD/)
@@ -116,7 +117,7 @@ export class ShipmentHandler {
                 //         /^BD/
                 // }
             }
-
+            console.warn("criteria ",criteria);
             let result = await DatabaseService.getPageAggregate(collectionName, pagination, criteria, projection);
             return result;
         } catch (err) {

@@ -17,5 +17,6 @@ export const ROLES = "roles";
 export const USER = "user";
 export const MENU = "menu";
 export const SUBMENU = "submenu";
-export const SHIPMENT ='shipments';
 export const CLIENT_PROJECT_PERMISSION = "clientProjectPermission";
+export const SHIPMENT ='shipments'
+export const EQUIPMENT ='equipments'
