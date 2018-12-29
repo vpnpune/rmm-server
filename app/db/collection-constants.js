@@ -18,3 +18,4 @@ export const USER = "user";
 export const MENU = "menu";
 export const SUBMENU = "submenu";
 export const SHIPMENT ='shipments'
+export const EQUIPMENT ='equipments'

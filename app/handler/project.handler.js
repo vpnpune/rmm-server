@@ -10,44 +10,31 @@ import { SOFT_DELETE_FIND_QUERY } from "../model/generic-queries";
 
 
 /* SET COLLECTION NAME FIRST*/
-const collectionName = Collection.CLIENT;
+const collectionName = Collection.PROJECT;
 
-// {
-//     $project: { "fields": { "projects": 1, "clientAddress": 0, "_id": 0 } }
 
-// }
+
 
 // need to test
 export class ProjectHandler {
-    // get all items from collection
-    static async getAll(clientId) {
-        try {
-            const db = mongodb.getDB();
-            //     let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
-            // criteria._id = clientId;
-            // criteria.projects.deleted= SOFT_DELETE_FIND_QUERY;
-            let query = {
-                _id: clientId,
-                "projects": {
-                    $elemMatch: {
-                        "deleted": { $exists: false }
-                    }
 
-                }
-            }
-            let result = await db.db().collection(collectionName).find(
-                query).project({ projects: 1 })
-                .toArray();
+    // save object to db
+    static async save(data) {
+        const db = mongodb.getDB();
+        try {
+            let result = await DatabaseService.save(collectionName, data);
             return result;
         } catch (err) {
             throw err;
         }
     }
     // get ONE object from db
-    static async getOne(clientId, projectId) {
-        let criteria = { '_id': clientId }
+    static async getOne(projectId) {
+
+        let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
+        criteria._id = projectId;
         let projectionDoc =
-            { 'projects': { $elemMatch: { '_id': projectId } } }
+            {}
 
         let filesProjection = {
             _id: 1,
@@ -63,93 +50,92 @@ export class ProjectHandler {
             let result = await DatabaseService.getOneFind(collectionName, criteria, projectionDoc)
             let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD, filesCriteria, filesProjection)
 
-            if (result != undefined && result.projects.length > 0) {
+            if (result) {
 
-                let project = result.projects[0]
+                let project = result
                 project.documents = fileResult
-
                 return project;
             }
             else {
                 return {}
             }
-
-            // console.log("Result: ", await cursor.count());
-
         } catch (err) {
             throw err;
         }
 
-    }
-    // save object to db
-    static async save(data) {
-        const db = mongodb.getDB();
-        try {
-            let result = await db.db().collection(collectionName).updateOne({ _id: data.clientId },
-                {
-                    $push: { projects: buildInsertObject(data) }
-
-                });
-            result.insertedId = data._id;
-            //let result = await DatabaseService.save(collectionName, data);
-            return result;
-        } catch (err) {
-            throw err;
-        }
     }
     // update container
     static async updateOne(data) {
-        const db = mongodb.getDB();
 
+        let criteria = { "_id": data._id }
+        let modifiedFields = {
+            "closed": data.closed,
+            "name": data.name,
+            "clientProjectManager": data.clientProjectManager,
+            "operationProjectManager": data.operationProjectManager,
+        }
         try {
-            let result = await db.db().collection(collectionName).updateOne(
-                { _id: data.clientId, "projects._id": data._id },
-                {
-                    $set: { "projects.$": buildUpdateObject(data) }
-
-                });
+            const db = mongodb.getDB();
+            let result = await DatabaseService.updateByCriteria(collectionName, criteria, modifiedFields);
             return result;
         } catch (err) {
             throw err;
         }
     }
-    // Delete One container
-    static async deleteOne(clientId, id) {
+
+    // get all items from collection
+    static async getAll() {
+        let projection ={}
         try {
-            //  let result = await DatabaseService.deleteOne(collectionName, id);
+            let result = await DatabaseService.getAll(collectionName, projection);
+
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+
+    // Delete One container
+    static async deleteOne(id) {
+        try {
             const db = mongodb.getDB();
-            // let result = await db.db().collection(collectionName).findOne(
-            //     {
-            //         _id: clientId,
-            //         "projects": { "_id": projectId }
+
+            let result = await DatabaseService.softDeleteOne(collectionName, id);
+
+
+            // let result = await db.db().collection(collectionName).updateOne({ "_id": clientId, "projects._id": id }, {
+            //     $set: {
+            //         "projects.$.deleted": true,
+            //         "projects.$.modifiedOn": new Date(),
+            //         "projects.$.modifiedBy": app.get('user')
             //     }
-            // );
-
-
-
-            let result = await db.db().collection(collectionName).updateOne({ "_id": clientId, "projects._id": id }, {
-                $set: {
-                    "projects.$.deleted": true,
-                    "projects.$.modifiedOn": new Date(),
-                    "projects.$.modifiedBy": app.get('user')
-                }
-            });
+            // });
             return result;
         } catch (err) {
             throw err;
         }
     }
     // need to be implemented
-    static async getPagedData(clientId, pagination) {
+    static async getPagedData(pagination) {
+        let projection = {closed:1,name:1,clientProjectManager:1,operationProjectManager:1
+        }
+        let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
+        if (pagination.queryParams){
+            // iterate other parameters and create query
+        }
+
+        //criteria.clientId = clientId;
         try {
-            const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).find(
-                { _id: clientId }).project({ projects: 1 })
-                .toArray();
+            if (pagination.searchText !== undefined) {
+            }
+
+            let result = await DatabaseService.getPageAggregate(collectionName, pagination, criteria, projection);
             return result;
         } catch (err) {
             throw err;
         }
+
     }
 }
 

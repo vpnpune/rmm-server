@@ -17,17 +17,18 @@ const schema = {
 }
 // get ALL
 router.get('/', (req, res) => {
-	let start = req.query.start;
-	let end = req.query.end;
-	let searchText = req.query.searchText;
+	let pageIndex = req.query.pageIndex;
+	let pageSize = req.query.pageSize;
+	let searchText = req.query.filter;
 	
 	// for pagination flow 
-	if (start !== undefined && end !== undefined) {
+	if (pageIndex && pageSize) {
 		let pagination ={}
-		pagination.start = start;
-		pagination.end = end;
-		pagination.searchText = searchText;
-		console.log(pagination)
+		pagination.start = parseInt(pageIndex)*parseInt(pageSize)  ;
+		pagination.end = parseInt(pageSize);
+		if(searchText){
+			pagination.searchText= searchText;	
+		}
 		let resultPromise = ClientHandler.getPagedData(pagination);
 		
 		resultPromise.then(function (result) {
