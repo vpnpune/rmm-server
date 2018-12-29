@@ -151,6 +151,32 @@ export class ProjectHandler {
             throw err;
         }
     }
+
+    static async getProjectsWithoutClientId() {
+        try{
+            const db = mongodb.getDB();
+            let data = await db.db().collection(collectionName).aggregate(
+                [
+                    {"$match":
+                        {"deleted":{"$ne":true}}
+                    },
+                    {"$unwind":"$projects"},
+                    {"$match":
+                        {"projects.deleted":{"$ne":true}}
+                    },
+                    {"$project":
+                        {
+                            "_id":true,"name":true,"projects":true
+                        }
+                    }
+                ]
+            ).toArray();
+            return data;
+        } catch(err) {
+            console.log(err);
+            throw err;
+        }
+    }
 }
 
 

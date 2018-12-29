@@ -136,5 +136,18 @@ router.delete('/:clientId/:projectId', (req, res) => {
 	});
 });
 
+router.get('/', (req, res) => {
+	let resultPromise = ProjectHandler.getProjectsWithoutClientId();
+	
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({ "message": "Something went wrong" });
+	});
+});
+
 
 export default router;
