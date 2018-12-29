@@ -21,6 +21,7 @@ import menuRoutes from './menu.route';
 import parentmenuRoutes from './parentmenu.route';
 import submenuRoutes from './submenu.route';
 import shipmentRoutes from './shipment.route';
+import clientProjectPermissionRoutes from './client-project-permission.route';
 import equipmentRoutes from './equipment.route';
 
 
@@ -48,6 +49,7 @@ router.use('/mainMenu',menuRoutes);
 router.use('/parentMenu',parentmenuRoutes);
 router.use('/subMenu',submenuRoutes);
 router.use('/shipment',shipmentRoutes);
+router.use('/clientProjectPermission',clientProjectPermissionRoutes);
 router.use('/equipment',equipmentRoutes);
 
 

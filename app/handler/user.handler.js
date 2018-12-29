@@ -108,9 +108,8 @@ export class UserHandler {
                     "$and":[
                         {"password":password},
                         {"$or":[
-                            {"password":userName},
-                            {"password":userName},
-                            {"password":userName}
+                            {"userName":userName},
+                            {"emailId":userName}
                         ]}
                     ]}
                     }, 
