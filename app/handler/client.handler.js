@@ -117,21 +117,21 @@ export class ClientHandler {
                 {
                     "$facet": {
                         "totalData": [
-                            { "$match": { "deleted": { $ne: true } } },
-                            { "$lookup": { "from": "project", "localField": "_id", "foreignField": "clientId", "as": "projects" } },
-                            { "$unwind": "$projects" },
-                            { "$match": { "projects.deleted": { $ne: true } } },
                             {
-                                "$group": {
-                                    "_id": "$_id", "name": { "$first": "$name" }, "aliases": { "$first": "$aliases" }, "clientContact": { "$first": "$clientContact" },
-                                    "clientAddress": { "$first": "$clientAddress" }
-                                    , "projectArr": { "$addToSet": "$projects" }, "noOfProject": { "$sum": 1 }
+                                "$match":
+                                    { "deleted": { "$ne": true } }
+                            },
+                            { "$lookup": { "from": "project", "localField": "_id", "foreignField": "clientId", "as": "project" } },
+                            {
+                                "$project":
+                                {
+                                    "_id": true, "name": true, "aliases": true, "clientContact": true, "clientAddress": true, "items": {
+                                        "$filter":
+                                            { "input": "$project", "as": "item", "cond": { "$ne": ["$$item.deleted", true] } }
+                                    }
                                 }
                             },
-                            { "$project": { "_id": true, "name": true, "aliases": true, "clientContact": true, "clientAddress": true, "noOfProject": true } },
-                            { "$skip": parseInt(pagination.start) },
-                            { "$limit": parseInt(pagination.end) }
-                        ],
+                            { "$project": { "_id": true, "name": true, "aliases": true, "clientContact": true, "clientAddress": true, "noOfProject": { "$size": "$items" } } }],
                         "totalCount": [
                             { "$match": { "deleted": { $ne: true } } },
                             { "$count": "count" }
