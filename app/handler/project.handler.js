@@ -73,6 +73,7 @@ export class ProjectHandler {
             "name": data.name,
             "clientProjectManager": data.clientProjectManager,
             "operationProjectManager": data.operationProjectManager,
+            "sampleDefinition": data.sampleDefinition ? data.sampleDefinition : undefined
         }
         try {
             const db = mongodb.getDB();
@@ -117,7 +118,7 @@ export class ProjectHandler {
         }
     }
     // need to be implemented
-    static async getPagedData(pagination, clientId=null) {
+    static async getPagedData(pagination, clientId = null) {
         let projection = {
             closed: 1, name: 1, clientProjectManager: 1, operationProjectManager: 1
         }
