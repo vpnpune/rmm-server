@@ -46,7 +46,12 @@ router.get('/', (req, res) => {
 			res.status(500).send({ "message": "Something went wrong" });
 		});
 	} else {
-		let resultPromise = ProjectHandler.getAll();
+		let resultPromise;
+		if (clientId)
+			resultPromise = ProjectHandler.getAllWithCriteria(clientId);
+		else
+			resultPromise = ProjectHandler.getAll();
+
 		resultPromise.then(function (result) {
 			if (result) {
 				res.status(200).send(result);
@@ -127,7 +132,7 @@ router.delete('/:projectId', (req, res) => {
 
 router.get('/', (req, res) => {
 	let resultPromise = ProjectHandler.getProjectsWithoutClientId();
-	
+
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);

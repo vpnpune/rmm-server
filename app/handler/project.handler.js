@@ -85,7 +85,7 @@ export class ProjectHandler {
 
     // get all items from collection
     static async getAll() {
-        let projection ={}
+        let projection = {}
         try {
             let result = await DatabaseService.getAll(collectionName, projection);
 
@@ -118,10 +118,11 @@ export class ProjectHandler {
     }
     // need to be implemented
     static async getPagedData(pagination) {
-        let projection = {closed:1,name:1,clientProjectManager:1,operationProjectManager:1
+        let projection = {
+            closed: 1, name: 1, clientProjectManager: 1, operationProjectManager: 1
         }
         let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
-        if (pagination.queryParams){
+        if (pagination.queryParams) {
             // iterate other parameters and create query
         }
 
@@ -138,27 +139,51 @@ export class ProjectHandler {
 
     }
 
+    static async getAllWithCriteria(clientId) {
+        let criteria = {}
+        criteria.clientId = clientId;
+
+        let projection = {
+            "closed": 1,
+            "name": 1,
+            "clientProjectManager": 1,
+            "operationProjectManager": 1
+        }
+        try {
+            console.log(criteria)
+            let result = await DatabaseService.findByCriteria(collectionName, criteria, projection)
+            console.log(result)
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+
     static async getProjectsWithoutClientId() {
-        try{
+        try {
             const db = mongodb.getDB();
             let data = await db.db().collection(collectionName).aggregate(
                 [
-                    {"$match":
-                        {"deleted":{"$ne":true}}
+                    {
+                        "$match":
+                            { "deleted": { "$ne": true } }
                     },
-                    {"$unwind":"$projects"},
-                    {"$match":
-                        {"projects.deleted":{"$ne":true}}
+                    { "$unwind": "$projects" },
+                    {
+                        "$match":
+                            { "projects.deleted": { "$ne": true } }
                     },
-                    {"$project":
+                    {
+                        "$project":
                         {
-                            "_id":true,"name":true,"projects":true
+                            "_id": true, "name": true, "projects": true
                         }
                     }
                 ]
             ).toArray();
             return data;
-        } catch(err) {
+        } catch (err) {
             console.log(err);
             throw err;
         }
