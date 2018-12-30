@@ -117,11 +117,14 @@ export class ProjectHandler {
         }
     }
     // need to be implemented
-    static async getPagedData(pagination) {
+    static async getPagedData(pagination, clientId=null) {
         let projection = {
             closed: 1, name: 1, clientProjectManager: 1, operationProjectManager: 1
         }
         let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
+        if (clientId)
+            criteria.clientId = clientId
+
         if (pagination.queryParams) {
             // iterate other parameters and create query
         }

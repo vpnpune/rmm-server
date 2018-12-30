@@ -34,7 +34,7 @@ router.get('/', (req, res) => {
 		if (searchText) {
 			pagination.searchText = searchText;
 		}
-		let resultPromise = ProjectHandler.getPagedData(pagination);
+		let resultPromise = ProjectHandler.getPagedData(pagination,clientId);
 
 		resultPromise.then(function (result) {
 			if (result) {
