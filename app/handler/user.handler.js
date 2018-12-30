@@ -105,13 +105,13 @@ export class UserHandler {
             let data = await db.db().collection(collectionName).aggregate(
                 [ 
                     {"$match":{
-                    "$and":[
-                        {"password":password},
-                        {"$or":[
-                            {"userName":userName},
-                            {"emailId":userName}
+                        "$and":[
+                            {"password":password},
+                            {"$or":[
+                                {"userName":userName},
+                                {"emailId":userName}
+                            ]}
                         ]}
-                    ]}
                     }, 
                     {"$unwind": "$roles"}, 
                     {"$lookup": 
