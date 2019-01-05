@@ -130,7 +130,7 @@ router.delete('/:projectId', (req, res) => {
 	});
 });
 
-router.get('/', (req, res) => {
+router.get('/project/all', (req, res) => {
 	let resultPromise = ProjectHandler.getProjectsWithoutClientId();
 
 	resultPromise.then(function (result) {

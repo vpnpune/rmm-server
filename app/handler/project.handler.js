@@ -173,17 +173,22 @@ export class ProjectHandler {
                         "$match":
                             { "deleted": { "$ne": true } }
                     },
-                    { "$unwind": "$projects" },
-                    {
-                        "$match":
-                            { "projects.deleted": { "$ne": true } }
+                    {"$lookup":{
+                        "from":"client",
+                        "localField":"clientId",
+                        "foreignField":"_id",
+                        "as":"clientObj"
+                    }},
+                    {"$match":
+                        {"clientObj.deleted":{"$ne":true}}
                     },
                     {
                         "$project":
                         {
-                            "_id": true, "name": true, "projects": true
+                            "_id":true,"name":true,"clientObj._id":true,"clientObj.name":true
                         }
-                    }
+                    },
+                    {"$unwind": "$clientObj"}
                 ]
             ).toArray();
             return data;

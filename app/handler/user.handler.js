@@ -100,18 +100,17 @@ export class UserHandler {
 
     static async getUserPermissions(userName,password) {
         try{
-            console.log("1: ",userName);
             const db = mongodb.getDB();
             let data = await db.db().collection(collectionName).aggregate(
                 [ 
                     {"$match":{
-                    "$and":[
-                        {"password":password},
-                        {"$or":[
-                            {"userName":userName},
-                            {"emailId":userName}
+                        "$and":[
+                            {"password":password},
+                            {"$or":[
+                                {"userName":userName},
+                                {"emailId":userName}
+                            ]}
                         ]}
-                    ]}
                     }, 
                     {"$unwind": "$roles"}, 
                     {"$lookup": 
