@@ -23,6 +23,8 @@ import submenuRoutes from './submenu.route';
 import shipmentRoutes from './shipment.route';
 import clientProjectPermissionRoutes from './client-project-permission.route';
 import equipmentRoutes from './equipment.route';
+import equipmentReservationRoutes from './equipment-reservation.route';
+
 
 
 const router = express.Router();
@@ -38,20 +40,20 @@ router.use('/storageConfig', storageConfigRoutes);
 router.use('/locationNodes', locationRoutes);///reusing location route as location is discarded
 router.use('/client', clientRoutes);
 router.use('/project', projectRoutes);
-router.use('/document',documentRoutes)
+router.use('/document', documentRoutes)
 router.use('/locationType', locationTypeRoutes);
 router.use('/dynamicForm', dynamicFormRoutes);
-router.use('/unitGroup',unitGroupRoutes);
-router.use('/unitDefinition',unitDefinitionRoutes);
-router.use('/permission',permissionsRoutes);
-router.use('/role',rolesRoutes);
-router.use('/mainMenu',menuRoutes);
-router.use('/parentMenu',parentmenuRoutes);
-router.use('/subMenu',submenuRoutes);
-router.use('/shipment',shipmentRoutes);
-router.use('/clientProjectPermission',clientProjectPermissionRoutes);
-router.use('/equipment',equipmentRoutes);
-
+router.use('/unitGroup', unitGroupRoutes);
+router.use('/unitDefinition', unitDefinitionRoutes);
+router.use('/permission', permissionsRoutes);
+router.use('/role', rolesRoutes);
+router.use('/mainMenu', menuRoutes);
+router.use('/parentMenu', parentmenuRoutes);
+router.use('/subMenu', submenuRoutes);
+router.use('/shipment', shipmentRoutes);
+router.use('/clientProjectPermission', clientProjectPermissionRoutes);
+router.use('/equipment', equipmentRoutes);
+router.use('/equipmentReservation', equipmentReservationRoutes);
 
 router.use('/*', endpointNotFound);
 

@@ -20,3 +20,6 @@ export const SUBMENU = "submenu";
 export const CLIENT_PROJECT_PERMISSION = "clientProjectPermission";
 export const SHIPMENT ='shipments'
 export const EQUIPMENT ='equipments'
+export const SAMPLES ='samples';
+export const EQUIPMENT_CLIENT ='equipmentClientAllocation';
+

@@ -1,6 +1,8 @@
 import mongodb from "./mongodb";
 import { buildInsertObject, buildUpdateObject, addCreationDetails } from "./user-audit";
 import { SOFT_DELETE_FIND_QUERY } from "../model/generic-queries";
+import app from './../server'
+import uniqid from "uniqid";
 
 
 export class DatabaseService {
@@ -291,7 +293,7 @@ export class DatabaseService {
         try {
 
             const db = mongodb.getDB();
-            console.log(" c ",criteria)
+            console.log(" c ", criteria)
             console.log(pagination)
             let result = await db.db().collection(collectionName).aggregate([
                 {
@@ -309,19 +311,64 @@ export class DatabaseService {
                     }
                 }
             ]).toArray();
-            console.log("res",result);
-            if (result && result.length > 0 && result[0].totalCount[0] ) {
+            console.log("res", result);
+            if (result && result.length > 0 && result[0].totalCount[0]) {
                 pagination.resultSet = result[0].totalData
                 pagination.totalSize = result[0].totalCount[0].count;
-            }else{
-                pagination.resultSet=[];
-                pagination.totalSize=0;
+            } else {
+                pagination.resultSet = [];
+                pagination.totalSize = 0;
             }
             return pagination;
         } catch (err) {
             throw err;
         }
 
+    }
+    static async bulkUpsert(collectionName, data) {
+        try {
+
+
+
+            const db = mongodb.getDB();
+            // let result = await db.db().collection(collectionName).updateMany(
+            //     {},
+            //     data,
+            //     { upsert: true, }
+            // );
+            // return result;
+            var bulk = await db.db().collection(collectionName).initializeUnorderedBulkOp();
+
+            for (let row of data) {
+                console.log('condition ', row._id && row._id.length > 0);
+                if (row._id && row._id.length > 0) {
+
+                } else {
+                    row._id = uniqid()
+                    console.log(row._id);
+                }
+
+
+
+                // row._id = row._id && row._id.length > 0 ? row._id : uniqid();
+                console.log(row);
+                bulk.find({ _id: row._id }).upsert().updateOne(
+                    {
+                        equipmentId: row.equipmentId,
+                        clientId: row.clientId,
+                        createdBy: row.createdBy ? row.createdBy : app.get('user'),
+                        createdOn: row.createdOn ? row.createdOn : new Date(),
+                        modifiedBy: app.get('user'),
+                        modifiedOn: new Date()
+                    }
+                );
+            }
+
+            return bulk.execute();
+        } catch (err) {
+            console.log(err);
+            throw err;
+        }
     }
 
 }

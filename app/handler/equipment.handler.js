@@ -18,9 +18,12 @@ export class EquipmentHandler {
             "location": 1,
             "status": 1
         }
+        let pagination={} 
         try {
             let result = await DatabaseService.getAll(collectionName, projection);
-            return result;
+            pagination.resultSet = result
+
+            return pagination;
         } catch (err) {
             throw err;
         }
