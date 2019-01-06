@@ -88,6 +88,19 @@ export class DatabaseService {
 
     }
 
+    // Delete One collection
+    static async deleteMany(collectionName, criteria) {
+        try {
+
+            const db = mongodb.getDB();
+            let result = await db.db().collection(collectionName).deleteMany(criteria);
+            return result;
+        } catch (err) {
+            throw err;
+        }
+
+    }
+
     // get all items from collection for pagination
     static async getPageData(collectionName, pagination) {
         try {

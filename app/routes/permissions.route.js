@@ -70,7 +70,7 @@ router.post('/', validator(body, { allowUnknown: true, abortEarly: false }),(req
 });
 
 // update ONE obj
-router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
+router.put('/', validator(body, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
 	
 	let resultPromise = PermissionsHandler.updateOne(req.body);
 
@@ -89,9 +89,9 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 
 
 // get ONE
-router.delete('/:id', (req, res) => {
-	let id = req.params.id;
-	let resultPromise = PermissionsHandler.deleteOne(id);
+router.delete('/:name', validator(body, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
+	let name = req.params.name;
+	let resultPromise = PermissionsHandler.deleteOne(name);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);

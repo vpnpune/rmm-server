@@ -10,10 +10,17 @@ const collectionName = Collection.PERMISSION;
 export class PermissionsHandler {
     // get all items from collection
     static async getAll() {
-        try {
-            let result = await DatabaseService.getAll(collectionName);
-            return result;
-        } catch (err) {
+        try{
+            const db = mongodb.getDB();
+            let data = await db.db().collection(collectionName).aggregate(
+                [
+                    {"$group":
+                        {"_id":{"name":"$name", "url":"$url"},
+                        "permission":{"$addToSet":"$operation"}}
+                }]).toArray();
+            return data;
+        } catch(err) {
+            console.log(err);
             throw err;
         }
 
@@ -43,16 +50,20 @@ export class PermissionsHandler {
     // update container
     static async updateOne(data) {
         try {
-            let result =  await DatabaseService.updateOne(collectionName,data);
-            return result;
+            console.log(data);
+            let criteria = {"name":data[0].name};
+            await DatabaseService.deleteMany(collectionName,criteria);
+            let result = await PermissionsHandler.savePermissions(collectionName,data);
+            return false;
         } catch (err) {
             throw err;
         }
     }
     // Delete One container
-    static async deleteOne(id) {
+    static async deleteOne(data) {
         try {
-            let result = await DatabaseService.deleteOne(collectionName,id);
+            let criteria = {"name":data};
+            let result = await DatabaseService.deleteMany(collectionName,criteria);
             return result;
         } catch (err) {
             throw err;
