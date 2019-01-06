@@ -128,6 +128,19 @@ export class EquipmentHandler {
         }
 
     }
+    static async getByCriteria(criteria) {
+        console.log(criteria);
+        let pagination={} 
+        try {
+            let result = await DatabaseService.findByCriteria(collectionName, criteria);
+            pagination.resultSet = result
+
+            return pagination;
+        } catch (err) {
+            throw err;
+        }
+
+    }
 }
 
 
