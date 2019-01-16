@@ -131,7 +131,9 @@ export class ClientHandler {
                                     }
                                 }
                             },
-                            { "$project": { "_id": true, "name": true, "aliases": true, "clientContact": true, "clientAddress": true, "noOfProject": { "$size": "$items" } } }],
+                            { "$project": { "_id": true, "name": true, "aliases": true, "clientContact": true, "clientAddress": true, "noOfProject": { "$size": "$items" } } },
+                            { "$skip": parseInt(pagination.start) },
+                            { "$limit": parseInt(pagination.end) }],
                         "totalCount": [
                             { "$match": { "deleted": { $ne: true } } },
                             { "$count": "count" }
@@ -147,7 +149,7 @@ export class ClientHandler {
                 pagination.resultSet = [];
                 pagination.totalSize = 0;
             }
-            console.log(pagination)
+          //  console.log(pagination)
             return pagination;
         } catch (err) {
             throw err;
