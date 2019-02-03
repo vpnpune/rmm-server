@@ -11,13 +11,18 @@ export class PermissionsHandler {
     // get all items from collection
     static async getAll() {
         try{
+            console.log("Me cakked");
             const db = mongodb.getDB();
             let data = await db.db().collection(collectionName).aggregate(
                 [
-                    {"$group":
-                        {"_id":{"name":"$name", "url":"$url"},
-                        "permission":{"$addToSet":"$operation"}}
-                }]).toArray();
+                    {"$group":{
+                        "_id":{"name":"$name", "url":"$url"},
+                        "permission":{
+                            "$addToSet":{"_id":"$_id","operation":"$operation","permissionName":"$permissionName"}}
+                        }
+                    }
+                ]).toArray();
+                console.log("service called");
             return data;
         } catch(err) {
             console.log(err);

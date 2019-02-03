@@ -10,11 +10,7 @@ const log = logger.Logger;
 
 const schema = {
 	body: {
-		firstName: Joi.string().alphanum().min(6).max(14).required(),
-		lastName: Joi.string().required(),
-		emailId: Joi.string().email().required(),
-		mobileNumber: Joi.string().required()
-		// roles: Joi.array().required(Joi.string().required())
+		emailId: Joi.string().email().required()
 	}
 }
 
