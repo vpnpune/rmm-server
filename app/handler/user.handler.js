@@ -32,6 +32,7 @@ export class UserHandler {
     static async save(data) {
         try {
             //Adding permissions while saving user because user creation is one time process so it is optimized way while getting data of user
+            
             data._id = data.userName;
             let result = await  DatabaseService.saveWithoutAutoId(collectionName,data);
             
@@ -41,6 +42,26 @@ export class UserHandler {
             throw err;
         }
     }
+
+    static async emailIdExist(emailId) {
+        let emailIdExist = await DatabaseService.findByCriteria(collectionName,{"emailId":emailId});
+        console.log(emailIdExist);
+        if(emailIdExist.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    static async emailIdExistForUpdate(data) {
+        let emailIdExist = await DatabaseService.findByCriteria(collectionName,{"_id":data._id,"emailId":emailId});
+        if(emailIdExist.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     // update container
     static async updateOne(data) {
         try {

@@ -51,36 +51,47 @@ router.get('/:id', (req, res) => {
 
 // save obj
 router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
-	let resultPromise = UserHandler.save(req.body);
-	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
+	let emailExist = UserHandler.emailIdExist(req.body.emailId);
+	emailExist.then(function(data) {
+		if(data) {
+			res.status(422).send({"message":"EmailId exist"});
 		} else {
-			res.status(200).send([]);
+			let resultPromise = UserHandler.save(req.body);
+			resultPromise.then(function (result) {
+				if (result) {
+					res.status(200).send(result);
+				} else {
+					res.status(200).send([]);
+				}
+			}).catch(err => {
+				log.error(err);
+				res.status(500).send({ "message": "Something went wrong" });
+			});
 		}
-	}).catch(err => {
-		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
 	});
-
+	//console.log(emailExist);
 });
 
 // update ONE obj
-router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
-	
-	let resultPromise = UserHandler.updateOne(req.body);
-
-	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
+router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {	
+	let emailExist = UserHandler.emailIdExistForUpdate(req.body);
+	emailExist.then(function(data) {
+		if(data) {
+			res.status(422).send({"message":"EmailId exist"});
 		} else {
-			res.status(200).send([]);
+			let resultPromise = UserHandler.updateOne(req.body);
+			resultPromise.then(function (result) {
+				if (result) {
+					res.status(200).send(result);
+				} else {
+					res.status(200).send([]);
+				}
+			}).catch(err => {
+				log.error(err);
+				res.status(500).send({ "message": "Something went wrong" });
+			});
 		}
-	}).catch(err => {
-		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
-	});
-
+	})
 });
 
 
