@@ -22,16 +22,23 @@ const connectDB = async (callback) => {
         MongoClient.connect(uri, { useNewUrlParser: true }, (err, db) => {
             _db = db
             
-            // const collection = db.db().collection('containerType');
-            // const changeStream = collection.watch({ fullDocument: 'updateLookup' });
+            const collection = db.db().collection('containerType');
+            const changeStream = collection.watch({ fullDocument: 'updateLookup' });
 
-            // let resumeToken, newChangeStream;
-            // changeStream.on('change', next => {
-            //     console.log('called');
-            //     resumeToken = next._id;
-            //     console.log('resume: ',next);
-            //     // changeStream.close();
-            // });
+            let resumeToken, newChangeStream;
+            changeStream.on('change', next => {
+                resumeToken = next._id;
+                console.log('resume: ',next);
+                let obj = {
+                    "operationType": next.operationType,
+                    "document": next.fullDocument,
+                    "collection": next.ns.coll,
+                    "modifiedFields": next.updateDescription.updatedFields
+                };
+                console.log('obj: ',obj);
+                db.db().collection('containerType').save(obj);
+                // changeStream.close();
+            });
             return callback(err)
         })
     } catch (e) {

@@ -12,7 +12,7 @@ class CacheService {
 
   get(key, storeFunction) {
     const value = this.cache.get(key);
-    console.log('value: ',value);
+    // console.log('value: ',value);
     if (value) {
       return Promise.resolve(value);
     }

@@ -33,8 +33,9 @@ router.use(function(req, res, next) {
 				let resultPromise = CacheService.get(decoded.userName);
 				resultPromise.then(function (result) {
 					if (result) {
-						console.log(result);
-						if(result.permissions && checkPermissions(result.permissions, mapping, method )) {
+						console.log('After caching promise return');
+						console.log(result.roles.includes('SuperAdmin'));
+						if(result.roles.includes('SuperAdmin') || (result.permissions && checkPermissions(result.permissions, mapping, method ))) {
 							next();
 						} else {
 							res.status(403).send(new ApplicationError(UNAUTHORIZED_ACCESS,401));
@@ -44,7 +45,7 @@ router.use(function(req, res, next) {
 						res.status(403).send(new ApplicationError(USER_DETAILS_VERI_FAILED,403));
 					}
 				}).catch(err => {
-					log.error(err);
+					console.log(err);
 					throw new ApplicationError(INTERNAL_SERVER_ERROR, 500);
 				});
 			}
@@ -60,6 +61,7 @@ function getPosition(string, subString, index) {
 }
 
 function checkPermissions(permissions,url, operation ) {
+	// console.log(permissions);
 	for(let permission of permissions) {
 		if(permission.url === url && permission.operation === operation) {
 			return true;
