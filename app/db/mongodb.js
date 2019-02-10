@@ -36,7 +36,7 @@ const connectDB = async (callback) => {
                     "modifiedFields": next.updateDescription.updatedFields
                 };
                 console.log('obj: ',obj);
-                db.db().collection('containerType').save(obj);
+                db.db().collection('activityHistory').save(obj);
                 // changeStream.close();
             });
             return callback(err)
