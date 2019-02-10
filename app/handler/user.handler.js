@@ -54,7 +54,7 @@ export class UserHandler {
     }
 
     static async emailIdExistForUpdate(data) {
-        let emailIdExist = await DatabaseService.findByCriteria(collectionName,{"_id":data._id,"emailId":emailId});
+        let emailIdExist = await DatabaseService.findByCriteria(collectionName,{"_id":{"$ne":data._id},"emailId":data.emailId});
         if(emailIdExist.length > 0) {
             return true;
         } else {
