@@ -1,7 +1,9 @@
 import express from 'express';
 import Joi from 'joi';
 import validator from 'express-joi-validator';
-import { LocationTypeHandler } from '../handler/location-type.handler';
+import {
+	LocationTypeHandler
+} from '../handler/location-type.handler';
 import logger from '../logger';
 
 
@@ -28,7 +30,9 @@ router.get('/', (req, res) => {
 	}).catch(err => {
 		log.error(err);
 
-		res.status(500).send({ "message": "Something went wrong" });
+		res.status(500).send({
+			"message": "Something went wrong"
+		});
 	});
 });
 
@@ -46,14 +50,20 @@ router.get('/:id', (req, res) => {
 		}
 	}).catch(err => {
 		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
+		res.status(500).send({
+			"message": "Something went wrong"
+		});
 	});
 });
 
 
 
 // save obj
-router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
+router.post('/', validator(schema, {
+	allowUnknown: true,
+	abortEarly: false
+}), (req, res, next) => {
+	console.log(req.body)
 	let resultPromise = LocationTypeHandler.save(req.body);
 	resultPromise.then(function (result) {
 		if (result) {
@@ -62,15 +72,26 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 			res.status(200).send([]);
 		}
 	}).catch(err => {
-		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
+		log.error(err)
+		console.log(err)
+		if (err && err.code == 11000) {
+			res.status(400).send({
+				"message": "Record already exist",
+				"code": 11000
+			});
+		} else {
+			res.status(500).send(err);
+		}
 	});
 
 });
 
 // update ONE obj
-router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
-	
+router.put('/', validator(schema, {
+	allowUnknown: true,
+	abortEarly: false
+}), (req, res, next) => {
+
 	let resultPromise = LocationTypeHandler.updateOne(req.body);
 
 	resultPromise.then(function (result) {
@@ -80,8 +101,15 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 			res.status(200).send([]);
 		}
 	}).catch(err => {
-		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
+		if (err && err.code == 11000) {
+			res.status(400).send({
+				"message": "Record already exist",
+				"code": 11000
+			});
+
+		} else {
+			res.status(500).send(err);
+		}
 	});
 
 });
@@ -90,7 +118,7 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 // get ONE
 router.delete('/:id', (req, res) => {
 	let id = req.params.id;
-	
+
 	let resultPromise = LocationTypeHandler.deleteOne(id);
 	resultPromise.then(function (result) {
 		if (result) {
@@ -100,7 +128,9 @@ router.delete('/:id', (req, res) => {
 		}
 	}).catch(err => {
 		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
+		res.status(500).send({
+			"message": "Something went wrong"
+		});
 	});
 });
 
