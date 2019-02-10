@@ -22,9 +22,7 @@ export class DocumentTypeHandler {
         try {
      
             let result = await  DatabaseService.getOne(collectionName,id);
-            console.debug(result.modifiedOn.toLocaleString());
-            console.debug(result.modifiedOn);
-            new Date();
+            
             return result;
         } catch (err) {
             throw err;
