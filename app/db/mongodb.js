@@ -32,9 +32,13 @@ const connectDB = async (callback) => {
                 let obj = {
                     "operationType": next.operationType,
                     "document": next.fullDocument,
-                    "collection": next.ns.coll,
-                    "modifiedFields": next.updateDescription.updatedFields
+                    "collection": next.ns.coll
                 };
+                if(undefined !== next.updateDescription) {
+                    obj["modifiedFields"] = next.updateDescription.updatedFields;
+                } else {
+                    obj["modifiedFields"] = null;
+                }
                 console.log('obj: ',obj);
                 db.db().collection('activityHistory').save(obj);
                 // changeStream.close();
