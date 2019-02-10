@@ -31,7 +31,7 @@ const router = express.Router();
 router.use('/authenticate', authenticationRoutes);
 router.use('/masters', masterRoutes);
 
-//router.use(interceptor);
+router.use(interceptor);
 //All routers should be attached after this only
 router.use('/user', userRoutes);
 router.use('/container', containerRoutes);

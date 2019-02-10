@@ -11,7 +11,6 @@ export class PermissionsHandler {
     // get all items from collection
     static async getAll() {
         try{
-            console.log("Me cakked");
             const db = mongodb.getDB();
             let data = await db.db().collection(collectionName).aggregate(
                 [
