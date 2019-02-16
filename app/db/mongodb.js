@@ -1,5 +1,6 @@
 import { MongoClient, ObjectID } from 'mongodb';
 import * as constants from './../constants'; // import constants
+import * as Collection from '../db/collection-constants';
 
 const pipeline = [
     {
@@ -40,7 +41,7 @@ const connectDB = async (callback) => {
                     obj["modifiedFields"] = null;
                 }
                 console.log('obj: ',obj);
-                db.db().collection('activityHistory').save(obj);
+                db.db().collection(Collection.ACTIVITY_HISTORY).save(obj);
                 // changeStream.close();
             });
             return callback(err)
