@@ -24,14 +24,14 @@ import shipmentRoutes from './shipment.route';
 import clientProjectPermissionRoutes from './client-project-permission.route';
 import equipmentRoutes from './equipment.route';
 import equipmentReservationRoutes from './equipment-reservation.route';
-
+import equipmentNodeRoutes from './equipment-node.route';
 
 
 const router = express.Router();
 router.use('/authenticate', authenticationRoutes);
 router.use('/masters', masterRoutes);
 
-router.use(interceptor);
+ router.use(interceptor);
 //All routers should be attached after this only
 router.use('/user', userRoutes);
 router.use('/container', containerRoutes);
@@ -54,6 +54,7 @@ router.use('/shipment', shipmentRoutes);
 router.use('/clientProjectPermission', clientProjectPermissionRoutes);
 router.use('/equipment', equipmentRoutes);
 router.use('/equipmentReservation', equipmentReservationRoutes);
+router.use('/equipmentStorageNode', equipmentNodeRoutes);
 
 router.use('/*', endpointNotFound);
 
