@@ -106,7 +106,6 @@ router.delete('/:id', (req, res) => {
 // get ONE
 router.get('/getParent/:parentId', (req, res) => {
 	let parentId = req.params.parentId;
-	console.log(parentId);
 	let resultPromise = LocationHandler.getExceptParentLocationTypeList(parentId);
 	resultPromise.then(function (result) {
 		if (result) {
@@ -121,10 +120,8 @@ router.get('/getParent/:parentId', (req, res) => {
 });
 router.get('/canBeDeleted/:parentId', (req, res) => {
 	let parentId = req.params.parentId;
-	console.log(parentId);
 	let resultPromise = LocationHandler.checkIsParentOfAnyItem(parentId);
 	resultPromise.then(function (result) {
-		console.log(result);
 		if (result) {
 			res.status(200).send(result);
 		} else {

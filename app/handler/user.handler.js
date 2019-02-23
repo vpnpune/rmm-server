@@ -38,14 +38,12 @@ export class UserHandler {
             
             return result.ops[0];
         } catch (err) {
-            console.log(err);
             throw err;
         }
     }
 
     static async emailIdExist(emailId) {
         let emailIdExist = await DatabaseService.findByCriteria(collectionName,{"emailId":emailId});
-        console.log(emailIdExist);
         if(emailIdExist.length > 0) {
             return true;
         } else {
@@ -68,7 +66,6 @@ export class UserHandler {
             let result =  await DatabaseService.updateOne(collectionName,data);
             return result;
         } catch (err) {
-            console.log(err);
             throw err;
         }
     }
@@ -111,10 +108,8 @@ export class UserHandler {
                 ]
             };
             let result = await  DatabaseService.findByCriteria(collectionName,criteria);
-            console.log("Data: ",result);
             return result[0];
         } catch (err) {
-            console.log(err);
             throw err;
         }
     }
@@ -185,13 +180,11 @@ export class UserHandler {
                     menu.children = subMenuArr;
                 }
                 result.menus = menus;
-                console.log('data: ',result);
                 return result;
             } else {
                 return null;
             }
         } catch(err) {
-            console.log(err);
             throw err;
         }
     }

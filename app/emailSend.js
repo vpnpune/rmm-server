@@ -22,6 +22,5 @@ export function sendMail(subject, body) {
         if (err) {
           return console.error(err)
         }
-        console.log(responseStatus)
       });
 }

@@ -46,7 +46,6 @@ router.get('/worldStates', (req, res) => {
 // get ONE
 router.get('/worldStates/:countryId', (req, res) => {
 	let countryId = req.params.countryId;
-	console.log("countryId",countryId)
 	const collectionName = Collection.WORLD_STATES;
 	let criteria ={"country_id":parseInt(countryId)};
 	let resultPromise = MasterHandler.getWithKey(collectionName,criteria)

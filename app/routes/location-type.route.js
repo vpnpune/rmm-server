@@ -63,7 +63,6 @@ router.post('/', validator(schema, {
 	allowUnknown: true,
 	abortEarly: false
 }), (req, res, next) => {
-	console.log(req.body)
 	let resultPromise = LocationTypeHandler.save(req.body);
 	resultPromise.then(function (result) {
 		if (result) {
@@ -73,7 +72,6 @@ router.post('/', validator(schema, {
 		}
 	}).catch(err => {
 		log.error(err)
-		console.log(err)
 		if (err && err.code == 11000) {
 			res.status(400).send({
 				"message": "Record already exist",

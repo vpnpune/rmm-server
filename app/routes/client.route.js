@@ -58,7 +58,6 @@ router.get('/', (req, res) => {
 // get ONE
 router.get('/:id', (req, res) => {
 	let id = req.params.id;
-	console.log("id",id)
 	let resultPromise = ClientHandler.getOne(id);
 	
 	resultPromise.then(function (result) {

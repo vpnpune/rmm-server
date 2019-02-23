@@ -20,7 +20,6 @@ export class SubmenuHandler {
     static async getOne(id) {
         try {
             let result = await  DatabaseService.getOne(collectionName,id);
-            console.log('result1: ',result);
             return result;
         } catch (err) {
             throw err;
@@ -30,10 +29,8 @@ export class SubmenuHandler {
     // save object to db
     static async save(data) {
         try {
-            console.log(data);
             data._id = data.name;
             let result = await DatabaseService.saveWithoutAutoId(collectionName,data);
-            console.log('result : ',result);
             return result.result;
         } catch (err) {
             throw err;

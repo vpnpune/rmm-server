@@ -37,7 +37,6 @@ export class ClientProjectPermissionHandler {
                 ]).toArray();
             return data;
         } catch(err) {
-            console.log(err);
             throw err;
         }
 
@@ -74,7 +73,6 @@ export class ClientProjectPermissionHandler {
     // Delete One container
     static async deleteOne(id) {
         try {
-            console.log(id);
             let result = await DatabaseService.softDeleteOne(collectionName,id);
             return result;
         } catch (err) {

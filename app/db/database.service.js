@@ -59,7 +59,6 @@ export class DatabaseService {
             let result = await db.db().collection(collectionName).insertOne(buildInsertObject(data));
             return result;
         } catch (err) {
-            console.log('error : ', err);
             throw err;
         }
     }
@@ -68,11 +67,9 @@ export class DatabaseService {
     static async updateOne(collectionName, data) {
         try {
             const db = mongodb.getDB();
-            console.log(data);
             let result = await db.db().collection(collectionName).updateOne({ "_id": data._id }, { $set: buildUpdateObject(data) }, { upsert: false });
             return result;
         } catch (err) {
-            console.log(err);
             throw err;
         }
     }
@@ -168,7 +165,6 @@ export class DatabaseService {
             let result = await db.db().collection(collectionName).find(criteria).toArray();
             return result;
         } catch (err) {
-            console.log(err);
             throw err;
         }
     }
@@ -185,7 +181,6 @@ export class DatabaseService {
 
             return bulk.execute();
         } catch (err) {
-            console.log(err);
             throw err;
         }
     }
@@ -246,8 +241,6 @@ export class DatabaseService {
                 { projection: projectionDoc }
             );
             //let result = await db.db().collection(collectionName).findOne(criteria);
-            console.log(result)
-            return result;
         } catch (err) {
             throw err;
         }
@@ -293,8 +286,6 @@ export class DatabaseService {
         try {
 
             const db = mongodb.getDB();
-            console.log(" c ", criteria)
-            console.log(pagination)
             let result = await db.db().collection(collectionName).aggregate([
                 {
                     "$facet": {
@@ -311,7 +302,6 @@ export class DatabaseService {
                     }
                 }
             ]).toArray();
-            console.log("res", result);
             if (result && result.length > 0 && result[0].totalCount[0]) {
                 pagination.resultSet = result[0].totalData
                 pagination.totalSize = result[0].totalCount[0].count;
@@ -340,18 +330,15 @@ export class DatabaseService {
             var bulk = await db.db().collection(collectionName).initializeUnorderedBulkOp();
 
             for (let row of data) {
-                console.log('condition ', row._id && row._id.length > 0);
                 if (row._id && row._id.length > 0) {
 
                 } else {
                     row._id = uniqid()
-                    console.log(row._id);
                 }
 
 
 
                 // row._id = row._id && row._id.length > 0 ? row._id : uniqid();
-                console.log(row);
                 bulk.find({ _id: row._id }).upsert().updateOne(
                     {
                         equipmentId: row.equipmentId,
@@ -366,7 +353,6 @@ export class DatabaseService {
 
             return bulk.execute();
         } catch (err) {
-            console.log(err);
             throw err;
         }
     }

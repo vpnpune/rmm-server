@@ -69,7 +69,6 @@ export class EquipmentHandler {
     static async save(data) {
         try {
             let result = await DatabaseService.save(collectionName, data);
-            //  console.log(result)
             return result.ops[0];
         } catch (err) {
             throw err;
@@ -129,7 +128,6 @@ export class EquipmentHandler {
 
     }
     static async getByCriteria(criteria) {
-        console.log(criteria);
         let pagination={} 
         try {
             let result = await DatabaseService.findByCriteria(collectionName, criteria);

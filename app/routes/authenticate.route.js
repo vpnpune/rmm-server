@@ -50,22 +50,18 @@ router.post('/', (req, res) => {
     if(!userName || !password) {
         res.status(403).send(new ApplicationError(USER_DETAILS_VERI_FAILED,403));
     } else { 
-        console.log(userName);
         let resultPromise = UserHandler.getUserByCredentials(userName, password);
         resultPromise.then(function (result) {
             if (result) {
-                console.log("user: ",result);
-                CacheService.set(result._id,result);
+                CacheService.set(result.userName,result);
                 let token = jwt.sign(result, app.get('secret'), {
                     expiresIn: 86400 // expires in 24 hours
                 });
                 
                 let userPermission = UserHandler.getUserPermissions(userName, password);
                 userPermission.then(function (data) {
-                    console.log('data: ',data);
                     if (data) {
-                        console.log('if called');
-                        CacheService.set(result._id,data);
+                        CacheService.set(result.userName,data);
                         res.status(200).json({
                             status: 200,
                             message: 'Token generated successfully.',
@@ -74,7 +70,6 @@ router.post('/', (req, res) => {
                             menus: data.menus
                         });
                     } else {
-                        console.log('else called');
                         res.status(200).json({
                             status: 200,
                             message: 'Token generated successfully.',

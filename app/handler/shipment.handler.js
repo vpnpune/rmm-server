@@ -64,7 +64,6 @@ export class ShipmentHandler {
     static async save(data) {
         try {
             let result = await DatabaseService.save(collectionName, data);
-            //  console.log(result)
             return result.ops[0];
         } catch (err) {
             throw err;

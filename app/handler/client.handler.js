@@ -51,7 +51,6 @@ export class ClientHandler {
 
                 projection)
             let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD, filesCriteria, filesProjection)
-            console.log(result);
             if (result) {
 
                 let clientObj = result;
@@ -71,7 +70,6 @@ export class ClientHandler {
     static async save(data) {
         try {
             let result = await DatabaseService.save(collectionName, data);
-            console.log(result.ops[0])
             return result;
         } catch (err) {
             throw err;
@@ -149,7 +147,6 @@ export class ClientHandler {
                 pagination.resultSet = [];
                 pagination.totalSize = 0;
             }
-          //  console.log(pagination)
             return pagination;
         } catch (err) {
             throw err;

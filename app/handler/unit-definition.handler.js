@@ -53,7 +53,6 @@ export class UnitDefinitionHandler {
             let result = await DatabaseService.softDeleteOne(collectionName, id);
             return result;
         } catch (err) {
-            console.log("Catch error: ",err);
             throw err;
         }
     }

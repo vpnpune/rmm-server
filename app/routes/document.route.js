@@ -33,10 +33,6 @@ var upload = multer({
 
 //use by upload form
 router.post('/upload', upload.any(), function (req, res, next) {
-  //console.log(req)
-  console.log("id ", req.body.identifier);
-  console.log("mod ", req.body.MODULE_CODE);
-
   if (undefined !== req.files && null !== req.files && req.files.length === 1) {
     let file = req.files[0];
     let document = {};
@@ -66,7 +62,6 @@ router.post('/upload', upload.any(), function (req, res, next) {
     });
   } else {
     log.error(err);
-    console.log(err)
     throw new ApplicationError(INTERNAL_SERVER_ERROR, 500);
   }
 
@@ -75,8 +70,6 @@ router.post('/upload', upload.any(), function (req, res, next) {
 router.get('/download/:id', function (req, res, next) {
   try {
     let id = req.params.id;
-    console.log(id);
-
 
     let resultPromise = DocumentHandler.getOne(id);
     resultPromise.then(function (result) {
@@ -85,7 +78,6 @@ router.get('/download/:id', function (req, res, next) {
           Bucket: 'rmm-s3-store',
           Key: result.key,
         };
-        console.log(result)
         let fileStream = s3.getObject(options).createReadStream();
         res.attachment(result.key);
 
@@ -111,7 +103,6 @@ router.get('/download/:id', function (req, res, next) {
 router.delete('/delete/:id', function (req, res, next) {
   try {
     let id = req.params.id;
-    console.log(id);
     // remove from S3
     // then remove from DB
     let resultPromise = DocumentHandler.getOne(id);

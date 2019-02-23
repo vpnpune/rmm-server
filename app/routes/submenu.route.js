@@ -28,7 +28,6 @@ router.get('/', (req, res) => {
 // get ONE
 router.get('/:id', (req, res) => {
 	let id = req.params.id;
-	console.log("di");
 	let resultPromise = SubmenuHandler.getOne(id);
 	resultPromise.then(function (result) {
 		if (result) {
