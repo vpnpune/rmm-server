@@ -241,6 +241,7 @@ export class DatabaseService {
                 { projection: projectionDoc }
             );
             //let result = await db.db().collection(collectionName).findOne(criteria);
+            return result;
         } catch (err) {
             throw err;
         }

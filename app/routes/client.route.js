@@ -59,7 +59,7 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
 	let id = req.params.id;
 	let resultPromise = ClientHandler.getOne(id);
-	
+	console.log('get one ')
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);

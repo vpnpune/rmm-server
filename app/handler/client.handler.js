@@ -49,7 +49,9 @@ export class ClientHandler {
 
             let result = await DatabaseService.getOneFind(collectionName, criteria,
 
-                projection)
+                projection);
+            
+                console.log(result);
             let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD, filesCriteria, filesProjection)
             if (result) {
 
