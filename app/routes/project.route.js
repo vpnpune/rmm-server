@@ -89,7 +89,6 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 	let resultPromise = ProjectHandler.save(req.body);
 	resultPromise.then(function (result) {
 		if (result) {
-			console.log(result)
 			res.status(200).send(result.ops[0]);
 		}
 	}).catch(err => {

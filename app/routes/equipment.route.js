@@ -21,7 +21,6 @@ const schema = {
 router.get('/:id', (req, res) => {
 	let id = req.params.id;
 	//let clientId  = req.params.clientId;
-	console.log("id->", id)
 	let resultPromise = EquipmentHandler.getOne(id);
 
 	resultPromise.then(function (result) {
@@ -117,21 +116,16 @@ router.get('/', (req, res) => {
 	}
 	else if (tempMedian || humidityMedian || co2Median) {
 		let criteria = {};
-		console.log('config controls');
 		if (tempMedian) {
 			criteria['temperature.median'] = parseInt(tempMedian)
-			console.log('config controls ->', criteria);
 
 		}
 		if (humidityMedian) {
-			console.log('h', criteria);
 			criteria['humidity.median'] = parseInt(humidityMedian);
 		}
 		if (co2Median) {
-			console.log('c', criteria);
 			criteria['co2.median'] = parseInt(co2Median);
 		}
-		console.log('config controls', criteria);
 
 		let resultPromise = EquipmentHandler.getByCriteria(criteria);
 		resultPromise.then(function (result) {

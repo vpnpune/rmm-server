@@ -20,7 +20,6 @@ router.post('/', (req, res, next) => {
 
 	resultPromise.then(function (result) {
 		if (result) {
-			console.log(JSON.stringify(result))
 			res.status(200).send(result);
 		}
 	}).catch(err => {

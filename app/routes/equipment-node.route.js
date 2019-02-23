@@ -120,15 +120,12 @@ router.delete('/:id', (req, res) => {
 });
 
 function checkForPermissions(permissionName) {
-	console.log("middleware called");
 	// let loginId = app.get('user');
 	// let resultPromise = UserHandler.getOne(loginId);
 	// resultPromise.then(function (result) {
 	// 	if (result) {
 	// 		let user = result;
-	// 		console.log("User: ",user);
 	// let permissions = user.permissions;
-	// console.log("check permission: Permissions: ",permissions);
 	// if(permissions.includes(permissionName)){
 	// 	return true;
 	// } else {

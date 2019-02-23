@@ -154,9 +154,7 @@ export class ProjectHandler {
             "operationProjectManager": 1
         }
         try {
-            console.log(criteria)
             let result = await DatabaseService.findByCriteria(collectionName, criteria, projection)
-            console.log(result)
             return result;
         } catch (err) {
             throw err;
@@ -193,7 +191,6 @@ export class ProjectHandler {
             ).toArray();
             return data;
         } catch (err) {
-            console.log(err);
             throw err;
         }
     }

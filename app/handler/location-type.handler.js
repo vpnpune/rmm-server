@@ -63,7 +63,6 @@ export class LocationTypeHandler {
 
             const db = mongodb.getDB();
 
-            console.log(this.dataList);
             let result = await db.db().collection(collectionName).find({ "_id": { $nin: dataList } }).toArray();
 
             return result;

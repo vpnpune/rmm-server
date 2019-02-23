@@ -19,7 +19,6 @@ let _db
 
 const connectDB = async (callback) => {
     try {
-        console.log("DB URL: ",uri);
         MongoClient.connect(uri, { useNewUrlParser: true }, (err, db) => {
             _db = db
             
@@ -29,7 +28,6 @@ const connectDB = async (callback) => {
             let resumeToken, newChangeStream;
             changeStream.on('change', next => {
                 resumeToken = next._id;
-                console.log('resume: ',next);
                 let obj = {
                     "operationType": next.operationType,
                     "document": next.fullDocument,
@@ -40,7 +38,6 @@ const connectDB = async (callback) => {
                 } else {
                     obj["modifiedFields"] = null;
                 }
-                console.log('obj: ',obj);
                 db.db().collection(Collection.ACTIVITY_HISTORY).save(obj);
                 // changeStream.close();
             });

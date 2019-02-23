@@ -69,7 +69,6 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 			});
 		}
 	});
-	//console.log(emailExist);
 });
 
 // update ONE obj

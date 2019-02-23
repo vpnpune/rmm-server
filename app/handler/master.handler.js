@@ -23,13 +23,10 @@ export class MasterHandler {
     static async getWithKey(collectionName,criteria) {
         try {
             const db = mongodb.getDB();
-            console.log(criteria)
             let result = await db.db().collection(collectionName).find(criteria).toArray();
 
             return result;
         } catch (err) {
-            console.log(err);
-            
             throw err;
         }
 

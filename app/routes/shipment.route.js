@@ -60,7 +60,6 @@ const schema = {
 router.get('/:clientId/:id', (req, res) => {
 	let id = req.params.id;
 	//let clientId  = req.params.clientId;
-	console.log("id->", id)
 	let resultPromise = ShipmentHandler.getOne(id);
 
 	resultPromise.then(function (result) {
@@ -142,7 +141,6 @@ router.get('/:clientId', (req, res) => {
 	let pageSize = req.query.pageSize;
 	let searchText = req.query.filter;
 	let clientId = req.params.clientId;
-	console.log('s', clientId)
 	// for pagination flow 
 	if (pageIndex && pageSize) {
 		let pagination = {}

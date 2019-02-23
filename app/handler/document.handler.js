@@ -57,7 +57,6 @@ export class DocumentHandler {
     static async getByCriteria(criteria,projection) {
         try {
             let result = await DatabaseService.findByCriteria(collectionName,criteria,projection)
-            console.log('result1: ',result);
             return result;
         } catch (err) {
             throw err;

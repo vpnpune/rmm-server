@@ -21,7 +21,6 @@ export class RolesHandler {
     static async getOne(id) {
         try {
             let result = await  DatabaseService.getOne(collectionName,id);
-            console.log('result1: ',result);
             return result;
         } catch (err) {
             throw err;
@@ -40,7 +39,6 @@ export class RolesHandler {
             }
             data.permissions = permissionArr;
             let result = await DatabaseService.saveWithoutAutoId(collectionName,data);
-            console.log('result : ',result);
             return result.ops[0];
         } catch (err) {
             throw err;
@@ -77,7 +75,6 @@ export class RolesHandler {
         try {
             let criteria = {"roleName": roleName}
             let result = await  DatabaseService.findByCriteria(collectionName,criteria);
-            console.log(result);
             return result;
         } catch (err) {
             throw err;

@@ -27,7 +27,6 @@ router.get('/', (req, res) => {
 // get ONE
 router.get('/:collectionName', (req, res) => {
 	let collectionName = req.params.collectionName;
-	console.log("collection Name",collectionName)
 	let resultPromise = MasterHandler.getWithKey(collectionName)
 	resultPromise.then(function (result) {
 		if (result) {

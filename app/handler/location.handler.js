@@ -55,13 +55,11 @@ export class LocationHandler {
         try {
             let check1 = await LocationHandler.checkIsParentOfAnyItem(id);
             if (check1){
-                console.log('check : ',check1);
                 throw new ApplicationError(SUBLEVEL_EXITS, 400);
             }
             let result = await DatabaseService.deleteOne(collectionName, id);
             return result;
         } catch (err) {
-            console.log("Catch error: ",err);
             throw err;
         }
     }
@@ -69,7 +67,6 @@ export class LocationHandler {
         try {
             let result;
             //get Location
-            console.log("parentId" + parentId + " coll " + collectionName);
             let parent = await DatabaseService.getOne(collectionName, parentId);
 
 
@@ -79,11 +76,9 @@ export class LocationHandler {
             while (parent != undefined && parent != null && parent.parentId != undefined) {
 
                 parent = await DatabaseService.getOne(collectionName, parent.parentId);
-                console.log("parent ", parent);
                 notInList.push(parent.type._id);
 
             }
-            console.log(notInList);
             // once notInList is populated fetch remaining locationTypeList;
             result = await LocationTypeHandler.getNotInList(notInList);
 
@@ -99,9 +94,7 @@ export class LocationHandler {
         try {
             //get Location
             const db = mongodb.getDB();
-            console.log("parentId" + parentId + " coll " + collectionName);
             let listCount = await db.db().collection(collectionName).find({ "parentId": parentId }).count();
-            console.log(listCount);
 
             return listCount > 0 ? true : false;
 

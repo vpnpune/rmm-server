@@ -21,10 +21,7 @@ export class EquipmentReservationHandler {
     static async save(data) {
         try {
 
-            console.log(data); 
-            
             let result = await DatabaseService.bulkUpsert(collectionName, data);
-            console.log(result);
             return result;
         } catch (err) {
             throw err;
@@ -140,9 +137,7 @@ export class EquipmentReservationHandler {
             "operationProjectManager": 1
         }
         try {
-            console.log(criteria)
             let result = await DatabaseService.findByCriteria(collectionName, criteria, projection)
-            console.log(result)
             return result;
         } catch (err) {
             throw err;
