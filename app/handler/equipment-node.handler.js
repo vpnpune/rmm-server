@@ -6,14 +6,13 @@ const collectionName = Collection.EQUIPMENT_STORAGE_NODES;
 
 
 export class EquipmentNodeHandler {
-   
+
     // get all object from db
     static async getNodesForEquipment(equipmentId) {
         let criteria = {
             "equipmentId": equipmentId
         }
         try {
-
             let result = await DatabaseService.findByCriteria(collectionName, criteria);
             return result;
         } catch (err) {
@@ -42,7 +41,7 @@ export class EquipmentNodeHandler {
     // Delete One container
     static async deleteOne(id) {
         try {
-            let result = await DatabaseService.softDeleteOne(collectionName, id);
+            let result = await DatabaseService.deleteOne(collectionName, id);
             return result;
         } catch (err) {
             throw err;

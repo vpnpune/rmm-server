@@ -371,6 +371,19 @@ export class DatabaseService {
         }
     }
 
+    // Delete One collection	    // Delete One collection
+    static async deleteOne(collectionName, id) {
+
+        try {
+            console.log("delete call");
+            const db = mongodb.getDB();
+            let result = await db.db().collection(collectionName).deleteOne({ "_id": id });
+            return result;
+        }
+        catch (err) {
+            throw err;
+        }
+    }
 }
 
 
