@@ -25,6 +25,7 @@ import clientProjectPermissionRoutes from './client-project-permission.route';
 import equipmentRoutes from './equipment.route';
 import equipmentReservationRoutes from './equipment-reservation.route';
 import equipmentNodeRoutes from './equipment-node.route';
+import activityHistoryRoute from './activity-history.route';
 
 
 const router = express.Router();
@@ -55,6 +56,7 @@ router.use('/clientProjectPermission', clientProjectPermissionRoutes);
 router.use('/equipment', equipmentRoutes);
 router.use('/equipmentReservation', equipmentReservationRoutes);
 router.use('/equipmentStorageNode', equipmentNodeRoutes);
+router.use('/history', activityHistoryRoute);
 
 router.use('/*', endpointNotFound);
 

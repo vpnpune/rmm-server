@@ -11,7 +11,7 @@ export class MasterHandler {
 
         try {
 
-            let result = await await DatabaseService.getAll(collectionName);
+            let result = await DatabaseService.getAll(collectionName);
             return result;
         } catch (err) {
 

@@ -24,4 +24,4 @@ export const SAMPLES ='samples';
 export const EQUIPMENT_CLIENT ='equipmentClientAllocation';
 export const COUNTER = 'counter';
 export const EQUIPMENT_STORAGE_NODES='equipmentStorageNode';
- 
+export const ACTIVITY_HISTORY = "activityHistory";
