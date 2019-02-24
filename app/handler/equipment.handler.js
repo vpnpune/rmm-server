@@ -18,7 +18,7 @@ export class EquipmentHandler {
             "location": 1,
             "status": 1
         }
-        let pagination={} 
+        let pagination = {}
         try {
             let result = await DatabaseService.getAll(collectionName, projection);
             pagination.resultSet = result
@@ -69,6 +69,23 @@ export class EquipmentHandler {
     static async save(data) {
         try {
             let result = await DatabaseService.save(collectionName, data);
+            // create root node for storage layout
+
+            let equipmentRootNode = {
+                "isRoot": true,
+                "equipmentId": data._id,
+                "parentId": data._id,
+                "reserved": false,
+                "leafNode": false,
+                "name": data.name,
+                "nodeType":0
+            };
+            console.log(equipmentRootNode);
+
+            let saveNoderesult = await DatabaseService.save(Collection.EQUIPMENT_STORAGE_NODES, equipmentRootNode);
+
+
+
             return result.ops[0];
         } catch (err) {
             throw err;
@@ -87,8 +104,17 @@ export class EquipmentHandler {
                 "humidity": data.humidity
 
             }
-            let result = await DatabaseService.updateByCriteria(collectionName, criteria, modifiedFields);
 
+
+            let result = await DatabaseService.updateByCriteria(collectionName, criteria, modifiedFields);
+            // update demo node
+            let equipmentNodeCriteria = {
+                "equipmentId": data._id,
+                "parentId": data._id,
+                "nodeType": 0
+            }
+            let equipmentNodeFields = { "name": data.name };
+            let equipmentNodeUpdateResult = await DatabaseService.updateByCriteria(Collection.EQUIPMENT_STORAGE_NODES, equipmentNodeCriteria, equipmentNodeFields);
 
             return result;
         } catch (err) {
@@ -119,7 +145,7 @@ export class EquipmentHandler {
                 //         /^BD/
                 // }
             }
-            console.warn("criteria ",criteria);
+            console.warn("criteria ", criteria);
             let result = await DatabaseService.getPageAggregate(collectionName, pagination, criteria, projection);
             return result;
         } catch (err) {
@@ -128,7 +154,7 @@ export class EquipmentHandler {
 
     }
     static async getByCriteria(criteria) {
-        let pagination={} 
+        let pagination = {}
         try {
             let result = await DatabaseService.findByCriteria(collectionName, criteria);
             pagination.resultSet = result

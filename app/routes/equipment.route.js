@@ -42,6 +42,8 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 		if (result) {
 			res.status(200).send(result);
 		}
+	
+
 	}).catch(err => {
 		log.error(err);
 		res.status(500).send({ "message": "Something went wrong" });
