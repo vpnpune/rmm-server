@@ -34,7 +34,23 @@ export class LocationHandler {
     }
     // save object to db
     static async save(data) {
+        let locationType = data.type;
         try {
+            // before saving find counter
+
+            let dbLocType = await DatabaseService.getOne(Collection.LOCATION_TYPE, locationType._id);
+            // increment it 
+            // console.log("dbLocType.lastUsedValue",dbLocType.lastUsedValue);
+            let incrementedValue = dbLocType.lastUsedValue + 1;
+            dbLocType.lastUsedValue= incrementedValue;
+            // console.log("incrementedValue",incrementedValue);
+            // update incremeneted value
+            let updateResult = await DatabaseService.updateOne(Collection.LOCATION_TYPE, dbLocType);
+
+            data.identifier = dbLocType.alias + '-' + incrementedValue;
+            //assign it and save
+
+
             let result = await DatabaseService.save(collectionName, data);
             return result.ops[0];
         } catch (err) {
@@ -54,7 +70,7 @@ export class LocationHandler {
     static async deleteOne(id) {
         try {
             let check1 = await LocationHandler.checkIsParentOfAnyItem(id);
-            if (check1){
+            if (check1) {
                 throw new ApplicationError(SUBLEVEL_EXITS, 400);
             }
             let result = await DatabaseService.deleteOne(collectionName, id);
