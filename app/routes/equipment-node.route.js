@@ -1,16 +1,9 @@
 import express from 'express';
-import Joi from 'joi';
 import validator from 'express-joi-validator';
+import Joi from 'joi';
+import { EquipmentNodeHandler } from '../handler/equipment-node.handler';
 import logger from '../logger';
 
-import {
-	UserHandler
-} from '../handler/user.handler';
-import {
-	RolesHandler
-} from '../handler/roles.handler';
-import app from '../server';
-import { EquipmentNodeHandler } from '../handler/equipment-node.handler';
 
 const router = express.Router();
 const log = logger.Logger;
@@ -92,9 +85,19 @@ router.put('/', validator(schema, {
 		}
 	}).catch(err => {
 		log.error(err);
-		res.status(500).send({
-			"message": "Something went wrong"
-		});
+		// if (err.status === 400)
+		// console.log(err);
+		
+		// 	res.status(err.status).send({
+		// 		"message": err.ApplicationError
+		// 	});
+		// else {
+		// 	res.status(500).send({
+		// 		"message": "Something went wrong"
+		// 	});
+		// }
+		res.status(500).send(err);
+
 	});
 
 });

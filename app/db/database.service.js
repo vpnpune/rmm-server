@@ -64,10 +64,11 @@ export class DatabaseService {
     }
     // update one collection 
     // TODO rename as Replace One
-    static async updateOne(collectionName, data) {
+    static async updateOne(collectionName, data, ...unset) {
         try {
+            console.log('unset ',unset);
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).updateOne({ "_id": data._id }, { $set: buildUpdateObject(data) }, { upsert: false });
+            let result = await db.db().collection(collectionName).updateOne({ "_id": data._id }, { $set: buildUpdateObject(data), $unset: unset[0] }, { upsert: false });
             return result;
         } catch (err) {
             throw err;
@@ -265,7 +266,9 @@ export class DatabaseService {
     static async updateByCriteria(collectionName, criteria, data) {
         try {
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).updateOne(criteria, { $set: buildUpdateObject(data) }, { upsert: false });
+            //             console.log(criteria);
+            let result = await db.db().collection(collectionName).updateMany(criteria, { $set: buildUpdateObject(data) }, { upsert: false });
+            // console.log(result);
             return result;
         } catch (err) {
             throw err;
