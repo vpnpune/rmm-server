@@ -32,7 +32,10 @@ export class EquipmentNodeHandler {
     // save object to db
     static async save(data) {
         try {
+            delete data[client];
+            delete data[children];
             let result = await DatabaseService.save(collectionName, data);
+            console.log(result);
             return result.ops[0];
         } catch (err) {
             throw err;
@@ -44,39 +47,36 @@ export class EquipmentNodeHandler {
         let criteria;
         try {
             if (data.reserved) {
-
-
-
-                let reserveFlag = await EquipmentNodeHandler.isReservationPossible(data);
-
-
-
-                if (reserveFlag) {
-                    // if root node then just update all the nodes with same client 
-                    console.log(data);
-                    if (data.nodeType === parseInt(0)) {
-                        let modifiedFields = {
-                            "reserved": data.reserved,
-                            "client": undefined
-                        }
-                        criteria = {
-                            "equipmentId": data.equipmentId
-                        }
-                        result = await DatabaseService.updateByCriteria(collectionName, criteria, modifiedFields);
-                    }
-                    else {
-                        console.log('else ');
-                        result = await DatabaseService.updateOne(collectionName, data);
-                    }
+                let reservedNodes = EquipmentNodeHandler.isReservationPossible(data, data.reserved);
+                console.log(reservedNodes)
+                if (reservedNodes && reservedNodes.length > 0) {
+                    throw new ApplicationError(reservedNodes[0] + " is reserved by other client", 500);
                 }
-            } else {
+                // this means node and subsequent nodes can be reserved 
+                let nodesToUpdate = [];
+                nodesToUpdate = EquipmentNodeHandler.getAllChildNodes(data, nodesToUpdate);
+                console.log(nodesToUpdate);
+                let modifiedFields = {
+                    "reserved": data.reserved,
+
+                }
+                criteria =
+                    { "_id": { $in: nodesToUpdate } }
+
+                result = await DatabaseService.updateByCriteria(collectionName, criteria, modifiedFields);
+                data['client'] = undefined;
+                data['children'] = undefined;
+                result = await DatabaseService.updateOne(collectionName, data);
+
+                // console.log(result);
+            }
+            // if removing nodes from reservation  
+            else {
                 console.log('no reservation');
-                let unset = {
-                    'reserved': '',
-                    'client': []
-                }
-
-                result = await DatabaseService.updateOne(collectionName, data,unset);
+                data.reserved = undefined;
+                data['client'] = undefined;
+                data['children'] = undefined;
+                result = await DatabaseService.updateOne(collectionName, data);
 
             }
             return result;
@@ -94,29 +94,39 @@ export class EquipmentNodeHandler {
         }
     }
 
-    static async isReservationPossible(node) {
-        const db = mongodb.getDB();
-        console.log('called');
-        let criteria = { $or: [{ "reserved": { $exists: true, $ne: node.reserved } }], "equipmentId": node.equipmentId }
-        let flag = true;
+    static isReservationPossible(node, clientId) {
+        let m = [];
+        m = EquipmentNodeHandler.checkNonFreeNodes(node, m, clientId);
+        console.log(m[0]);
 
-        try {
-            // if (rootNode) check only any another client reserved node is present
-            if (node.nodeType === parseInt(0)) {
-                let data = await db.db().collection(collectionName).find(criteria).count();
-                console.log(data);
-                if (data > 0) {
-                    flag = false;
-                    throw new ApplicationError("Already nodes under this level are reserved for another client", 400);
-                }
+        return m;
+    }
+    static checkNonFreeNodes(node, m, clientId) {
+        console.log('checkNonFreeNodes')
 
-            }
-
-            //let result = await DatabaseService.save(collectionName, data);
-            return flag;
-        } catch (err) {
-            throw err;
+        if (EquipmentNodeHandler.isNodeReserved(node, clientId)) {
+            m.push(node.name);
+            return m;
         }
+        if (node.children && node.children.length > 0) {
+            for (let i = 0; i < node.children.length; i++) {
+                EquipmentNodeHandler.checkNonFreeNodes(node.children[i], m, clientId);
+            }
+        }
+        return m;
+    }
+    //is Node free 
+    static isNodeReserved(node, clientId) {
+        return node.reserved && node.reserved.length > 0 && node.reserved !== clientId;
+    }
+    static getAllChildNodes(node, m) {
+        m.push(node._id);
+        if (node.children && node.children.length > 0) {
+            for (let i = 0; i < node.children.length; i++) {
+                EquipmentNodeHandler.getAllChildNodes(node.children[i], m);
+            }
+        }
+        return m;
     }
 }
 

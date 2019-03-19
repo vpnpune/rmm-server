@@ -56,6 +56,7 @@ export class DatabaseService {
 
         try {
             const db = mongodb.getDB();
+            console.log(db);
             let result = await db.db().collection(collectionName).insertOne(buildInsertObject(data));
             return result;
         } catch (err) {
@@ -64,11 +65,10 @@ export class DatabaseService {
     }
     // update one collection 
     // TODO rename as Replace One
-    static async updateOne(collectionName, data, ...unset) {
+    static async updateOne(collectionName, data) {
         try {
-            console.log('unset ',unset);
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).updateOne({ "_id": data._id }, { $set: buildUpdateObject(data), $unset: unset[0] }, { upsert: false });
+            let result = await db.db().collection(collectionName).updateOne({ "_id": data._id }, { $set: buildUpdateObject(data) }, { upsert: false });
             return result;
         } catch (err) {
             throw err;
