@@ -31,13 +31,19 @@ export class EquipmentNodeHandler {
     }
     // save object to db
     static async save(data) {
+        let result;
         try {
-            delete data[client];
-            delete data[children];
-            let result = await DatabaseService.save(collectionName, data);
-            console.log(result);
+            if (data['client']) {
+
+                delete data['client'];
+            }
+            delete data['children'];
+
+            result = await DatabaseService.save(collectionName, data);
+            // console.log(result);
             return result.ops[0];
         } catch (err) {
+
             throw err;
         }
     }
@@ -55,7 +61,7 @@ export class EquipmentNodeHandler {
                 // this means node and subsequent nodes can be reserved 
                 let nodesToUpdate = [];
                 nodesToUpdate = EquipmentNodeHandler.getAllChildNodes(data, nodesToUpdate);
-                console.log(nodesToUpdate);
+                // console.log(nodesToUpdate);
                 let modifiedFields = {
                     "reserved": data.reserved,
 
