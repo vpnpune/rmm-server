@@ -1,12 +1,18 @@
-import { DatabaseService } from "../db/database.service";
+import {
+    DatabaseService
+} from "../db/database.service";
 import * as Collection from '../db/collection-constants';
 
 import mongodb from "../db/mongodb";
-import { SOFT_DELETE_FIND_QUERY } from "../model/generic-queries"
-import { DocumentHandler } from "./document.handler";
+import {
+    SOFT_DELETE_FIND_QUERY
+} from "../model/generic-queries"
+import {
+    DocumentHandler
+} from "./document.handler";
 /* SET COLLECTION NAME FIRST*/
 const collectionName = Collection.SHIPMENT;
-
+const projectSampleCollection = Collection.PROJECT_SAMPLES;
 
 
 export class ShipmentHandler {
@@ -14,7 +20,11 @@ export class ShipmentHandler {
     //@ts-nocheck
     static async getAll() {
         let projection = {
-            shipmentStatus: 1, referenceNo: 1, courier: 1, "receivedBy": 1, nosOfSamples: 1
+            shipmentStatus: 1,
+            referenceNo: 1,
+            courier: 1,
+            "receivedBy": 1,
+            nosOfSamples: 1
         }
         try {
             let result = await DatabaseService.getAll(collectionName, projection);
@@ -26,8 +36,7 @@ export class ShipmentHandler {
     }
     // get ONE object from db
     static async getOne(id) {
-        let projection = {
-        }
+        let projection = {}
         let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
         criteria._id = id;
         let filesProjection = {
@@ -50,8 +59,7 @@ export class ShipmentHandler {
                 let shipmentObj = result
                 shipmentObj.documents = fileResult
                 return shipmentObj
-            }
-            else {
+            } else {
                 return {}
             }
 
@@ -63,7 +71,12 @@ export class ShipmentHandler {
     // save object to db
     static async save(data) {
         try {
-            let result = await DatabaseService.save(collectionName, data);
+            const projectSamples = data.projectSamples;
+            // remove key
+            delete data['projectSamples'];
+            // save shipment
+            console.log('-> ', projectSamples)
+            // let result = await DatabaseService.save(collectionName, data);
             return result.ops[0];
         } catch (err) {
             throw err;
@@ -73,7 +86,9 @@ export class ShipmentHandler {
     static async updateOne(data) {
         try {
             const db = mongodb.getDB();
-            let criteria = { "_id": data._id }
+            let criteria = {
+                "_id": data._id
+            }
             let modifiedFields = {
                 "courier": data.courier,
                 "projectIds": data.projectIds,
@@ -102,7 +117,11 @@ export class ShipmentHandler {
     }
     static async getPagedData(clientId, pagination) {
         let projection = {
-            shipmentStatus: 1, referenceNo: 1, courier: 1, "receivedBy": 1, nosOfSamples: 1,
+            shipmentStatus: 1,
+            referenceNo: 1,
+            courier: 1,
+            "receivedBy": 1,
+            nosOfSamples: 1,
             clientId: 1
         }
         let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
@@ -123,7 +142,25 @@ export class ShipmentHandler {
         }
 
     }
+
+
+    // save project-sample Relation
+    static async saveProjectSamples(projectSamples, shipmentId) {
+        try {
+
+            const db = mongodb.getDB();
+            var bulk = await db.db().collection(projectSampleCollection).initializeUnorderedBulkOp();
+
+            for (let row of projectSamples) {
+                // set shipmentId as foreign key
+
+                bulk.insert(buildInsertObject(row));
+            }
+
+            return bulk.execute();
+        } catch (err) {
+            throw err;
+        }
+    }
+
 }
-
-
-
