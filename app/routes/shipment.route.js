@@ -85,16 +85,16 @@ router.post('/', validator(schema, {
 }), (req, res, next) => {
 	console.log(req.body);
 	let resultPromise = ShipmentHandler.save(req.body);
-	res.status(200).send(result);
-
-	// resultPromise.then(function (result) {
-	// 	if (result) {
-	// 		res.status(200).send(result);
-	// 	}
-	// }).catch(err => {
-	// 	log.error(err);
-	// 	res.status(500).send({ "message": "Something went wrong" });
-	// });
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({
+			"message": "Something went wrong"
+		});
+	});
 
 });
 
@@ -121,7 +121,7 @@ router.put('/', validator(schema, {
 
 
 // get ONE
-router.delete('/:clientId/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
 	let id = req.params.id;
 
 	let resultPromise = ShipmentHandler.deleteOne(id);

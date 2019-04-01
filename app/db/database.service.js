@@ -1,6 +1,12 @@
 import mongodb from "./mongodb";
-import { buildInsertObject, buildUpdateObject, addCreationDetails } from "./user-audit";
-import { SOFT_DELETE_FIND_QUERY } from "../model/generic-queries";
+import {
+    buildInsertObject,
+    buildUpdateObject,
+    addCreationDetails
+} from "./user-audit";
+import {
+    SOFT_DELETE_FIND_QUERY
+} from "../model/generic-queries";
 import app from './../server'
 import uniqid from "uniqid";
 
@@ -25,11 +31,18 @@ export class DatabaseService {
     static async getAllExceptSoftDeleted(collectionName) {
         try {
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).find(
-                {
-                    $or: [{ "deleted": { $exists: true, $eq: false } }, { "deleted": { $exists: false } }]
-                }
-            ).toArray();
+            let result = await db.db().collection(collectionName).find({
+                $or: [{
+                    "deleted": {
+                        $exists: true,
+                        $eq: false
+                    }
+                }, {
+                    "deleted": {
+                        $exists: false
+                    }
+                }]
+            }).toArray();
             return result;
         } catch (err) {
             throw err;
@@ -43,7 +56,16 @@ export class DatabaseService {
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).findOne({
                 "_id": id,
-                $or: [{ "deleted": { $exists: true, $eq: false } }, { "deleted": { $exists: false } }]
+                $or: [{
+                    "deleted": {
+                        $exists: true,
+                        $eq: false
+                    }
+                }, {
+                    "deleted": {
+                        $exists: false
+                    }
+                }]
             });
             return result;
         } catch (err) {
@@ -67,7 +89,13 @@ export class DatabaseService {
     static async updateOne(collectionName, data) {
         try {
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).updateOne({ "_id": data._id }, { $set: buildUpdateObject(data) }, { upsert: false });
+            let result = await db.db().collection(collectionName).updateOne({
+                "_id": data._id
+            }, {
+                $set: buildUpdateObject(data)
+            }, {
+                upsert: false
+            });
             return result;
         } catch (err) {
             throw err;
@@ -79,7 +107,9 @@ export class DatabaseService {
         try {
 
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).deleteOne({ "_id": id });
+            let result = await db.db().collection(collectionName).deleteOne({
+                "_id": id
+            });
             return result;
         } catch (err) {
             throw err;
@@ -108,7 +138,16 @@ export class DatabaseService {
 
             }
             pagination.resultSet = await db.db().collection(collectionName).find({
-                $or: [{ "deleted": { $exists: true, $eq: false } }, { "deleted": { $exists: false } }]
+                $or: [{
+                    "deleted": {
+                        $exists: true,
+                        $eq: false
+                    }
+                }, {
+                    "deleted": {
+                        $exists: false
+                    }
+                }]
             }).limit(parseInt(pagination.end)).skip(parseInt(pagination.start)).toArray();
             //@Todo : Working code need to revert if component if else works on client side
             //if(parseInt(pagination.start)===0){
@@ -140,7 +179,13 @@ export class DatabaseService {
     static async updateOneWithObjectId(collectionName, data) {
         try {
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).replaceOne({ "_id": data._id }, { $set: buildUpdateObject(data) }, { upsert: false });
+            let result = await db.db().collection(collectionName).replaceOne({
+                "_id": data._id
+            }, {
+                $set: buildUpdateObject(data)
+            }, {
+                upsert: false
+            });
             return result;
         } catch (err) {
             throw err;
@@ -152,8 +197,14 @@ export class DatabaseService {
         try {
 
             const db = mongodb.getDB();
-
-            let result = await db.db().collection(collectionName).updateOne({ "_id": id }, { $set: { "deleted": true } });
+            console.log(id);
+            let result = await db.db().collection(collectionName).updateOne({
+                "_id": id
+            }, {
+                $set: {
+                    "deleted": true
+                }
+            });
             return result;
         } catch (err) {
             throw err;
@@ -198,7 +249,9 @@ export class DatabaseService {
             pagination.resultSet = await db.db().collection(collectionName).find(criteria).project(projection).limit(pagination.end).skip(pagination.start).toArray();
             //@Todo : Working code need to revert if component if else works on client side
             //if(parseInt(pagination.start)===0){
-            pagination.totalSize = await db.db().collection(collectionName).find({ "referenceNo": new RegExp(/^'BD'/) }).count();
+            pagination.totalSize = await db.db().collection(collectionName).find({
+                "referenceNo": new RegExp(/^'BD'/)
+            }).count();
             //}else{
             //  
             //}
@@ -217,10 +270,11 @@ export class DatabaseService {
             }
             pagination.resultSet = await db.db().collection(collectionName).aggregate(
 
-                [{ $match: criteria }]
+                [{
+                    $match: criteria
+                }]
 
-            ).project(projection
-            ).limit(parseInt(pagination.end)).skip(parseInt(pagination.start)).toArray();
+            ).project(projection).limit(parseInt(pagination.end)).skip(parseInt(pagination.start)).toArray();
 
             //@Todo : Working code need to revert if component if else works on client side
             //if(parseInt(pagination.start)===0){
@@ -237,8 +291,9 @@ export class DatabaseService {
         try {
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).findOne(
-                criteria,
-                { projection: projectionDoc }
+                criteria, {
+                    projection: projectionDoc
+                }
             );
             //let result = await db.db().collection(collectionName).findOne(criteria);
             return result;
@@ -251,8 +306,10 @@ export class DatabaseService {
         try {
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).aggregate(
-                [{ $match: criteria }]).
-                project(
+                [{
+                    $match: criteria
+                }]).
+            project(
                     projection
                 )
                 .toArray();
@@ -265,7 +322,11 @@ export class DatabaseService {
     static async updateByCriteria(collectionName, criteria, data) {
         try {
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).updateOne(criteria, { $set: buildUpdateObject(data) }, { upsert: false });
+            let result = await db.db().collection(collectionName).updateOne(criteria, {
+                $set: buildUpdateObject(data)
+            }, {
+                upsert: false
+            });
             return result;
         } catch (err) {
             throw err;
@@ -287,22 +348,30 @@ export class DatabaseService {
         try {
 
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).aggregate([
-                {
-                    "$facet": {
-                        "totalData": [
-                            { "$match": criteria },
-                            { "$project": projection },
-                            { "$skip": parseInt(pagination.start) },
-                            { "$limit": parseInt(pagination.end) }
-                        ],
-                        "totalCount": [
-                            { "$match": criteria },
-                            { "$count": "count" }
-                        ]
-                    }
+            let result = await db.db().collection(collectionName).aggregate([{
+                "$facet": {
+                    "totalData": [{
+                            "$match": criteria
+                        },
+                        {
+                            "$project": projection
+                        },
+                        {
+                            "$skip": parseInt(pagination.start)
+                        },
+                        {
+                            "$limit": parseInt(pagination.end)
+                        }
+                    ],
+                    "totalCount": [{
+                            "$match": criteria
+                        },
+                        {
+                            "$count": "count"
+                        }
+                    ]
                 }
-            ]).toArray();
+            }]).toArray();
             if (result && result.length > 0 && result[0].totalCount[0]) {
                 pagination.resultSet = result[0].totalData
                 pagination.totalSize = result[0].totalCount[0].count;
@@ -340,16 +409,16 @@ export class DatabaseService {
 
 
                 // row._id = row._id && row._id.length > 0 ? row._id : uniqid();
-                bulk.find({ _id: row._id }).upsert().updateOne(
-                    {
-                        equipmentId: row.equipmentId,
-                        clientId: row.clientId,
-                        createdBy: row.createdBy ? row.createdBy : app.get('user'),
-                        createdOn: row.createdOn ? row.createdOn : new Date(),
-                        modifiedBy: app.get('user'),
-                        modifiedOn: new Date()
-                    }
-                );
+                bulk.find({
+                    _id: row._id
+                }).upsert().updateOne({
+                    equipmentId: row.equipmentId,
+                    clientId: row.clientId,
+                    createdBy: row.createdBy ? row.createdBy : app.get('user'),
+                    createdOn: row.createdOn ? row.createdOn : new Date(),
+                    modifiedBy: app.get('user'),
+                    modifiedOn: new Date()
+                });
             }
 
             return bulk.execute();
@@ -362,16 +431,32 @@ export class DatabaseService {
     static async deleteOne(collectionName, id) {
 
         try {
-            console.log("delete call");
             const db = mongodb.getDB();
-            let result = await db.db().collection(collectionName).deleteOne({ "_id": id });
+            let result = await db.db().collection(collectionName).deleteOne({
+                "_id": id
+            });
             return result;
-        }
-        catch (err) {
+        } catch (err) {
             throw err;
         }
     }
+    // get Aggregation with criteria
+    static async getAggregatedData(collectionName, aggregateQuery) {
+        try {
+
+            const db = mongodb.getDB();
+
+            let result = await db.db().collection(collectionName).aggregate(
+                aggregateQuery
+            ).toArray();
+                console.log(result[0]);
+            return result;
+        } catch (err) {
+            throw err;
+        }
+
+    }
+
+
+
 }
-
-
-
