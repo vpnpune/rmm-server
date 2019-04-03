@@ -2,7 +2,9 @@ import express from 'express';
 import Joi from 'joi';
 import validator from 'express-joi-validator';
 import logger from '../logger';
-import { ShipmentHandler } from '../handler/shipment.handler';
+import {
+	ShipmentHandler
+} from '../handler/shipment.handler';
 
 
 const log = logger.Logger;
@@ -68,14 +70,20 @@ router.get('/:clientId/:id', (req, res) => {
 		}
 	}).catch(err => {
 		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
+		res.status(500).send({
+			"message": "Something went wrong"
+		});
 	});
 });
 
 
 
 // save obj
-router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
+router.post('/', validator(schema, {
+	allowUnknown: true,
+	abortEarly: false
+}), (req, res, next) => {
+	console.log(req.body);
 	let resultPromise = ShipmentHandler.save(req.body);
 	resultPromise.then(function (result) {
 		if (result) {
@@ -83,13 +91,18 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 		}
 	}).catch(err => {
 		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
+		res.status(500).send({
+			"message": "Something went wrong"
+		});
 	});
 
 });
 
 // update ONE obj
-router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
+router.put('/', validator(schema, {
+	allowUnknown: true,
+	abortEarly: false
+}), (req, res, next) => {
 
 	let resultPromise = ShipmentHandler.updateOne(req.body);
 
@@ -99,14 +112,16 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 		}
 	}).catch(err => {
 		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
+		res.status(500).send({
+			"message": "Something went wrong"
+		});
 	});
 
 });
 
 
 // get ONE
-router.delete('/:clientId/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
 	let id = req.params.id;
 
 	let resultPromise = ShipmentHandler.deleteOne(id);
@@ -116,7 +131,9 @@ router.delete('/:clientId/:id', (req, res) => {
 		}
 	}).catch(err => {
 		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
+		res.status(500).send({
+			"message": "Something went wrong"
+		});
 	});
 });
 
@@ -131,7 +148,9 @@ router.get('/test', (req, res) => {
 		}
 	}).catch(err => {
 		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
+		res.status(500).send({
+			"message": "Something went wrong"
+		});
 	});
 });
 // mat
@@ -144,10 +163,10 @@ router.get('/:clientId', (req, res) => {
 	// for pagination flow 
 	if (pageIndex && pageSize) {
 		let pagination = {}
-		pagination.start = parseInt(pageIndex)*parseInt(pageSize)  ;
+		pagination.start = parseInt(pageIndex) * parseInt(pageSize);
 		pagination.end = parseInt(pageSize);
-		if(searchText){
-			pagination.searchText= searchText;	
+		if (searchText) {
+			pagination.searchText = searchText;
 		}
 		let resultPromise = ShipmentHandler.getPagedData(clientId, pagination);
 
@@ -158,7 +177,9 @@ router.get('/:clientId', (req, res) => {
 		}).catch(err => {
 			//
 			log.error(err);
-			res.status(500).send({ "message": "Something went wrong" });
+			res.status(500).send({
+				"message": "Something went wrong"
+			});
 		});
 	} else {
 		let resultPromise = ShipmentHandler.getAll();
@@ -168,11 +189,13 @@ router.get('/:clientId', (req, res) => {
 			}
 		}).catch(err => {
 			log.error(err);
-			res.status(500).send({ "message": "Something went wrong" });
+			res.status(500).send({
+				"message": "Something went wrong"
+			});
 		});
 	}
 
-	
+
 
 });
 
