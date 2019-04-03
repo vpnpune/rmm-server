@@ -75,7 +75,6 @@ export class EquipmentHandler {
                 "isRoot": true,
                 "equipmentId": data._id,
                 "parentId": data._id,
-                "reserved": false,
                 "leafNode": false,
                 "name": data.name,
                 "nodeType":0

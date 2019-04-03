@@ -1,9 +1,11 @@
 import { DatabaseService } from "../db/database.service";
 import * as Collection from '../db/collection-constants';
+import { addId } from "../db/id-generator";
 import app from './../server';
+import mongodb from "../db/mongodb";
 
 /* SET COLLECTION NAME FIRST*/
-const collectionName = Collection.DYNAMIC_FORM;
+const collectionName = Collection.PROJECT;
 
 
 export class DynamicFormHandler {
@@ -31,9 +33,13 @@ export class DynamicFormHandler {
     // save object to db
     static async save(data) {
         try {
-            let result = await  DatabaseService.save(collectionName,data);
-            return result.ops[0];
+            const db = mongodb.getDB();
+            console.log(data);
+            let obj = addId(data);
+            let result = await db.db().collection(collectionName).updateOne({ "_id": data.projectId }, { $push: {"sampleDefinition.dynamicFields":obj}});
+            return result.result;
         } catch (err) {
+            console.log(err);
             throw err;
         }
     }
