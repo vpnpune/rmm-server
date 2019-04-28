@@ -54,7 +54,6 @@ export class EquipmentNodeHandler {
         try {
             if (data.reserved) {
                 let reservedNodes = EquipmentNodeHandler.isReservationPossible(data, data.reserved);
-                console.log(reservedNodes)
                 if (reservedNodes && reservedNodes.length > 0) {
                     throw new ApplicationError(reservedNodes[0] + " is reserved by other client", 500);
                 }
@@ -78,7 +77,6 @@ export class EquipmentNodeHandler {
             }
             // if removing nodes from reservation  
             else {
-                console.log('no reservation');
                 data.reserved = undefined;
                 data['client'] = undefined;
                 data['children'] = undefined;
@@ -103,7 +101,6 @@ export class EquipmentNodeHandler {
     static isReservationPossible(node, clientId) {
         let m = [];
         m = EquipmentNodeHandler.checkNonFreeNodes(node, m, clientId);
-        console.log(m[0]);
 
         return m;
     }

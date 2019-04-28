@@ -53,9 +53,7 @@ router.post('/', validator(schema, {
 	allowUnknown: true,
 	abortEarly: false
 }), (req, res, next) => {
-	console.log(1);
 	let resultPromise = EquipmentNodeHandler.save(req.body);
-	console.log(resultPromise);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);

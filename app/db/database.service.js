@@ -78,7 +78,6 @@ export class DatabaseService {
 
         try {
             const db = mongodb.getDB();
-            console.log(db);
             let result = await db.db().collection(collectionName).insertOne(buildInsertObject(data));
             return result;
         } catch (err) {
@@ -198,7 +197,6 @@ export class DatabaseService {
         try {
 
             const db = mongodb.getDB();
-            console.log(id);
             let result = await db.db().collection(collectionName).updateOne({
                 "_id": id
             }, {
@@ -450,7 +448,6 @@ export class DatabaseService {
             let result = await db.db().collection(collectionName).aggregate(
                 aggregateQuery
             ).toArray();
-                console.log(result[0]);
             return result;
         } catch (err) {
             throw err;

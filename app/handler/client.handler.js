@@ -51,7 +51,6 @@ export class ClientHandler {
 
                 projection);
             
-                console.log(result);
             let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD, filesCriteria, filesProjection)
             if (result) {
 

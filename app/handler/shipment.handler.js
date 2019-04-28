@@ -186,7 +186,6 @@ export class ShipmentHandler {
     }
     static async updateProjectSamples(projectSamples) {
         try {
-             console.log('save ps', projectSamples )
             const db = mongodb.getDB();
             var bulk = await db.db().collection(projectSampleCollection).initializeUnorderedBulkOp();
 

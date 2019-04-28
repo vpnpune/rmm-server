@@ -79,7 +79,6 @@ export class EquipmentHandler {
                 "name": data.name,
                 "nodeType":0
             };
-            console.log(equipmentRootNode);
 
             let saveNoderesult = await DatabaseService.save(Collection.EQUIPMENT_STORAGE_NODES, equipmentRootNode);
 

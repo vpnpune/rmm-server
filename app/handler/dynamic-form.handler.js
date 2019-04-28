@@ -34,7 +34,6 @@ export class DynamicFormHandler {
     static async save(data) {
         try {
             const db = mongodb.getDB();
-            console.log(data);
             let obj = addId(data);
             let result = await db.db().collection(collectionName).updateOne({ "_id": data.projectId }, { $push: {"sampleDefinition.dynamicFields":obj}});
             return result.result;

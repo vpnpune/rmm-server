@@ -83,7 +83,6 @@ router.post('/', validator(schema, {
 	allowUnknown: true,
 	abortEarly: false
 }), (req, res, next) => {
-	console.log(req.body);
 	let resultPromise = ShipmentHandler.save(req.body);
 	resultPromise.then(function (result) {
 		if (result) {
