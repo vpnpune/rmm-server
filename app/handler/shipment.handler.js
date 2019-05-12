@@ -190,7 +190,7 @@ export class ShipmentHandler {
             var bulk = await db.db().collection(projectSampleCollection).initializeUnorderedBulkOp();
 
             for (let row of projectSamples) {
-                bulk.find({_id: row._id}).update({$set: buildUpdateObject(row)});
+                bulk.find({ _id: row._id }).update({ $set: buildUpdateObject(row) });
 
                 // bulk.update(buildUpdateObject(row));
             }
@@ -200,5 +200,21 @@ export class ShipmentHandler {
             throw err;
         }
     }
+    // This is used to add sample details to exisiting project sample relation and update status to storage location assignment pending
+    static async updateProjectSampleDetails(projectSamples) {
+        try {
+            let criteria = {
+                "_id": projectSamples._id
+            }
 
+            let modifiedFields = {
+                "sampleDetails": projectSamples.sampleDetails,
+                "status": projectSamples.status
+
+            }
+            let result = await DatabaseService.updateByCriteria(Collection.PROJECT_SAMPLES, criteria, modifiedFields);
+        } catch (err) {
+            throw err;
+        }
+    }
 }
