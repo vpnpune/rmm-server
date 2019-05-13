@@ -11,8 +11,21 @@ export class UnitDefinitionHandler {
     // get all items from collection
     static async getAll() {
         try {
-            let result = await DatabaseService.getAllExceptSoftDeleted(collectionName);
-            return result;
+            const db = mongodb.getDB();
+            let data = await db.db().collection(collectionName).aggregate(
+                [
+                    {"$match":
+                        {"deleted":{"$ne":true}}
+                    },
+                    {"$lookup":
+                        {"from":"unitGroup","localField":"unitGroup._id","foreignField":"_id","as":"unit"}
+                    },
+                    {"$unwind":"$unit"},
+                    {"$match":
+                        {"unit.deleted":{"$ne":true}}
+                    }
+                ]).toArray();
+            return data;
         } catch (err) {
             throw err;
         }
