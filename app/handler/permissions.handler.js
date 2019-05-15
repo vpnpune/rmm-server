@@ -61,10 +61,24 @@ export class PermissionsHandler {
     static async deleteOne(data) {
         try {
             let criteria = {"name":data};
-            let result = await DatabaseService.deleteMany(collectionName,criteria);
-            return result;
+            const db = mongodb.getDB();
+            let aggregate = await db.db().collection(Collection.ROLES).aggregate(
+                [
+                    {"$unwind":"$permissions"},
+                    {"$lookup":{"from":"permission","localField":"permissions","foreignField":"_id","as":"permission"}},{"$unwind":"$permission"},
+                    {"$match":{"permission.name":data}},
+                    {"$count":"count"}
+                ]).toArray();
+            
+            if(aggregate && aggregate.length > 0) {
+                return Error("It is assigned to Role(s), so unable to archieve.");
+            } else {
+                let result = await DatabaseService.deleteMany(collectionName,criteria);
+                return result;
+            }
+            
         } catch (err) {
-            throw err;
+            return err;
         }
     }
 

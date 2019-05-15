@@ -9,6 +9,7 @@ import {INTERNAL_SERVER_ERROR} from './../constants';
 const router = express.Router();
 
 const log = logger.Logger;
+//let permissionHandler = new PermissionsHandler();
 // please separate  out 
 let body= Joi.object().required();
 /*keys ({
@@ -93,14 +94,14 @@ router.delete('/:name', validator(body, { allowUnknown: true, abortEarly: false 
 	let name = req.params.name;
 	let resultPromise = PermissionsHandler.deleteOne(name);
 	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
+		console.log(result instanceof Error);
+		if (result instanceof Error) {
+			return res.status(412).send(result.message);
 		} else {
 			res.status(200).send([]);
 		}
 	}).catch(err => {
-		log.error(err);
-		throw new ApplicationError(INTERNAL_SERVER_ERROR, 500);
+		throw new ApplicationError(err || INTERNAL_SERVER_ERROR, 500);
 	});
 });
 
