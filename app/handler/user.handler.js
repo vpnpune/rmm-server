@@ -102,12 +102,14 @@ export class UserHandler {
     // get ONE object from db
     static async getByUserName(userName) {
         try {
+            console.log(userName)
             let criteria = {
                 $or:[
                     {"userName": userName},{"emailId": userName},{"_id":userName}
                 ]
             };
             let result = await  DatabaseService.findByCriteria(collectionName,criteria);
+            console.log(result[0]);
             return result[0];
         } catch (err) {
             throw err;
