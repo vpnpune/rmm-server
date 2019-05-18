@@ -87,18 +87,6 @@ router.put('/', validator(schema, {
 		log.error(err);
 		
 		
-		// if (err.status === 400)
-		// console.log(err);
-		
-		// 	res.status(err.status).send({
-		// 		"message": err.ApplicationError
-		// 	});
-		// else {
-		// 	res.status(500).send({
-		// 		"message": "Something went wrong"
-		// 	});
-		// }
-		
 		res.status(err.status || 500).send(err);
 
 	});

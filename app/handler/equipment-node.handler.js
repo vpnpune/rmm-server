@@ -38,8 +38,31 @@ export class EquipmentNodeHandler {
                 delete data['client'];
             }
             delete data['children'];
-
+            // save the storage level
+            console.log(data)
+            // throw err;
             result = await DatabaseService.save(collectionName, data);
+            // if node is box save it to samples 
+            if (data.nodeType === 2) {
+                let units = [];
+                const rowCount = parseInt(data.rowCount);
+                const colCount = parseInt(data.colCount);
+                for (let i = 0; i < rowCount; i++) {
+                    for (let j = 0; j < colCount; j++) {
+                        const unit = {
+                            "row": i + 1,
+                            "col": j + 1,
+                            "boxId": result.ops[0]._id
+                        }
+                        units.push(unit);
+                        console.log(unit);
+
+                    }
+                }// prepare for bulk save
+                let boxUnitResults = await DatabaseService.bulkSave(Collection.BOX_UNITS, units);
+                console.log(boxUnitResults);
+
+            }
             // console.log(result);
             return result.ops[0];
         } catch (err) {

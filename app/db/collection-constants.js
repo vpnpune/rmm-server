@@ -26,3 +26,4 @@ export const COUNTER = 'counter';
 export const EQUIPMENT_STORAGE_NODES='equipmentStorageNode';
 export const ACTIVITY_HISTORY = "activityHistory";
 export const PROJECT_SAMPLES="projectSamples";
+export const BOX_UNITS="boxUnit"
