@@ -51,15 +51,23 @@ router.get('/:id', (req, res) => {
 
 // save obj
 router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
-	let resultPromise = UnitGroupHandler.save(req.body);
-	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
+	UnitGroupHandler.isExist(req.body).then((isExist) => {
+		if(isExist) {
+			res.status(412).send("Unit group name already exist");
 		} else {
-			res.status(200).send([]);
+			let resultPromise = UnitGroupHandler.save(req.body);
+			resultPromise.then(function (result) {
+				if (result) {
+					res.status(200).send(result);
+				} else {
+					res.status(200).send([]);
+				}
+			}).catch(err => {
+				log.error(err);
+				res.status(500).send({ "message": "Something went wrong" });
+			});
 		}
-	}).catch(err => {
-		log.error(err);
+	}).catch(e => {
 		res.status(500).send({ "message": "Something went wrong" });
 	});
 

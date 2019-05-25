@@ -1,6 +1,7 @@
 import { DatabaseService } from "../db/database.service";
 import * as Collection from '../db/collection-constants';
 import { PermissionsHandler } from "./permissions.handler";
+import mongodb from "../db/mongodb";
 
 /* SET COLLECTION NAME FIRST*/
 const collectionName = Collection.ROLES;
@@ -63,8 +64,23 @@ export class RolesHandler {
     // Delete One container
     static async deleteOne(id) {
         try {
-            let result = await DatabaseService.deleteOne(collectionName,id);
-            return result;
+            const db = mongodb.getDB();
+            let aggregate = await db.db().collection(Collection.USER).aggregate(
+                [
+                    {"$unwind":"$roles"},
+                    {"$lookup":{"from":"roles","localField":"roles","foreignField":"roleName","as":"roles"}},
+                    {"$unwind":"$roles"},
+                    {"$match":{"roles._id":id}},
+                    {"$count":"count"}
+                ]).toArray();
+            
+            if(aggregate && aggregate.length > 0) {
+                return Error("It is assigned to User(s), so unable to archieve.");
+            } else {
+                let result = await DatabaseService.deleteOne(collectionName,id);
+                return result;
+            }
+            
         } catch (err) {
             throw err;
         }
@@ -73,7 +89,8 @@ export class RolesHandler {
     static async getPermissionsByRoleName(roleName) {
          // get ONE object from db
         try {
-            let criteria = {"roleName": roleName}
+            var regex = new RegExp(["^", roleName, "$"].join(""), "i");
+            let criteria = {"roleName": regex}
             let result = await  DatabaseService.findByCriteria(collectionName,criteria);
             return result;
         } catch (err) {

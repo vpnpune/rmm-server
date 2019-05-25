@@ -35,9 +35,26 @@ export class UnitGroupHandler {
             let result = await DatabaseService.save(collectionName, data);
             return result.ops[0];
         } catch (err) {
+            console.log(err);
             throw err;
         }
     }
+
+    static async isExist(data) {
+        try{
+            let regex = new RegExp(["^", data.groupName, "$"].join(""), "i");
+            let result = await DatabaseService.findByCriteria(collectionName, {"groupName":regex});
+            if(result.length > 0) {
+                return true; 
+            } else {
+                return false;
+            }
+        }catch(err) {
+            console.log(err);
+            throw err;
+        }
+    }
+
     // update container
     static async updateOne(data) {
         try {

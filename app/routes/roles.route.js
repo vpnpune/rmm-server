@@ -3,6 +3,7 @@ import Joi from 'joi';
 import validator from 'express-joi-validator';
 import { RolesHandler } from '../handler/roles.handler';
 import logger from '../logger';
+import ApplicationError from '../model/application-error';
 
 const router = express.Router();
 
@@ -90,14 +91,14 @@ router.delete('/:id', (req, res) => {
 	let id = req.params.id;
 	let resultPromise = RolesHandler.deleteOne(id);
 	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
+		if (result instanceof Error) {
+			return res.status(412).send(result.message);
 		} else {
 			res.status(200).send([]);
 		}
 	}).catch(err => {
-		log.error(err);
-		throw new ApplicationError(INTERNAL_SERVER_ERROR, 500);
+		console.log(err);
+		throw new ApplicationError(err || INTERNAL_SERVER_ERROR, 500);
 	});
 });
 

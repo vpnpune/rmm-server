@@ -89,10 +89,11 @@ MongoDB.connectDB(async (err) => {
 })
 
 app.use(function (err, req, res, next) {
+    
     if (err.isBoom) {
         return res.status(err.output.statusCode).send(new ApplicationError(err.data, err.output.statusCode));
     } else {
-        console.log(err)
+        
         let errorCode = err.status || 500;
         let message = err.message || INTERNAL_SERVER_ERROR;
         return res.status(errorCode).send(new ApplicationError(message, errorCode));

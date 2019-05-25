@@ -1,6 +1,5 @@
-import { DatabaseService } from "../db/database.service";
 import * as Collection from '../db/collection-constants';
-import {CounterService} from "../db/counter-service";
+import { DatabaseService } from "../db/database.service";
 /* SET COLLECTION NAME FIRST*/
 const collectionName = Collection.CONTAINER_TYPE;
 
