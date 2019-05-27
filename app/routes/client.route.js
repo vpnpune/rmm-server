@@ -3,7 +3,7 @@ import Joi from 'joi';
 import validator from 'express-joi-validator';
 import { ClientHandler } from '../handler/client.handler';
 import logger from '../logger';
-
+import app from './../server'
 
 const log = logger.Logger;
 
@@ -41,8 +41,10 @@ router.get('/', (req, res) => {
 			res.status(500).send({ "message": "Something went wrong" });
 		});
 	} else {
-		let resultPromise = ClientHandler.getAll();
+		console.log('user',app.get('user'));
+		let resultPromise = ClientHandler.getAll(app.get('user'));
 		resultPromise.then(function (result) {
+			console.log(result);
 			if (result) {
 				res.status(200).send(result);
 			}

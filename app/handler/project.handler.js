@@ -103,15 +103,6 @@ export class ProjectHandler {
             const db = mongodb.getDB();
 
             let result = await DatabaseService.softDeleteOne(collectionName, id);
-
-
-            // let result = await db.db().collection(collectionName).updateOne({ "_id": clientId, "projects._id": id }, {
-            //     $set: {
-            //         "projects.$.deleted": true,
-            //         "projects.$.modifiedOn": new Date(),
-            //         "projects.$.modifiedBy": app.get('user')
-            //     }
-            // });
             return result;
         } catch (err) {
             throw err;

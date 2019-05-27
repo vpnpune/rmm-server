@@ -12,15 +12,28 @@ const collectionName = Collection.CLIENT;
 export class ClientHandler {
     // get all items from collection
     //@ts-nocheck
-    static async getAll() {
+    static async getAll(userName) {
         let projection = {
             aliases: 1, contactPersons: 1, name: 1, "clientAddress.state.name": 1,
             "clientAddress.country.name": 1
         }
         try {
             const db = mongodb.getDB();
-            let result = await DatabaseService.getAll(collectionName, projection);
-            return result;
+            let aggregate = await db.db().collection(Collection.CLIENT_PROJECT_PERMISSION).aggregate(
+                [
+                    {"$match":{"userName":userName}},
+                    {"$unwind":"$clients"},
+                    {"$lookup":{"from":"client","localField":"clients","foreignField":"_id","as":"data"}}]
+                ).toArray();
+            //let result = await DatabaseService.getAll(collectionName, projection);
+            console.log('aggregate: ',aggregate);
+            if(aggregate.length > 0) {
+
+                return aggregate[0].data;
+            } else {
+                return [];
+            }
+            
         } catch (err) {
             throw err;
         }
