@@ -21,19 +21,19 @@ export class ClientHandler {
             const db = mongodb.getDB();
             let aggregate = await db.db().collection(Collection.CLIENT_PROJECT_PERMISSION).aggregate(
                 [
-                    {"$match":{"userName":userName}},
-                    {"$unwind":"$clients"},
-                    {"$lookup":{"from":"client","localField":"clients","foreignField":"_id","as":"data"}}]
-                ).toArray();
+                    { "$match": { "userName": userName } },
+                    { "$unwind": "$clients" },
+                    { "$lookup": { "from": "client", "localField": "clients", "foreignField": "_id", "as": "data" } }]
+            ).toArray();
             //let result = await DatabaseService.getAll(collectionName, projection);
-            console.log('aggregate: ',aggregate);
-            if(aggregate.length > 0) {
+            console.log('aggregate: ', aggregate);
+            if (aggregate.length > 0) {
 
                 return aggregate[0].data;
             } else {
                 return [];
             }
-            
+
         } catch (err) {
             throw err;
         }
@@ -63,7 +63,7 @@ export class ClientHandler {
             let result = await DatabaseService.getOneFind(collectionName, criteria,
 
                 projection);
-            
+
             let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD, filesCriteria, filesProjection)
             if (result) {
 
@@ -162,6 +162,22 @@ export class ClientHandler {
                 pagination.totalSize = 0;
             }
             return pagination;
+        } catch (err) {
+            throw err;
+        }
+
+    }
+
+    static async getAllClients() {
+        let projection = {
+            aliases: 1, contactPersons: 1, name: 1, "clientAddress.state.name": 1,
+            "clientAddress.country.name": 1
+        }
+        try {
+            let result = await DatabaseService.getAll(collectionName, projection);
+            return result;
+
+
         } catch (err) {
             throw err;
         }

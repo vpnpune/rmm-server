@@ -20,17 +20,17 @@ router.get('/', (req, res) => {
 	let pageIndex = req.query.pageIndex;
 	let pageSize = req.query.pageSize;
 	let searchText = req.query.filter;
-	
+	console.log('')
 	// for pagination flow 
 	if (pageIndex && pageSize) {
-		let pagination ={}
-		pagination.start = parseInt(pageIndex)*parseInt(pageSize)  ;
+		let pagination = {}
+		pagination.start = parseInt(pageIndex) * parseInt(pageSize);
 		pagination.end = parseInt(pageSize);
-		if(searchText){
-			pagination.searchText= searchText;	
+		if (searchText) {
+			pagination.searchText = searchText;
 		}
 		let resultPromise = ClientHandler.getPagedData(pagination);
-		
+
 		resultPromise.then(function (result) {
 			if (result) {
 				res.status(200).send(result);
@@ -41,7 +41,7 @@ router.get('/', (req, res) => {
 			res.status(500).send({ "message": "Something went wrong" });
 		});
 	} else {
-		console.log('user',app.get('user'));
+		console.log('user', app.get('user'));
 		let resultPromise = ClientHandler.getAll(app.get('user'));
 		resultPromise.then(function (result) {
 			console.log(result);
@@ -56,6 +56,19 @@ router.get('/', (req, res) => {
 
 
 
+});
+
+router.get('/allclients', (req, res) => {
+	let id = req.params.id;
+	let resultPromise = ClientHandler.getAllClients()
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({ "message": "Something went wrong" });
+	});
 });
 // get ONE
 router.get('/:id', (req, res) => {
@@ -90,7 +103,7 @@ router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (
 
 // update ONE obj
 router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
-	
+
 	let resultPromise = ClientHandler.updateOne(req.body);
 
 	resultPromise.then(function (result) {
@@ -108,7 +121,7 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 // get ONE
 router.delete('/:id', (req, res) => {
 	let id = req.params.id;
-	
+
 	let resultPromise = ClientHandler.deleteOne(id);
 	resultPromise.then(function (result) {
 		if (result) {
