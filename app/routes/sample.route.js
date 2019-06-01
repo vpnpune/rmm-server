@@ -50,7 +50,6 @@ router.get('/:id', (req, res) => {
 // save obj
 router.post('/', (req, res) => {
 	let resultPromise = SampleHandler.save(req.body);
-	console.log('save called');
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
@@ -92,6 +91,27 @@ router.delete('/:id', (req, res) => {
 	let id = req.params.id;
 
 	let resultPromise = SampleHandler.deleteOne(id);
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({
+			"message": "Something went wrong"
+		});
+	});
+});
+
+// box related routes
+// get ONE
+router.get('/boxUnits/:boxId', (req, res) => {
+	let id = req.params.boxId;
+
+	console.log(id);
+	let resultPromise = SampleHandler.getAllActiveBoxUnits(id);
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);
