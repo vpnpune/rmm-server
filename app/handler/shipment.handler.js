@@ -37,7 +37,6 @@ export class ShipmentHandler {
     }
     // get ONE object from db
     static async getOne(id) {
-        let projection = {}
         let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
         criteria._id = id;
         let filesProjection = {
@@ -67,16 +66,28 @@ export class ShipmentHandler {
             "$unwind": "$project"
         }
         ]
-
+        console.debug("neeraj");
         try {
             let shipmentObj = {}
-            let result = await DatabaseService.getOneFind(collectionName, criteria,
-                projection)
+            // let result = await DatabaseService.getOneFind(collectionName, criteria,
+            //     projection)
+            const db = mongodb.getDB();
+            let result = await db.db().collection(collectionName).aggregate(
+                [{
+                    $match: criteria
+                },
+                { "$lookup": { "from": "user", "localField": "receivedById", "foreignField": "_id", "as": "receivedBy" } },
+                { "$unwind": "$receivedBy" },
+                ])
+                .toArray();
+
+            console.debug(result);
+
             let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD, filesCriteria, filesProjection)
             let projectSamples = await DatabaseService.getAggregatedData(Collection.PROJECT_SAMPLES, query);
             if (result !== undefined) {
-                shipmentObj = result
-                shipmentObj.documents = fileResult
+                shipmentObj = result[0];
+                shipmentObj.documents = fileResult;
                 shipmentObj.projectSamples = projectSamples;
             }
             return shipmentObj;
@@ -142,12 +153,13 @@ export class ShipmentHandler {
             shipmentStatus: 1,
             referenceNo: 1,
             courier: 1,
-            "receivedBy": 1,
-            nosOfSamples: 1,
+            receivedBy: 1,
             clientId: 1
         }
         let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
         criteria.clientId = clientId;
+        console.log(criteria);
+
         try {
             if (pagination.searchText !== undefined) {
                 //criteria.referenceNo = new RegExp(/^BD/)
@@ -157,8 +169,48 @@ export class ShipmentHandler {
                 // }
             }
 
-            let result = await DatabaseService.getPageAggregate(collectionName, pagination, criteria, projection);
-            return result;
+            // let result = await DatabaseService.getPageAggregate(collectionName, pagination, criteria, projection);
+            // return result;
+
+
+
+
+            const db = mongodb.getDB();
+            let result = await db.db().collection(collectionName).aggregate([{
+                "$facet": {
+                    "totalData": [{
+                        "$match": criteria
+                    },
+                    { "$lookup": { "from": "user", "localField": "receivedById", "foreignField": "_id", "as": "receivedBy" } },
+                    { "$unwind": "$receivedBy" },
+
+                    {
+                        "$project": projection
+                    },
+                    {
+                        "$skip": parseInt(pagination.start)
+                    },
+                    {
+                        "$limit": parseInt(pagination.end)
+                    }
+                    ],
+                    "totalCount": [{
+                        "$match": criteria
+                    },
+                    {
+                        "$count": "count"
+                    }
+                    ]
+                }
+            }]).toArray();
+            if (result && result.length > 0 && result[0].totalCount[0]) {
+                pagination.resultSet = result[0].totalData
+                pagination.totalSize = result[0].totalCount[0].count;
+            } else {
+                pagination.resultSet = [];
+                pagination.totalSize = 0;
+            }
+            return pagination;
         } catch (err) {
             throw err;
         }
