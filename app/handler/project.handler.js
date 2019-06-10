@@ -47,12 +47,25 @@ export class ProjectHandler {
         }
 
         try {
-            let result = await DatabaseService.getOneFind(collectionName, criteria, projectionDoc)
+            // let result = await DatabaseService.getOneFind(collectionName, criteria, projectionDoc)
+
+            const db = mongodb.getDB();
+            let result = await db.db().collection(collectionName).aggregate(
+                [{
+                    $match: criteria
+                },
+                { "$lookup": { "from": "user", "localField": "operationProjectManager", "foreignField": "_id", "as": "opm" } },
+                { "$unwind": "$opm" },
+
+                ])
+                .toArray();
+
+            console.log(result);
+
             let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD, filesCriteria, filesProjection)
 
             if (result) {
-
-                let project = result
+                let project = result[0];
                 project.documents = fileResult
                 return project;
             }
@@ -111,23 +124,62 @@ export class ProjectHandler {
     // need to be implemented
     static async getPagedData(pagination, clientId = null) {
         let projection = {
-            closed: 1, name: 1, clientProjectManager: 1, operationProjectManager: 1
+            closed: 1, name: 1, clientProjectManager: 1, operationProjectManager: 1, opm: 1
         }
         let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
         if (clientId)
             criteria.clientId = clientId
 
+        console.log(criteria);
         if (pagination.queryParams) {
             // iterate other parameters and create query
         }
-
+        // 
         //criteria.clientId = clientId;
         try {
             if (pagination.searchText !== undefined) {
             }
 
-            let result = await DatabaseService.getPageAggregate(collectionName, pagination, criteria, projection);
-            return result;
+
+            const db = mongodb.getDB();
+            let result = await db.db().collection(collectionName).aggregate([{
+                "$facet": {
+                    "totalData": [{
+                        "$match": criteria
+                    },
+                    { "$lookup": { "from": "user", "localField": "operationProjectManager", "foreignField": "_id", "as": "opm" } },
+                    { "$unwind": "$opm" },
+
+                    {
+                        "$project": projection
+                    },
+                    {
+                        "$skip": parseInt(pagination.start)
+                    },
+                    {
+                        "$limit": parseInt(pagination.end)
+                    }
+                    ],
+                    "totalCount": [{
+                        "$match": criteria
+                    },
+                    { "$lookup": { "from": "user", "localField": "operationProjectManager", "foreignField": "_id", "as": "opm" } },
+                    {
+                        "$count": "count"
+                    }
+                    ]
+                }
+            }]).toArray();
+            if (result && result.length > 0 && result[0].totalCount[0]) {
+                pagination.resultSet = result[0].totalData
+                pagination.totalSize = result[0].totalCount[0].count;
+            } else {
+                pagination.resultSet = [];
+                pagination.totalSize = 0;
+            }
+            return pagination;
+
+
         } catch (err) {
             throw err;
         }
@@ -162,22 +214,25 @@ export class ProjectHandler {
                         "$match":
                             { "deleted": { "$ne": true } }
                     },
-                    {"$lookup":{
-                        "from":"client",
-                        "localField":"clientId",
-                        "foreignField":"_id",
-                        "as":"clientObj"
-                    }},
-                    {"$match":
-                        {"clientObj.deleted":{"$ne":true}}
+                    {
+                        "$lookup": {
+                            "from": "client",
+                            "localField": "clientId",
+                            "foreignField": "_id",
+                            "as": "clientObj"
+                        }
+                    },
+                    {
+                        "$match":
+                            { "clientObj.deleted": { "$ne": true } }
                     },
                     {
                         "$project":
                         {
-                            "_id":true,"name":true,"clientObj._id":true,"clientObj.name":true
+                            "_id": true, "name": true, "clientObj._id": true, "clientObj.name": true
                         }
                     },
-                    {"$unwind": "$clientObj"}
+                    { "$unwind": "$clientObj" }
                 ]
             ).toArray();
             return data;
