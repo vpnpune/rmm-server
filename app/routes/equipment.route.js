@@ -70,7 +70,15 @@ router.put('/', validator(schema, { allowUnknown: true, abortEarly: false }), (r
 		}
 	}).catch(err => {
 		log.error(err);
-		res.status(500).send({ "message": "Something went wrong" });
+		if (err && err.code == 11000) {
+			res.status(400).send({
+				"message": "Record already exist",
+				"code": 11000
+			});
+
+		} else {
+			res.status(500).send(err);
+		}
 	});
 
 });
