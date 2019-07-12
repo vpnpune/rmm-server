@@ -12,27 +12,30 @@ const collectionName = Collection.CLIENT;
 export class ClientHandler {
     // get all items from collection
     //@ts-nocheck
-    static async getAll(userName) {
-        let projection = {
-            aliases: 1, contactPersons: 1, name: 1, "clientAddress.state.name": 1,
-            "clientAddress.country.name": 1
-        }
+    static async getAll(userName,userRole) {
         try {
             const db = mongodb.getDB();
-            let aggregate = await db.db().collection(Collection.CLIENT_PROJECT_PERMISSION).aggregate(
-                [
-                    { "$match": { "userName": userName } },
-                    { "$unwind": "$clients" },
-                    { "$lookup": { "from": "client", "localField": "clients", "foreignField": "_id", "as": "data" } }]
-            ).toArray();
-            //let result = await DatabaseService.getAll(collectionName, projection);
-            console.log('aggregate: ', aggregate);
-            if (aggregate.length > 0) {
-
-                return aggregate[0].data;
+            let condition = [];
+            if(userRole.includes('SuperAdmin')) {
+                let result = await DatabaseService.getAll(collectionName);
+                return result;
             } else {
-                return [];
+                condition.push({ "$match": { "userName": userName } });
+                condition.push({ "$unwind": "$clients" });
+                condition.push({ "$lookup": { "from": "client", "localField": "clients", "foreignField": "_id", "as": "data" } });
+
+                let aggregate = await db.db().collection(Collection.CLIENT_PROJECT_PERMISSION).aggregate(
+                    condition
+                ).toArray();
+                //let result = await DatabaseService.getAll(collectionName, projection);
+                console.log('aggregate: ', aggregate);
+                if (aggregate.length > 0) {
+                    return aggregate[0].data;
+                } else {
+                    return [];
+                }
             }
+            
 
         } catch (err) {
             throw err;
@@ -118,7 +121,7 @@ export class ClientHandler {
             throw err;
         }
     }
-    static async getPagedData(pagination) {
+    static async getPagedData(pagination, userName) {
         const db = mongodb.getDB();
 
         try {
@@ -130,8 +133,10 @@ export class ClientHandler {
                     "$facet": {
                         "totalData": [
                             {
-                                "$match":
-                                    { "deleted": { "$ne": true } }
+                                "$match":{ 
+                                    "deleted": { "$ne": true },
+                                    "userName": userName
+                                }
                             },
                             { "$lookup": { "from": "project", "localField": "_id", "foreignField": "clientId", "as": "project" } },
                             {
@@ -153,7 +158,7 @@ export class ClientHandler {
                     }
                 }
             ]).toArray();
-
+            console.log('result: ',result);
             if (result && result.length > 0 && result[0].totalCount[0]) {
                 pagination.resultSet = result[0].totalData
                 pagination.totalSize = result[0].totalCount[0].count;

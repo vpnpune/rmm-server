@@ -29,7 +29,7 @@ router.get('/', (req, res) => {
 		if (searchText) {
 			pagination.searchText = searchText;
 		}
-		let resultPromise = ClientHandler.getPagedData(pagination);
+		let resultPromise = ClientHandler.getPagedData(pagination, app.get('user'));
 
 		resultPromise.then(function (result) {
 			if (result) {
@@ -42,7 +42,8 @@ router.get('/', (req, res) => {
 		});
 	} else {
 		console.log('user', app.get('user'));
-		let resultPromise = ClientHandler.getAll(app.get('user'));
+		console.log('userRole', app.get('userRole'));
+		let resultPromise = ClientHandler.getAll(app.get('user'),app.get('userRole'));
 		resultPromise.then(function (result) {
 			console.log(result);
 			if (result) {

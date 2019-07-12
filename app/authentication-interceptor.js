@@ -24,11 +24,12 @@ router.use(function(req, res, next) {
 				// if everything is good, send to request for use in other routes
 				req.decoded = decoded;	
 				app.set('user',decoded.userName);
-
+				
 				let mapping = req.originalUrl.substring(getPosition(req.originalUrl,'/',2)+1,getPosition(req.originalUrl,'/',3));
 				let method = req.method;
 				let resultPromise = CacheService.get(decoded.userName);
 				resultPromise.then(function (result) {
+					app.set('userRole',result.roles);
 					if (result) {
 						if(result.roles.includes('SuperAdmin') || (result.permissions && checkPermissions(result.permissions, mapping, method ))) {
 							next();
