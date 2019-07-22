@@ -23,6 +23,7 @@ export class ClientHandler {
                 condition.push({ "$match": { "userName": userName } });
                 condition.push({ "$unwind": "$clients" });
                 condition.push({ "$lookup": { "from": "client", "localField": "clients", "foreignField": "_id", "as": "data" } });
+                condition.push({"$match": { "client.deleted": { "$ne": true }}});
 
                 let aggregate = await db.db().collection(Collection.CLIENT_PROJECT_PERMISSION).aggregate(
                     condition
@@ -30,7 +31,7 @@ export class ClientHandler {
                 //let result = await DatabaseService.getAll(collectionName, projection);
                 console.log('aggregate: ', aggregate);
                 if (aggregate.length > 0) {
-                    return aggregate[0].data;
+                    return aggregate;
                 } else {
                     return [];
                 }
@@ -121,57 +122,58 @@ export class ClientHandler {
             throw err;
         }
     }
-    static async getPagedData(pagination, userName) {
-        const db = mongodb.getDB();
 
-        try {
-            if (pagination.searchText != undefined) {
+    // static async getPagedData(pagination, userName) {
+    //     const db = mongodb.getDB();
 
-            }
-            let result = await db.db().collection(collectionName).aggregate([
-                {
-                    "$facet": {
-                        "totalData": [
-                            {
-                                "$match":{ 
-                                    "deleted": { "$ne": true },
-                                    "userName": userName
-                                }
-                            },
-                            { "$lookup": { "from": "project", "localField": "_id", "foreignField": "clientId", "as": "project" } },
-                            {
-                                "$project":
-                                {
-                                    "_id": true, "name": true, "aliases": true, "clientContact": true, "clientAddress": true, "items": {
-                                        "$filter":
-                                            { "input": "$project", "as": "item", "cond": { "$ne": ["$$item.deleted", true] } }
-                                    }
-                                }
-                            },
-                            { "$project": { "_id": true, "name": true, "aliases": true, "clientContact": true, "clientAddress": true, "noOfProject": { "$size": "$items" } } },
-                            { "$skip": parseInt(pagination.start) },
-                            { "$limit": parseInt(pagination.end) }],
-                        "totalCount": [
-                            { "$match": { "deleted": { $ne: true } } },
-                            { "$count": "count" }
-                        ]
-                    }
-                }
-            ]).toArray();
-            console.log('result: ',result);
-            if (result && result.length > 0 && result[0].totalCount[0]) {
-                pagination.resultSet = result[0].totalData
-                pagination.totalSize = result[0].totalCount[0].count;
-            } else {
-                pagination.resultSet = [];
-                pagination.totalSize = 0;
-            }
-            return pagination;
-        } catch (err) {
-            throw err;
-        }
+    //     try {
+    //         if (pagination.searchText != undefined) {
 
-    }
+    //         }
+    //         let result = await db.db().collection(collectionName).aggregate([
+    //             {
+    //                 "$facet": {
+    //                     "totalData": [
+    //                         {
+    //                             "$match":{ 
+    //                                 "deleted": { "$ne": true },
+    //                                 "userName": userName
+    //                             }
+    //                         },
+    //                         { "$lookup": { "from": "project", "localField": "_id", "foreignField": "clientId", "as": "project" } },
+    //                         {
+    //                             "$project":
+    //                             {
+    //                                 "_id": true, "name": true, "aliases": true, "clientContact": true, "clientAddress": true, "items": {
+    //                                     "$filter":
+    //                                         { "input": "$project", "as": "item", "cond": { "$ne": ["$$item.deleted", true] } }
+    //                                 }
+    //                             }
+    //                         },
+    //                         { "$project": { "_id": true, "name": true, "aliases": true, "clientContact": true, "clientAddress": true, "noOfProject": { "$size": "$items" } } },
+    //                         { "$skip": parseInt(pagination.start) },
+    //                         { "$limit": parseInt(pagination.end) }],
+    //                     "totalCount": [
+    //                         { "$match": { "deleted": { $ne: true } } },
+    //                         { "$count": "count" }
+    //                     ]
+    //                 }
+    //             }
+    //         ]).toArray();
+    //         console.log('result: ',result);
+    //         if (result && result.length > 0 && result[0].totalCount[0]) {
+    //             pagination.resultSet = result[0].totalData
+    //             pagination.totalSize = result[0].totalCount[0].count;
+    //         } else {
+    //             pagination.resultSet = [];
+    //             pagination.totalSize = 0;
+    //         }
+    //         return pagination;
+    //     } catch (err) {
+    //         throw err;
+    //     }
+
+    // }
 
     static async getAllClients() {
         let projection = {

@@ -20,27 +20,26 @@ router.get('/', (req, res) => {
 	let pageIndex = req.query.pageIndex;
 	let pageSize = req.query.pageSize;
 	let searchText = req.query.filter;
-	console.log('')
 	// for pagination flow 
-	if (pageIndex && pageSize) {
-		let pagination = {}
-		pagination.start = parseInt(pageIndex) * parseInt(pageSize);
-		pagination.end = parseInt(pageSize);
-		if (searchText) {
-			pagination.searchText = searchText;
-		}
-		let resultPromise = ClientHandler.getPagedData(pagination, app.get('user'));
+	// if (pageIndex && pageSize) {
+	// 	let pagination = {}
+	// 	pagination.start = parseInt(pageIndex) * parseInt(pageSize);
+	// 	pagination.end = parseInt(pageSize);
+	// 	if (searchText) {
+	// 		pagination.searchText = searchText;
+	// 	}
+	// 	let resultPromise = ClientHandler.getPagedData(pagination, app.get('user'));
 
-		resultPromise.then(function (result) {
-			if (result) {
-				res.status(200).send(result);
-			}
-		}).catch(err => {
-			//
-			log.error(err);
-			res.status(500).send({ "message": "Something went wrong" });
-		});
-	} else {
+	// 	resultPromise.then(function (result) {
+	// 		if (result) {
+	// 			res.status(200).send(result);
+	// 		}
+	// 	}).catch(err => {
+	// 		//
+	// 		log.error(err);
+	// 		res.status(500).send({ "message": "Something went wrong" });
+	// 	});
+	// } else {
 		console.log('user', app.get('user'));
 		console.log('userRole', app.get('userRole'));
 		let resultPromise = ClientHandler.getAll(app.get('user'),app.get('userRole'));
@@ -53,7 +52,7 @@ router.get('/', (req, res) => {
 			log.error(err);
 			res.status(500).send({ "message": "Something went wrong" });
 		});
-	}
+	//}
 
 
 
