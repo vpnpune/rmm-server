@@ -10,6 +10,16 @@ const collectionName = Collection.CLIENT;
 
 
 export class ClientHandler {
+
+    static async getClientList(userName) {
+        try {
+            return await DatabaseService.getAll(collectionName);
+        } catch (err) {
+            throw err;
+        }
+
+    }
+
     // get all items from collection
     //@ts-nocheck
     static async getAll(userName) {
@@ -118,53 +128,32 @@ export class ClientHandler {
             throw err;
         }
     }
-    static async getPagedData(pagination) {
-        const db = mongodb.getDB();
-
-        try {
-            if (pagination.searchText != undefined) {
-
+    static async getPagedData(userName, roles) {
+        if(!roles.includes("SuperAdmin")){
+            const db = mongodb.getDB();
+            console.log('client get all service ',userName);
+            try {
+                let result = await db.db().collection(Collection.CLIENT_PROJECT_PERMISSION).aggregate([
+                    { "$match": { "userName": userName }},
+                    { "$unwind":"$clients" },
+                    { "$lookup": { 
+                        "from": "client", 
+                        "localField": "clients", 
+                        "foreignField": "_id", 
+                        "as": "client" 
+                    }},
+                    { "$match": { "client.$.deleted": { "$ne": true }}}
+                ]).toArray();
+                console.log('client get all service: ', result);
+                return result[0].client;
+            } catch (err) {
+                console.log(err);
+                throw err;
             }
-            let result = await db.db().collection(collectionName).aggregate([
-                {
-                    "$facet": {
-                        "totalData": [
-                            {
-                                "$match":
-                                    { "deleted": { "$ne": true } }
-                            },
-                            { "$lookup": { "from": "project", "localField": "_id", "foreignField": "clientId", "as": "project" } },
-                            {
-                                "$project":
-                                {
-                                    "_id": true, "name": true, "aliases": true, "clientContact": true, "clientAddress": true, "items": {
-                                        "$filter":
-                                            { "input": "$project", "as": "item", "cond": { "$ne": ["$$item.deleted", true] } }
-                                    }
-                                }
-                            },
-                            { "$project": { "_id": true, "name": true, "aliases": true, "clientContact": true, "clientAddress": true, "noOfProject": { "$size": "$items" } } },
-                            { "$skip": parseInt(pagination.start) },
-                            { "$limit": parseInt(pagination.end) }],
-                        "totalCount": [
-                            { "$match": { "deleted": { $ne: true } } },
-                            { "$count": "count" }
-                        ]
-                    }
-                }
-            ]).toArray();
-
-            if (result && result.length > 0 && result[0].totalCount[0]) {
-                pagination.resultSet = result[0].totalData
-                pagination.totalSize = result[0].totalCount[0].count;
-            } else {
-                pagination.resultSet = [];
-                pagination.totalSize = 0;
-            }
-            return pagination;
-        } catch (err) {
-            throw err;
+        } else {
+            return await DatabaseService.getAll(collectionName);
         }
+        
 
     }
 

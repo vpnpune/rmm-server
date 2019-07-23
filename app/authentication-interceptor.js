@@ -29,6 +29,7 @@ router.use(function(req, res, next) {
 				let method = req.method;
 				let resultPromise = CacheService.get(decoded.userName);
 				resultPromise.then(function (result) {
+					app.set('userRole',result.roles);
 					if (result) {
 						if(result.roles.includes('SuperAdmin') || (result.permissions && checkPermissions(result.permissions, mapping, method ))) {
 							next();

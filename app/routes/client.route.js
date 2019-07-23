@@ -15,12 +15,27 @@ const schema = {
 
 	}
 }
+
+//get list
+router.get('/list', (req, res) => {
+	let resultPromise = ClientHandler.getClientList(app.get('user'));
+	resultPromise.then(function (result) {
+		console.log(result);
+		if (result) {
+			res.status(200).send(result);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({ "message": "Something went wrong" });
+	});
+});
+
 // get ALL
 router.get('/', (req, res) => {
 	let pageIndex = req.query.pageIndex;
 	let pageSize = req.query.pageSize;
 	let searchText = req.query.filter;
-	console.log('')
+	console.log('client get all route');
 	// for pagination flow 
 	if (pageIndex && pageSize) {
 		let pagination = {}
@@ -29,7 +44,7 @@ router.get('/', (req, res) => {
 		if (searchText) {
 			pagination.searchText = searchText;
 		}
-		let resultPromise = ClientHandler.getPagedData(pagination);
+		let resultPromise = ClientHandler.getPagedData(app.get('user'),app.get('userRole'));
 
 		resultPromise.then(function (result) {
 			if (result) {
@@ -40,8 +55,7 @@ router.get('/', (req, res) => {
 			log.error(err);
 			res.status(500).send({ "message": "Something went wrong" });
 		});
-	} else {
-		console.log('user', app.get('user'));
+	} else {	
 		let resultPromise = ClientHandler.getAll(app.get('user'));
 		resultPromise.then(function (result) {
 			console.log(result);
