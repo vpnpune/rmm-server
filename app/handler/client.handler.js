@@ -36,7 +36,6 @@ export class ClientHandler {
                     { "$lookup": { "from": "client", "localField": "clients", "foreignField": "_id", "as": "data" } }]
             ).toArray();
             //let result = await DatabaseService.getAll(collectionName, projection);
-            console.log('aggregate: ', aggregate);
             if (aggregate.length > 0) {
 
                 return aggregate[0].data;
@@ -131,7 +130,6 @@ export class ClientHandler {
     static async getPagedData(userName, roles) {
         if(!roles.includes("SuperAdmin")){
             const db = mongodb.getDB();
-            console.log('client get all service ',userName);
             try {
                 let result = await db.db().collection(Collection.CLIENT_PROJECT_PERMISSION).aggregate([
                     { "$match": { "userName": userName }},
@@ -144,10 +142,8 @@ export class ClientHandler {
                     }},
                     { "$match": { "client.$.deleted": { "$ne": true }}}
                 ]).toArray();
-                console.log('client get all service: ', result);
                 return result[0].client;
             } catch (err) {
-                console.log(err);
                 throw err;
             }
         } else {

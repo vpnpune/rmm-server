@@ -20,7 +20,6 @@ const schema = {
 router.get('/list', (req, res) => {
 	let resultPromise = ClientHandler.getClientList(app.get('user'));
 	resultPromise.then(function (result) {
-		console.log(result);
 		if (result) {
 			res.status(200).send(result);
 		}
@@ -35,15 +34,14 @@ router.get('/', (req, res) => {
 	let pageIndex = req.query.pageIndex;
 	let pageSize = req.query.pageSize;
 	let searchText = req.query.filter;
-	console.log('client get all route');
 	// for pagination flow 
-	if (pageIndex && pageSize) {
-		let pagination = {}
-		pagination.start = parseInt(pageIndex) * parseInt(pageSize);
-		pagination.end = parseInt(pageSize);
-		if (searchText) {
-			pagination.searchText = searchText;
-		}
+	// if (pageIndex && pageSize) {
+	// 	let pagination = {}
+	// 	pagination.start = parseInt(pageIndex) * parseInt(pageSize);
+	// 	pagination.end = parseInt(pageSize);
+	// 	if (searchText) {
+	// 		pagination.searchText = searchText;
+	// 	}
 		let resultPromise = ClientHandler.getPagedData(app.get('user'),app.get('userRole'));
 
 		resultPromise.then(function (result) {
@@ -55,21 +53,17 @@ router.get('/', (req, res) => {
 			log.error(err);
 			res.status(500).send({ "message": "Something went wrong" });
 		});
-	} else {	
-		let resultPromise = ClientHandler.getAll(app.get('user'));
-		resultPromise.then(function (result) {
-			console.log(result);
-			if (result) {
-				res.status(200).send(result);
-			}
-		}).catch(err => {
-			log.error(err);
-			res.status(500).send({ "message": "Something went wrong" });
-		});
-	}
-
-
-
+	// } else {	
+	// 	let resultPromise = ClientHandler.getAll(app.get('user'));
+	// 	resultPromise.then(function (result) {
+	// 		if (result) {
+	// 			res.status(200).send(result);
+	// 		}
+	// 	}).catch(err => {
+	// 		log.error(err);
+	// 		res.status(500).send({ "message": "Something went wrong" });
+	// 	});
+	// }
 });
 
 router.get('/allclients', (req, res) => {
@@ -88,7 +82,6 @@ router.get('/allclients', (req, res) => {
 router.get('/:id', (req, res) => {
 	let id = req.params.id;
 	let resultPromise = ClientHandler.getOne(id);
-	console.log('get one ')
 	resultPromise.then(function (result) {
 		if (result) {
 			res.status(200).send(result);

@@ -109,8 +109,6 @@ router.delete('/:id', (req, res) => {
 // get ONE
 router.get('/boxUnits/:boxId', (req, res) => {
 	let id = req.params.boxId;
-
-	console.log(id);
 	let resultPromise = SampleHandler.getAllActiveBoxUnits(id);
 	resultPromise.then(function (result) {
 		if (result) {

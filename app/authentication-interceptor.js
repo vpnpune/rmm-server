@@ -57,14 +57,10 @@ function getPosition(string, subString, index) {
 
 function checkPermissions(permissions,url, operation ) {
 	try{
-		console.log(permissions);
-		console.log(url);
 		let shortUrl; 
 		if(url.indexOf("?") !== -1){
 			shortUrl = url.substring(0,url.indexOf("?"));
-			console.log('short ', shortUrl);
 		}
-		console.log(operation);
 		for(let permission of permissions) {
 			if((permission.url === url || permission.url === shortUrl) && permission.operation === operation) {
 				return true;

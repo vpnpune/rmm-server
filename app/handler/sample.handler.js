@@ -41,12 +41,7 @@ export class SampleHandler {
         const sampleDetails = projectSample.sampleDetails;
         const container = sampleDetails.containerType
         const units = data.units;
-        // console.log('projectSample', projectSample);
-        // console.log('sampleDetails', sampleDetails);
-        // console.log('container', container);
-        // console.log('units', units);
         let lastUsedValue = container.lastUsedValue;
-        console.log('lastUsedValue', lastUsedValue)
         let sampleUnits = [];
         units.forEach(element => {
             let sampleUnit = {};
@@ -63,7 +58,6 @@ export class SampleHandler {
             sampleUnits.push(sampleUnit);
             // mark box unit as allocated
             element.allocated = 2
-            // console.log(element);
         });
         try {
             // 1. Save Samples
@@ -106,7 +100,6 @@ export class SampleHandler {
     static async getAllActiveBoxUnits(id) {
         let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
         criteria["boxId"] = id
-        console.log(criteria)
         try {
             let result = await DatabaseService.findByCriteria(boxUnitCollection, criteria);
             return result;

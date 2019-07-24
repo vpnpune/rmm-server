@@ -39,7 +39,6 @@ export class EquipmentNodeHandler {
             }
             delete data['children'];
             // save the storage level
-            console.log(data)
             // throw err;
             result = await DatabaseService.save(collectionName, data);
             // if node is box save it to samples 
@@ -55,15 +54,11 @@ export class EquipmentNodeHandler {
                             "boxId": result.ops[0]._id
                         }
                         units.push(unit);
-                        console.log(unit);
 
                     }
                 }// prepare for bulk save
                 let boxUnitResults = await DatabaseService.bulkSave(Collection.BOX_UNITS, units);
-                console.log(boxUnitResults);
-
             }
-            // console.log(result);
             return result.ops[0];
         } catch (err) {
 
@@ -83,7 +78,6 @@ export class EquipmentNodeHandler {
                 // this means node and subsequent nodes can be reserved 
                 let nodesToUpdate = [];
                 nodesToUpdate = EquipmentNodeHandler.getAllChildNodes(data, nodesToUpdate);
-                // console.log(nodesToUpdate);
                 let modifiedFields = {
                     "reserved": data.reserved,
 
@@ -95,8 +89,6 @@ export class EquipmentNodeHandler {
                 data['client'] = undefined;
                 data['children'] = undefined;
                 result = await DatabaseService.updateOne(collectionName, data);
-
-                // console.log(result);
             }
             // if removing nodes from reservation  
             else {
@@ -128,7 +120,6 @@ export class EquipmentNodeHandler {
         return m;
     }
     static checkNonFreeNodes(node, m, clientId) {
-        console.log('checkNonFreeNodes')
 
         if (EquipmentNodeHandler.isNodeReserved(node, clientId)) {
             m.push(node.name);

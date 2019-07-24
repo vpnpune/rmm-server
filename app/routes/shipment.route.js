@@ -199,7 +199,6 @@ router.get('/:clientId', (req, res) => {
 });
 
 router.put('/updateSampleDetails', (req, res, next) => {
-	console.log("req. ",req.body)
 	let resultPromise = ShipmentHandler.updateProjectSampleDetails(req.body);
 
 	resultPromise.then(function (result) {

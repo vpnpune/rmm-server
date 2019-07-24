@@ -53,12 +53,10 @@ router.get('/:id', (req, res) => {
 router.post('/', validator(schema, { allowUnknown: true, abortEarly: false }), (req, res, next) => {
 	let emailExist = UserHandler.emailIdExist(req.body.emailId);
 	emailExist.then(function(data) {
-		console.log(data);
 		if(data) {
 			res.status(412).send("EmailId exist");
 		} else {
 			UserHandler.getByUserName(req.body.userName).then(data => {
-				console.log(data);
 				if(data) {
 					res.status(412).send("Username exist");
 				} else{

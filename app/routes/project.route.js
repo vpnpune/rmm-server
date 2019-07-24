@@ -2,7 +2,7 @@ import express from 'express';
 import Joi from 'joi';
 import validator from 'express-joi-validator';
 import { ProjectHandler } from '../handler/project.handler';
-
+import app from './../server';
 import logger from '../logger';
 const log = logger.Logger;
 
@@ -34,8 +34,8 @@ router.get('/', (req, res) => {
 		if (searchText) {
 			pagination.searchText = searchText;
 		}
-		let resultPromise = ProjectHandler.getPagedData(pagination,clientId);
-
+		//let resultPromise = ProjectHandler.getPagedData(pagination,clientId);
+		let resultPromise = ProjectHandler.getProjects(app.get('user'),app.get('userRole'), clientId);
 		resultPromise.then(function (result) {
 			if (result) {
 				res.status(200).send(result);

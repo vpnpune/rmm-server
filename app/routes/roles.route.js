@@ -97,7 +97,6 @@ router.delete('/:id', (req, res) => {
 			res.status(200).send([]);
 		}
 	}).catch(err => {
-		console.log(err);
 		throw new ApplicationError(err || INTERNAL_SERVER_ERROR, 500);
 	});
 });

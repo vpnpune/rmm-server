@@ -94,7 +94,6 @@ router.delete('/:name', validator(body, { allowUnknown: true, abortEarly: false 
 	let name = req.params.name;
 	let resultPromise = PermissionsHandler.deleteOne(name);
 	resultPromise.then(function (result) {
-		console.log(result instanceof Error);
 		if (result instanceof Error) {
 			return res.status(412).send(result.message);
 		} else {

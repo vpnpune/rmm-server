@@ -158,23 +158,8 @@ export class ShipmentHandler {
         }
         let criteria = Object.create(SOFT_DELETE_FIND_QUERY);
         criteria.clientId = clientId;
-        console.log(criteria);
 
         try {
-            if (pagination.searchText !== undefined) {
-                //criteria.referenceNo = new RegExp(/^BD/)
-                // {
-                //     $regex:
-                //         /^BD/
-                // }
-            }
-
-            // let result = await DatabaseService.getPageAggregate(collectionName, pagination, criteria, projection);
-            // return result;
-
-
-
-
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).aggregate([{
                 "$facet": {
@@ -221,7 +206,6 @@ export class ShipmentHandler {
     // save project-sample Relation
     static async saveProjectSamples(projectSamples, shipmentId) {
         try {
-            // console.log('save ps', projectSamples )
             const db = mongodb.getDB();
             var bulk = await db.db().collection(projectSampleCollection).initializeUnorderedBulkOp();
 

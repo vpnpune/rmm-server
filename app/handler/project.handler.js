@@ -60,8 +60,6 @@ export class ProjectHandler {
                 ])
                 .toArray();
 
-            console.log(result);
-
             let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD, filesCriteria, filesProjection)
 
             if (result) {
@@ -130,7 +128,6 @@ export class ProjectHandler {
         if (clientId)
             criteria.clientId = clientId
 
-        console.log(criteria);
         if (pagination.queryParams) {
             // iterate other parameters and create query
         }
@@ -240,6 +237,37 @@ export class ProjectHandler {
             throw err;
         }
     }
+
+    static async getProjects(userName, roles, clientId) {
+        try {
+            if(!roles.includes("SuperAdmin")) {
+                const db = mongodb.getDB();
+                let data = await db.db().collection(Collection.CLIENT_PROJECT_PERMISSION).aggregate([
+                    {"$match":{"userName":userName}},
+                    {"$unwind":"$projects"},
+                    {"$lookup":{
+                        "from":"project",
+                        "localField":"projects",
+                        "foreignField":"_id",
+                        "as":"project"
+                    }},
+                    {"$unwind":"$project"},
+                    {"$match":{"project.clientId":clientId}},
+                    {"$group":{
+                        "_id":"$_id",
+                        "projects":{"$addToSet":"$project"}
+                    }}
+                ]).toArray();
+                return data[0].projects;
+            } else {
+                return await DatabaseService.findByCriteria(collectionName,{"clientId":clientId});
+            }
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    
 }
 
 

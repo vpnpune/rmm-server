@@ -40,10 +40,8 @@ export class LocationHandler {
 
             let dbLocType = await DatabaseService.getOne(Collection.LOCATION_TYPE, locationType._id);
             // increment it 
-            // console.log("dbLocType.lastUsedValue",dbLocType.lastUsedValue);
             let incrementedValue = dbLocType.lastUsedValue + 1;
             dbLocType.lastUsedValue= incrementedValue;
-            // console.log("incrementedValue",incrementedValue);
             // update incremeneted value
             let updateResult = await DatabaseService.updateOne(Collection.LOCATION_TYPE, dbLocType);
 

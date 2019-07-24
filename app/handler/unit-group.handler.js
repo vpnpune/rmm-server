@@ -35,7 +35,6 @@ export class UnitGroupHandler {
             let result = await DatabaseService.save(collectionName, data);
             return result.ops[0];
         } catch (err) {
-            console.log(err);
             throw err;
         }
     }
@@ -50,7 +49,6 @@ export class UnitGroupHandler {
                 return false;
             }
         }catch(err) {
-            console.log(err);
             throw err;
         }
     }

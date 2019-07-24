@@ -38,7 +38,6 @@ export class DynamicFormHandler {
             let result = await db.db().collection(collectionName).updateOne({ "_id": data.projectId }, { $push: {"sampleDefinition.dynamicFields":obj}});
             return result.result;
         } catch (err) {
-            console.log(err);
             throw err;
         }
     }
