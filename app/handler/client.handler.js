@@ -128,6 +128,7 @@ export class ClientHandler {
         }
     }
     static async getPagedData(userName, roles) {
+        let clients = [];
         if(!roles.includes("SuperAdmin")){
             const db = mongodb.getDB();
             try {
@@ -142,7 +143,16 @@ export class ClientHandler {
                     }},
                     { "$match": { "client.$.deleted": { "$ne": true }}}
                 ]).toArray();
-                return result[0].client;
+                if(result.length > 0) {
+                    for(let i=0; i< result.length;i++){
+                        let data = result[i].client[0];
+                        if(!clients.some(el => el._id === data._id)) {
+                            clients.push(data);
+                        }
+                    }
+                    return clients;
+                }
+                
             } catch (err) {
                 throw err;
             }

@@ -49,18 +49,20 @@ export class EquipmentHandler {
             let result = await DatabaseService.getOneFind(collectionName, criteria,
 
                 projection)
-            let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD, filesCriteria, filesProjection)
 
-            if (result !== undefined) {
-                let dataObj = result
-                dataObj.documents = fileResult
-                return dataObj
+            if (result !== undefined && result !== null) {
+                let fileResult = await DatabaseService.findByCriteria(Collection.DOCUMENT_UPLOAD, filesCriteria, filesProjection)
+                console.log(result);
+                let dataObj = result;
+                dataObj.documents = fileResult;
+                return dataObj;
             }
             else {
                 return {}
             }
 
         } catch (err) {
+            console.log(err);
             throw err;
         }
 
