@@ -1,9 +1,6 @@
 import express from 'express';
-import Joi from 'joi';
-import validator from 'express-joi-validator';
+import { SampleHandler } from '../handler/sample.handler';
 import logger from '../logger';
-import {SampleHandler} from '../handler/sample.handler';
-import app from './../server';
 
 const router = express.Router();
 const log = logger.Logger;

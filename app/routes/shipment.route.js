@@ -1,22 +1,21 @@
-import express from 'express';
-import Joi from 'joi';
-import validator from 'express-joi-validator';
-import logger from '../logger';
-import {
-	ShipmentHandler
-} from '../handler/shipment.handler';
-
+import express from "express";
+import Joi from "joi";
+import validator from "express-joi-validator";
+import logger from "../logger";
+import { ShipmentHandler } from "../handler/shipment.handler";
+import { SampleHandler } from "../handler/sample.handler";
 
 const log = logger.Logger;
 
 const router = express.Router();
-// please separate  out 
+// please separate  out
 const schema = {
-	body: {
-		referenceNo: Joi.string().min(3).required()
-
-	}
-}
+  body: {
+    referenceNo: Joi.string()
+      .min(3)
+      .required()
+  }
+};
 // get ALL
 // router.get('/:clientId', (req, res) => {
 // 	let start = req.query.start;
@@ -24,7 +23,7 @@ const schema = {
 // 	let searchText = req.query.searchText;
 // 	let clientId = req.params.clientId;
 
-// 	// for pagination flow 
+// 	// for pagination flow
 // 	if (start !== undefined && end !== undefined) {
 // 		let pagination ={}
 // 		pagination.start = start;
@@ -53,166 +52,181 @@ const schema = {
 // 		});
 // 	}
 
-
-
 // });
 
-
 // get ONE
-router.get('/:clientId/:id', (req, res) => {
-	let id = req.params.id;
-	//let clientId  = req.params.clientId;
-	let resultPromise = ShipmentHandler.getOne(id);
+router.get("/:clientId/:id", (req, res) => {
+  let id = req.params.id;
+  //let clientId  = req.params.clientId;
+  let resultPromise = ShipmentHandler.getOne(id);
 
-	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
-		}
-	}).catch(err => {
-		log.error(err);
-		res.status(500).send({
-			"message": "Something went wrong"
-		});
-	});
+  resultPromise
+    .then(function(result) {
+      if (result) {
+        res.status(200).send(result);
+      }
+    })
+    .catch(err => {
+      log.error(err);
+      res.status(500).send({
+        message: "Something went wrong"
+      });
+    });
 });
-
-
 
 // save obj
-router.post('/', validator(schema, {
-	allowUnknown: true,
-	abortEarly: false
-}), (req, res, next) => {
-	let resultPromise = ShipmentHandler.save(req.body);
-	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
-		}
-	}).catch(err => {
-		log.error(err);
-		res.status(500).send({
-			"message": "Something went wrong"
-		});
-	});
-
-});
+router.post(
+  "/",
+  validator(schema, {
+    allowUnknown: true,
+    abortEarly: false
+  }),
+  (req, res, next) => {
+    let resultPromise = ShipmentHandler.save(req.body);
+    resultPromise
+      .then(function(result) {
+        if (result) {
+          res.status(200).send(result);
+        }
+      })
+      .catch(err => {
+        log.error(err);
+        res.status(500).send({
+          message: "Something went wrong"
+        });
+      });
+  }
+);
 
 // update ONE obj
-router.put('/', validator(schema, {
-	allowUnknown: true,
-	abortEarly: false
-}), (req, res, next) => {
+router.put(
+  "/",
+  validator(schema, {
+    allowUnknown: true,
+    abortEarly: false
+  }),
+  (req, res, next) => {
+    let resultPromise = ShipmentHandler.updateOne(req.body);
 
-	let resultPromise = ShipmentHandler.updateOne(req.body);
-
-	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
-		}
-	}).catch(err => {
-		log.error(err);
-		res.status(500).send({
-			"message": "Something went wrong"
-		});
-	});
-
-});
-
+    resultPromise
+      .then(function(result) {
+        if (result) {
+          res.status(200).send(result);
+        }
+      })
+      .catch(err => {
+        log.error(err);
+        res.status(500).send({
+          message: "Something went wrong"
+        });
+      });
+  }
+);
 
 // get ONE
-router.delete('/:id', (req, res) => {
-	let id = req.params.id;
+router.delete("/:id", (req, res) => {
+  let id = req.params.id;
 
-	let resultPromise = ShipmentHandler.deleteOne(id);
-	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
-		}
-	}).catch(err => {
-		log.error(err);
-		res.status(500).send({
-			"message": "Something went wrong"
-		});
-	});
+  let resultPromise = ShipmentHandler.deleteOne(id);
+  resultPromise
+    .then(function(result) {
+      if (result) {
+        res.status(200).send(result);
+      }
+    })
+    .catch(err => {
+      log.error(err);
+      res.status(500).send({
+        message: "Something went wrong"
+      });
+    });
 });
 
+router.get("/test", (req, res) => {
+  let id = req.params.id;
 
-router.get('/test', (req, res) => {
-	let id = req.params.id;
-
-	let resultPromise = ShipmentHandler.getAll();
-	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
-		}
-	}).catch(err => {
-		log.error(err);
-		res.status(500).send({
-			"message": "Something went wrong"
-		});
-	});
+  let resultPromise = ShipmentHandler.getAll();
+  resultPromise
+    .then(function(result) {
+      if (result) {
+        res.status(200).send(result);
+      }
+    })
+    .catch(err => {
+      log.error(err);
+      res.status(500).send({
+        message: "Something went wrong"
+      });
+    });
 });
 // mat
 // get ALL
-router.get('/:clientId', (req, res) => {
-	let pageIndex = req.query.pageIndex;
-	let pageSize = req.query.pageSize;
-	let searchText = req.query.filter;
-	let clientId = req.params.clientId;
-	// for pagination flow 
-	if (pageIndex && pageSize) {
-		let pagination = {}
-		pagination.start = parseInt(pageIndex) * parseInt(pageSize);
-		pagination.end = parseInt(pageSize);
-		if (searchText) {
-			pagination.searchText = searchText;
-		}
-		let resultPromise = ShipmentHandler.getPagedData(clientId, pagination);
+router.get("/:clientId", (req, res) => {
+  let pageIndex = req.query.pageIndex;
+  let pageSize = req.query.pageSize;
+  let searchText = req.query.filter;
+  let clientId = req.params.clientId;
+  // for pagination flow
+  if (pageIndex && pageSize) {
+    let pagination = {};
+    pagination.start = parseInt(pageIndex) * parseInt(pageSize);
+    pagination.end = parseInt(pageSize);
+    if (searchText) {
+      pagination.searchText = searchText;
+    }
+    let resultPromise = ShipmentHandler.getPagedData(clientId, pagination);
 
-		resultPromise.then(function (result) {
-			if (result) {
-				res.status(200).send(result);
-			}
-		}).catch(err => {
-			//
-			log.error(err);
-			res.status(500).send({
-				"message": "Something went wrong"
-			});
-		});
-	} else {
-		let resultPromise = ShipmentHandler.getAll();
-		resultPromise.then(function (result) {
-			if (result) {
-				res.status(200).send(result);
-			}
-		}).catch(err => {
-			log.error(err);
-			res.status(500).send({
-				"message": "Something went wrong"
-			});
-		});
-	}
-
-
-
+    resultPromise
+      .then(function(result) {
+        if (result) {
+          res.status(200).send(result);
+        }
+      })
+      .catch(err => {
+        //
+        log.error(err);
+        res.status(500).send({
+          message: "Something went wrong"
+        });
+      });
+  } else {
+    let resultPromise = ShipmentHandler.getAll();
+    resultPromise
+      .then(function(result) {
+        if (result) {
+          res.status(200).send(result);
+        }
+      })
+      .catch(err => {
+        log.error(err);
+        res.status(500).send({
+          message: "Something went wrong"
+        });
+      });
+  }
 });
 
-router.put('/updateSampleDetails', (req, res, next) => {
-	let resultPromise = ShipmentHandler.updateProjectSampleDetails(req.body);
+/*
+Add Samples Object
+save equipment in which project samples collection
 
-	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
-		}
-	}).catch(err => {
-		log.error(err);
-		res.status(500).send({
-			"message": "Something went wrong"
-		});
-	});
+*/
 
+router.put("/addSamples", (req, res, next) => {
+  let resultPromise = ShipmentHandler.saveSamples(req.body);
+
+  resultPromise
+    .then(function(result) {
+      if (result) {
+        res.status(200).send(result);
+      }
+    })
+    .catch(err => {
+      log.error(err);
+      res.status(500).send({
+        message: "Something went wrong"
+      });
+    });
 });
-
 
 export default router;
