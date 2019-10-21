@@ -1,9 +1,8 @@
 import express from "express";
-import Joi from "joi";
 import validator from "express-joi-validator";
-import logger from "../logger";
+import Joi from "joi";
 import { ShipmentHandler } from "../handler/shipment.handler";
-import { SampleHandler } from "../handler/sample.handler";
+import logger from "../logger";
 
 const log = logger.Logger;
 

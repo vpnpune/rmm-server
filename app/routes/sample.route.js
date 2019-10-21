@@ -121,4 +121,24 @@ router.get('/boxUnits/:boxId', (req, res) => {
 	});
 });
 
+// get ALL
+router.get('/projectSample/:projectSampleId', (req, res) => {
+	let psId = req.params.projectSampleId;
+
+	let resultPromise = SampleHandler.getSamples(psId);
+	resultPromise.then(function (result) {
+		if (result) {
+			res.status(200).send(result);
+		} else {
+			res.status(200).send([]);
+		}
+	}).catch(err => {
+		log.error(err);
+		res.status(500).send({
+			"message": "Something went wrong"
+		});
+	});
+});
+
+
 export default router;
