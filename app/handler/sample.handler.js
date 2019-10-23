@@ -206,4 +206,12 @@ export class SampleHandler {
     });
     return map;
   }
+   // generic method
+   static async deleteSamples(criteria) {
+    try {
+      await DatabaseService.deleteMany(collectionName,criteria);
+    } catch (err) {
+      throw err;
+    }
+  }
 }

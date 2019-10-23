@@ -228,4 +228,23 @@ router.put("/addSamples", (req, res, next) => {
     });
 });
 
+// delete 1 project sample 
+router.delete("/:id/projectSample/:projectSampleId", (req, res) => {
+  let id = req.params.projectSampleId;
+  let deleteIds =[id]
+  let resultPromise = ShipmentHandler.deleteProjectSamples(deleteIds);
+  resultPromise
+    .then(function(result) {
+      if (result) {
+        res.status(200).send(result);
+      }
+    })
+    .catch(err => {
+      log.error(err);
+      res.status(500).send({
+        message: "Something went wrong"
+      });
+    });
+});
+
 export default router;

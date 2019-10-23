@@ -3,7 +3,7 @@ import { DatabaseService } from "../db/database.service";
 import mongodb from "../db/mongodb";
 import { buildInsertObject, buildUpdateObject } from "../db/user-audit";
 import { SOFT_DELETE_FIND_QUERY } from "../model/generic-queries";
-import {SampleHandler} from "./sample.handler";
+import { SampleHandler } from "./sample.handler";
 /* SET COLLECTION NAME FIRST*/
 const collectionName = Collection.SHIPMENT;
 const projectSampleCollection = Collection.PROJECT_SAMPLES;
@@ -146,11 +146,38 @@ export class ShipmentHandler {
         criteria,
         modifiedFields
       );
-      let samplesResult = await ShipmentHandler.updateProjectSamples(
-        projectSamples
-      );
-      // update project samples pending
+      // for project Samples which have status 'SAMPLE_ADDED' // LEAVE it
+      let deleteIds = [];
+      let insertProjectSamples = [];
+      for (let row of projectSamples) {
+        if (row.status !== "SAMPLE ADDED") {
+          if (row._id) {
+            deleteIds.push(row._id);
+          }
+          // insert such //take status back to 0
+          row.status = "SAMPLE ADDITION PENDING";
+          insertProjectSamples.push(row);
+        }
+      }
+      console.log("deleteIds");
 
+      console.log(deleteIds);
+      console.log("insertProjectSamples");
+
+      console.log(insertProjectSamples);
+
+      if (deleteIds.length > 0) {
+        let r = await ShipmentHandler.deleteProjectSamples(deleteIds);
+        console.log("result");
+        console.log(r);
+      }
+      // insert ProjectSamples
+      if (insertProjectSamples.length > 0) {
+        await ShipmentHandler.saveProjectSamples(
+          insertProjectSamples,
+          data._id
+        );
+      }
       return result;
     } catch (err) {
       throw err;
@@ -308,6 +335,29 @@ export class ShipmentHandler {
         data.status,
         data.equipment._id
       );
+      return prSamplesResult;
+    } catch (err) {
+      throw err;
+    }
+  }
+  static async deleteProjectSamples(deleteIds) {
+    let criteria = {
+      _id: {
+        $in: deleteIds
+      }
+    };
+    try {
+      let prSamplesResult = await DatabaseService.deleteMany(
+        projectSampleCollection,
+        criteria
+      );
+      // delete Samples
+      let samplesCriteria = {
+        projectSampleId: {
+          $in: deleteIds
+        }
+      };
+      await SampleHandler.deleteSamples(samplesCriteria);
       return prSamplesResult;
     } catch (err) {
       throw err;

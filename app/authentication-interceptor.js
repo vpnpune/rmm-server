@@ -23,8 +23,10 @@ router.use(function(req, res, next) {
 			} else {
 				// if everything is good, send to request for use in other routes
 				req.decoded = decoded;	
-				app.set('user',decoded.userName);
-				// app.set('user',"pankaj");
+				let username= decoded.userName
+				// username = "PANKAJ";
+				app.set('user',username);
+				
 
 				let mapping = req.originalUrl.substring(getPosition(req.originalUrl,'/',2)+1,getPosition(req.originalUrl,'/',3));
 				let method = req.method;
