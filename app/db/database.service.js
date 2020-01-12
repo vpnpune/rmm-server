@@ -213,6 +213,7 @@ export class DatabaseService {
         try {
             const db = mongodb.getDB();
             let result = await db.db().collection(collectionName).find(criteria).toArray();
+            console.log('redsult', result);
             return result;
         } catch (err) {
             throw err;

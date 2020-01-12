@@ -103,16 +103,7 @@ export class EquipmentNodeHandler {
             throw err;
         }
     }
-    // Delete One container
-    static async deleteOne(id) {
-        try {
-            let result = await DatabaseService.deleteOne(collectionName, id);
-            return result;
-        } catch (err) {
-            throw err;
-        }
-    }
-
+    
     static isReservationPossible(node, clientId) {
         let m = [];
         m = EquipmentNodeHandler.checkNonFreeNodes(node, m, clientId);
@@ -145,6 +136,35 @@ export class EquipmentNodeHandler {
         }
         return m;
     }
+
+     static async getNodesSamples(nodeId, expired) {
+        try {
+            let criteria = { "location.boxId": nodeId, "expired": expired }
+            console.log(criteria);
+            let result = await DatabaseService.findByCriteria(Collection.SAMPLES, criteria);
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async ifNodeHasSamples(nodeId, expired) {
+        let samples = await EquipmentNodeHandler.getNodesSamples(nodeId, expired);
+        console.log(samples)
+        return samples.length > 0
+    }
+
+// Delete One node
+static async deleteOne(id) {
+    try {
+        let result = await DatabaseService.deleteOne(collectionName, id);
+        return result;
+    } catch (err) {
+        throw err;
+    }
+}
+
+
 }
 
 

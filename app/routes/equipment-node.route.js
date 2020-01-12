@@ -75,21 +75,43 @@ router.put('/', validator(schema, {
 	abortEarly: false
 }), (req, res, next) => {
 
-	let resultPromise = EquipmentNodeHandler.updateOne(req.body);
-
-	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
-		} else {
-			res.status(200).send([]);
+	
+	EquipmentNodeHandler.ifNodeHasSamples(req.body._id, false).then(function (result) {
+		if (result)
+			return res.status(400).send({ 'message': [{ 'message': 'This node has already samples allocated so it cannot be updated' }] });
+		else {
+			let resultPromise = EquipmentNodeHandler.updateOne(id);
+			resultPromise.then(function (result) {
+				if (result) {
+					res.status(200).send(result);
+				} else {
+					res.status(200).send([]);
+				}
+			}).catch(err => {
+				log.error(err);
+				res.status(500).send({
+					"message": "Something went wrong"
+				});
+			});
 		}
-	}).catch(err => {
-		log.error(err);
-		
-		
-		res.status(err.status || 500).send(err);
+	})
 
-	});
+	
+	// let resultPromise = EquipmentNodeHandler.updateOne(req.body);
+
+	// resultPromise.then(function (result) {
+	// 	if (result) {
+	// 		res.status(200).send(result);
+	// 	} else {
+	// 		res.status(200).send([]);
+	// 	}
+	// }).catch(err => {
+	// 	log.error(err);
+
+
+	// 	res.status(err.status || 500).send(err);
+
+	// });
 
 });
 
@@ -97,20 +119,30 @@ router.put('/', validator(schema, {
 // get ONE
 router.delete('/:id', (req, res) => {
 	let id = req.params.id;
+	console.log(id);
 
-	let resultPromise = EquipmentNodeHandler.deleteOne(id);
-	resultPromise.then(function (result) {
-		if (result) {
-			res.status(200).send(result);
-		} else {
-			res.status(200).send([]);
+
+	EquipmentNodeHandler.ifNodeHasSamples(id, false).then(function (result) {
+		if (result)
+			return res.status(400).send({ 'message': [{ 'message': 'This node has already samples allocated' }] });
+		else {
+			let resultPromise = EquipmentNodeHandler.deleteOne(id);
+			resultPromise.then(function (result) {
+				if (result) {
+					res.status(200).send(result);
+				} else {
+					res.status(200).send([]);
+				}
+			}).catch(err => {
+				log.error(err);
+				res.status(500).send({
+					"message": "Something went wrong"
+				});
+			});
 		}
-	}).catch(err => {
-		log.error(err);
-		res.status(500).send({
-			"message": "Something went wrong"
-		});
-	});
+	})
+
+
 });
 
 
